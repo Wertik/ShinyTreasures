@@ -10,6 +10,7 @@ import space.devport.wertik.simpletreasures.Main;
 import space.devport.wertik.simpletreasures.Treasure;
 import space.devport.wertik.simpletreasures.util.Utils;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -27,7 +28,7 @@ public class SimpleTreasuresCommand implements CommandExecutor {
                 "\n§5/" + label + " list §8- §7List treasures." +
                 "\n§5/" + label + " add §8- §7Add a treasure location." +
                 "\n§5/" + label + " remove <id> §8- §7Remove a treasure location." +
-                "\n§5/" + label + " addCmd <id> §8- §7Add additional command to a treasure." +
+                "\n§5/" + label + " addCmd <id> <command> §8- §7Add additional command to a treasure." +
                 "\n§5/" + label + " cmds <id> §8- §7List commands for a treasure. (Defaults included)");
     }
 
@@ -103,7 +104,7 @@ public class SimpleTreasuresCommand implements CommandExecutor {
 
                 sender.sendMessage("§aTreasure removed successfully.");
                 break;
-            case "addCmd":
+            case "addcmd":
                 try {
                     id = Integer.parseInt(args[1]);
                 } catch (IllegalArgumentException e) {
@@ -118,17 +119,19 @@ public class SimpleTreasuresCommand implements CommandExecutor {
                     return true;
                 }
 
-                if (args.length <= 2) {
+                if (args.length < 3) {
                     sender.sendMessage("§cNot enough arguments.");
                     return true;
                 }
 
                 StringBuilder multiArg = new StringBuilder();
 
-                for (String arg : args)
+                for (int i = 2; i < args.length; i++) {
+                    String arg = args[i];
                     multiArg.append(arg).append(" ");
+                }
 
-                treasure.addSpecificCommand(multiArg.toString());
+                treasure.addSpecificCommand(multiArg.toString().trim());
                 sender.sendMessage("§aAdded command: §f" + multiArg.toString() + " §ato treasure §f" + id);
                 break;
             case "cmds":
@@ -151,12 +154,12 @@ public class SimpleTreasuresCommand implements CommandExecutor {
                     return true;
                 }
 
-                List<String> commands = treasure.getSpecificCommands();
+                List<String> commands = new ArrayList<>(treasure.getSpecificCommands());
                 commands.addAll(plugin.getConfig().getStringList("console-commands"));
 
                 StringBuilder msg = new StringBuilder();
-                msg.append("§8§m--------§5 Simple Treasure: §f").append(id).append(" §8§m--------\n§7Commands:");
-                commands.forEach(line -> msg.append(line).append("\n"));
+                msg.append("§8§m--------§5 Simple Treasure: §f").append(id).append(" §8§m--------\n§7Commands:\n");
+                commands.forEach(line -> msg.append("§8- §7").append(line).append("\n"));
 
                 sender.sendMessage(Utils.color(msg.toString()));
                 break;
