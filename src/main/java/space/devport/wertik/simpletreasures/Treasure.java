@@ -48,10 +48,8 @@ public class Treasure {
 
     public static Treasure fromString(int id, String str) {
         Treasure t =  new Treasure(id, Utils.stringToLocation(str.split(":")[0]), str.split(":").length > 1 ? Utils.stringToList(str.split(":")[1]) : new ArrayList<>());
-
         for (String cmd : str.split(";")[2].split(":"))
             t.addSpecificCommand(cmd);
-
         return t;
     }
 
