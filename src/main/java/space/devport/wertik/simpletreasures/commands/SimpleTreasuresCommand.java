@@ -31,16 +31,6 @@ public class SimpleTreasuresCommand implements CommandExecutor {
                 "\n§5/" + label + "cmds <id> §8- §7List commands for a treasure. (Defaults included)");
     }
 
-    /*
-     * Commands:
-     *
-     * /st reload
-     * /st add
-     * /st remove
-     * /st list
-     *
-     * */
-
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         if (args.length == 0) {
