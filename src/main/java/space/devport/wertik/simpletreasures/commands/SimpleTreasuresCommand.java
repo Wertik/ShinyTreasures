@@ -28,7 +28,7 @@ public class SimpleTreasuresCommand implements CommandExecutor {
                 "\n§5/" + label + " add §8- §7Add a treasure location." +
                 "\n§5/" + label + " remove <id> §8- §7Remove a treasure location." +
                 "\n§5/" + label + " addCmd <id> §8- §7Add additional command to a treasure." +
-                "\n§5/" + label + "cmds <id> §8- §7List commands for a treasure. (Defaults included)");
+                "\n§5/" + label + " cmds <id> §8- §7List commands for a treasure. (Defaults included)");
     }
 
     @Override
