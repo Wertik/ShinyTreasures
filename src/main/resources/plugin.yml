@@ -1,0 +1,14 @@
+name: SimpleTreasures
+main: space.devport.wertik.simpletreasures.Main
+version: 1.0
+author: Wertik1206
+commands:
+  simpletreasures:
+    aliases: [st]
+    description: Main plugin command
+permissions:
+  simpletreasures.open:
+    default: true
+    description: Permission to open treasures.
+  simpletreasures.admin:
+    description: Permission to manage treasures.
