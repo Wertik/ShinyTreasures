@@ -1,42 +1,33 @@
-# Configuration for SimpleTreasures v1.0 by Wertik1206
+# Configuration for ${project.name}
+#
+# Version: ${project.version}
 
-# There are a few debug lines.
+plugin-prefix: '&3Treasures &8>> '
 debug-enabled: false
-
-# Prefix is used within the debug. Also can be inserted to messages with %prefix%
-plugin-prefix: '&5Simple Treasures &8>> '
 
 # Should we hide the block for the player?
 # Note: Sends a block change, so only MC client can't see the block, server will still use it and block player movement. Reappears on interaction.
 hide-block: true
 
 # Should we shoot fireworks?
-# Customization coming soon. Now randomly picks two colors into a ball firework. ;)
 fireworks: true
+
+# Sound to play when the players opens a treasure.
+sound:
+  enabled: true
+  type: ENTITY_CHEST_OPEN
+  pitch: 1
+  volume: 1
 
 # Worlds where this plugin is enabled.
 worlds:
   - 'world'
 
-# Blocks we should render as treasures. Can go from chests to signs,.. to stone.
-reward-blocks:
-  - CHEST
-
-# Console commands fired when the treasure is clicked.
-console-commands:
-  - 'tm add %player% 10'
-
-# Message sent to the player when he finds a treasure.
-inform-message:
-  - '&d# &7You found a treasure!'
-
-# Message broadcasted to all players.
-broadcast-message: []
-
-# Message sent to player if he found this treasure already.
-found-already:
-  - "&cYou already found this treasure! :'("
-
-# NO permissions message.
-no-perm:
-  - '&cYou lack the permission to open treasures.'
+# General treasure rewards
+rewards:
+  commands:
+    - 'tm add %player% 10'
+  broadcast:
+    - ''
+    - '&f%player% &7found a treasure!'
+    - ''
