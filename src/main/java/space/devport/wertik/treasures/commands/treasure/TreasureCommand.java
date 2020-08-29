@@ -1,4 +1,4 @@
-package space.devport.wertik.treasures.commands;
+package space.devport.wertik.treasures.commands.treasure;
 
 import org.bukkit.command.CommandSender;
 import space.devport.utils.commands.MainCommand;

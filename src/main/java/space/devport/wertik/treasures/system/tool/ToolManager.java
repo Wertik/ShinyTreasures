@@ -1,6 +1,8 @@
 package space.devport.wertik.treasures.system.tool;
 
+import org.bukkit.inventory.ItemStack;
 import space.devport.utils.configuration.Configuration;
+import space.devport.utils.item.ItemBuilder;
 import space.devport.wertik.treasures.TreasurePlugin;
 import space.devport.wertik.treasures.system.tool.struct.PlacementTool;
 
@@ -37,6 +39,22 @@ public class ToolManager {
         this.tools.put(tool.getName(), tool);
         plugin.getConsoleOutput().debug("Added tool " + tool.getName());
     }
+
+    public PlacementTool getTool(ItemStack item) {
+        ItemBuilder builder = new ItemBuilder(item);
+
+        if (!builder.hasNBT("treasures_tool")) return null;
+
+        return this.getTool(builder.getNBT().get("treasures_tool"));
+    }
+
+    /*public PlacementTool getToolIgnoreCase(String name) {
+        for (PlacementTool tool : this.tools.values()) {
+            if (tool.getName().equalsIgnoreCase(name))
+                return tool;
+        }
+        return null;
+    }*/
 
     public PlacementTool getTool(String name) {
         return this.tools.get(name);

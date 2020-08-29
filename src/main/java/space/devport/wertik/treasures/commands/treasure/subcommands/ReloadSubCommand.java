@@ -1,4 +1,4 @@
-package space.devport.wertik.treasures.commands.subcommands;
+package space.devport.wertik.treasures.commands.treasure.subcommands;
 
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;

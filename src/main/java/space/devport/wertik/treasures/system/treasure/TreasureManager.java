@@ -6,6 +6,7 @@ import org.bukkit.inventory.ItemStack;
 import space.devport.utils.struct.Rewards;
 import space.devport.wertik.treasures.TreasurePlugin;
 import space.devport.wertik.treasures.system.GsonHelper;
+import space.devport.wertik.treasures.system.template.struct.TreasureTemplate;
 import space.devport.wertik.treasures.system.treasure.struct.Treasure;
 
 import java.util.Collections;
@@ -56,9 +57,10 @@ public class TreasureManager {
         return treasure;
     }
 
-    public Treasure createTreasure(Location location, Rewards customRewards) {
+    public Treasure createTreasure(Location location, TreasureTemplate template) {
         Treasure treasure = createTreasure(location);
-        //TODO rewards
+        treasure.withTemplate(template);
+        plugin.getConsoleOutput().debug("...with template " + treasure.getTemplate().getName());
         return treasure;
     }
 

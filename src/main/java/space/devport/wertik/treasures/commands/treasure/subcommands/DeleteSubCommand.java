@@ -1,4 +1,4 @@
-package space.devport.wertik.treasures.commands.subcommands;
+package space.devport.wertik.treasures.commands.treasure.subcommands;
 
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
@@ -6,10 +6,10 @@ import space.devport.utils.commands.SubCommand;
 import space.devport.utils.commands.struct.ArgumentRange;
 import space.devport.utils.commands.struct.CommandResult;
 
-public class SetSubCommand extends SubCommand {
+public class DeleteSubCommand extends SubCommand {
 
-    public SetSubCommand() {
-        super("set");
+    public DeleteSubCommand() {
+        super("delete");
     }
 
     @Override
@@ -19,12 +19,12 @@ public class SetSubCommand extends SubCommand {
 
     @Override
     public @NotNull String getDefaultUsage() {
-        return "/%label% set (template)";
+        return "/%label% delete (uniqueID)";
     }
 
     @Override
     public @NotNull String getDefaultDescription() {
-        return "Set the block you're looking at as a treasure.";
+        return "Delete a treasure you're looking at, or by it's UUID.";
     }
 
     @Override

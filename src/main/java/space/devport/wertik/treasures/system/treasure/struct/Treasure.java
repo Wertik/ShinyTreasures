@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
+import space.devport.wertik.treasures.system.template.struct.TreasureTemplate;
 
 import java.util.Collections;
 import java.util.HashSet;
@@ -17,13 +18,20 @@ public class Treasure {
 
     @Getter
     @Setter
-    private space.devport.wertik.treasures.system.treasure.struct.JsonLocation jsonLocation;
+    private JsonLocation jsonLocation;
+
+    @Getter
+    private TreasureTemplate template;
 
     private final Set<UUID> finders = new HashSet<>();
 
     public Treasure(Location location) {
         this.uniqueID = UUID.randomUUID();
-        this.jsonLocation = new space.devport.wertik.treasures.system.treasure.struct.JsonLocation(location);
+        this.jsonLocation = new JsonLocation(location);
+    }
+
+    public void withTemplate(TreasureTemplate template) {
+        this.template = new TreasureTemplate(template);
     }
 
     public Set<UUID> getFinders() {

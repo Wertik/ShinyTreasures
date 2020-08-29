@@ -9,12 +9,11 @@ import space.devport.utils.commands.struct.Preconditions;
 import space.devport.wertik.treasures.TreasurePlugin;
 import space.devport.wertik.treasures.commands.TreasureSubCommand;
 import space.devport.wertik.treasures.system.editor.struct.EditSession;
-import space.devport.wertik.treasures.system.template.struct.TreasureTemplate;
 
-public class CreateSubCommand extends TreasureSubCommand {
+public class CancelSubCommand extends TreasureSubCommand {
 
-    public CreateSubCommand(TreasurePlugin plugin) {
-        super(plugin, "create");
+    public CancelSubCommand(TreasurePlugin plugin) {
+        super(plugin, "cancel");
         this.preconditions = new Preconditions()
                 .playerOnly();
     }
@@ -24,43 +23,32 @@ public class CreateSubCommand extends TreasureSubCommand {
 
         Player player = (Player) sender;
 
-        if (getPlugin().getEditorManager().hasSession(player)) {
+        EditSession session = getPlugin().getEditorManager().getSession(player);
+
+        if (session == null) {
             //TODO
-            sender.sendMessage("&cYou already have a session.");
+            sender.sendMessage("&cYou don't have a session.");
             return CommandResult.FAILURE;
         }
 
-        if (getPlugin().getToolManager().getTool(args[0]) != null) {
-            //TODO
-            sender.sendMessage("&cTool with that name already exists.");
-            return CommandResult.FAILURE;
-        }
-
-        EditSession session = getPlugin().getEditorManager().createSession(player, args[0]);
-
-        if (args.length > 1) {
-            TreasureTemplate template = getPlugin().getCommandParser().parseTemplate(sender, args[1]);
-            session.getTool().importTemplate(template);
-        }
-
-        getPlugin().getEditorManager().registerSession(session);
+        session.cancel();
         //TODO
-        sender.sendMessage("&aSession started.");
+        sender.sendMessage("&aSession cancelled.");
         return CommandResult.SUCCESS;
     }
 
     @Override
     public @NotNull String getDefaultUsage() {
-        return "/%label% create <name> (template)";
+        return "/%label% cancel";
     }
 
     @Override
     public @NotNull String getDefaultDescription() {
-        return "Start creating a placement tool.";
+        return "Cancel your edit session.";
     }
 
     @Override
     public @NotNull ArgumentRange getRange() {
-        return new ArgumentRange(0, 1);
+        return new ArgumentRange(0);
     }
 }
