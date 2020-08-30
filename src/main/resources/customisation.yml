@@ -1,0 +1,10 @@
+# Configuration for ${project.name}
+#
+# Version: ${project.version}
+
+items:
+  placement-tool:
+    type: %template_material%
+    name: '&aPlacement tool: &f%template_name%'
+    lore:
+      - '&7Place to create a treasure &f%template_name%'

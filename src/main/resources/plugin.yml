@@ -1,10 +1,16 @@
-name: SimpleTreasures
-main: space.devport.wertik.simpletreasures.Main
-version: 1.0
-author: Wertik1206
+name: ${project.name}
+main: ${project.groupId}.TreasurePlugin
+version: ${project.version}
+authors: [ Wertik1206 ]
 commands:
-  simpletreasures:
-    aliases: [st]
+  treasures:
+    aliases: [ t, treasure ]
+    description: Main plugin command
+  treasureeditor:
+    aliases: [ te ]
+    description: Main plugin command
+  treasuretools:
+    aliases: [ tt ]
     description: Main plugin command
 permissions:
   simpletreasures.open:

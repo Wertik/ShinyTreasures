@@ -2,26 +2,20 @@ package space.devport.wertik.treasures.commands.treasure.subcommands;
 
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
-import space.devport.utils.commands.SubCommand;
 import space.devport.utils.commands.struct.ArgumentRange;
 import space.devport.utils.commands.struct.CommandResult;
-import space.devport.utils.commands.struct.Preconditions;
 import space.devport.wertik.treasures.TreasurePlugin;
+import space.devport.wertik.treasures.commands.TreasureSubCommand;
 
-public class ReloadSubCommand extends SubCommand {
-
-    private final TreasurePlugin plugin;
+public class ReloadSubCommand extends TreasureSubCommand {
 
     public ReloadSubCommand(TreasurePlugin plugin) {
-        super("reload");
-        this.plugin = plugin;
-        this.preconditions = new Preconditions()
-                .permissions("simpletreasures.reload");
+        super(plugin, "reload");
     }
 
     @Override
     protected CommandResult perform(CommandSender sender, String label, String[] args) {
-        plugin.reload(sender);
+        getPlugin().reload(sender);
         return CommandResult.SUCCESS;
     }
 

@@ -2,14 +2,15 @@ package space.devport.wertik.treasures.commands.treasure.subcommands;
 
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
-import space.devport.utils.commands.SubCommand;
 import space.devport.utils.commands.struct.ArgumentRange;
 import space.devport.utils.commands.struct.CommandResult;
+import space.devport.wertik.treasures.TreasurePlugin;
+import space.devport.wertik.treasures.commands.TreasureSubCommand;
 
-public class ListSubCommand extends SubCommand {
+public class ListSubCommand extends TreasureSubCommand {
 
-    public ListSubCommand() {
-        super("list");
+    public ListSubCommand(TreasurePlugin plugin) {
+        super(plugin, "list");
     }
 
     @Override

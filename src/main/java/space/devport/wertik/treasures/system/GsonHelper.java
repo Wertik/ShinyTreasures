@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import space.devport.utils.DevportPlugin;
 
 import java.io.IOException;
+import java.lang.reflect.Type;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -23,7 +24,7 @@ public class GsonHelper {
             // .setPrettyPrinting()
             .create();
 
-    public <T> T load(String dataPath) {
+    public <T> T load(String dataPath, Type type) {
 
         Path path = Paths.get(dataPath);
 
@@ -41,8 +42,7 @@ public class GsonHelper {
 
         plugin.getConsoleOutput().debug("JSON: " + input);
 
-        return gson.fromJson(input, new TypeToken<T>() {
-        }.getType());
+        return gson.fromJson(input, type);
     }
 
     public <T> void save(final T in, String dataPath) {

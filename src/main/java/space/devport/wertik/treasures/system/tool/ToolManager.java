@@ -48,6 +48,19 @@ public class ToolManager {
         return this.getTool(builder.getNBT().get("treasures_tool"));
     }
 
+    public ItemStack craftTool(PlacementTool tool) {
+        if (tool == null) return null;
+
+        return new ItemBuilder(plugin.getCustomisationManager().getItemBuilder("placement-tool"))
+                .addNBT("treasures_tool", tool.getName())
+                .build();
+    }
+
+    public ItemStack craftTool(String name) {
+        PlacementTool tool = getTool(name);
+        return craftTool(tool);
+    }
+
     /*public PlacementTool getToolIgnoreCase(String name) {
         for (PlacementTool tool : this.tools.values()) {
             if (tool.getName().equalsIgnoreCase(name))

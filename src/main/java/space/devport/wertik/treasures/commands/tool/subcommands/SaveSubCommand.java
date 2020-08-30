@@ -9,46 +9,48 @@ import space.devport.utils.commands.struct.Preconditions;
 import space.devport.utils.text.StringUtil;
 import space.devport.wertik.treasures.TreasurePlugin;
 import space.devport.wertik.treasures.commands.TreasureSubCommand;
-import space.devport.wertik.treasures.system.tool.struct.PlacementTool;
+import space.devport.wertik.treasures.system.editor.struct.EditSession;
 
-public class GetSubCommand extends TreasureSubCommand {
+public class SaveSubCommand extends TreasureSubCommand {
 
-    public GetSubCommand(TreasurePlugin plugin) {
-        super(plugin, "get");
+    public SaveSubCommand(TreasurePlugin plugin) {
+        super(plugin, "save");
         this.preconditions = new Preconditions()
                 .playerOnly();
     }
 
     @Override
     protected CommandResult perform(CommandSender sender, String label, String[] args) {
-        PlacementTool tool = getPlugin().getToolManager().getTool(args[0]);
-
-        if (tool == null) {
-            //TODO
-            sender.sendMessage(StringUtil.color("&cInvalid tool."));
-            return CommandResult.FAILURE;
-        }
 
         Player player = (Player) sender;
 
-        player.getInventory().addItem(getPlugin().getToolManager().craftTool(tool));
+        EditSession session = getPlugin().getEditorManager().getSession(player);
+
+        if (session == null) {
+            //TODO
+            sender.sendMessage(StringUtil.color("&cYou have no session."));
+            return CommandResult.FAILURE;
+        }
+
+        session.complete();
+        player.getInventory().addItem(getPlugin().getToolManager().craftTool(session.getTool()));
         //TODO
-        sender.sendMessage(StringUtil.color("&aTool given."));
+        sender.sendMessage(StringUtil.color("&aSession completed."));
         return CommandResult.SUCCESS;
     }
 
     @Override
     public @NotNull String getDefaultUsage() {
-        return "/%label% get <name>";
+        return "/%label% finish";
     }
 
     @Override
     public @NotNull String getDefaultDescription() {
-        return "Get a placement tool.";
+        return "Finish an editing session.";
     }
 
     @Override
     public @NotNull ArgumentRange getRange() {
-        return new ArgumentRange(1);
+        return new ArgumentRange(0);
     }
 }

@@ -1,5 +1,6 @@
 package space.devport.wertik.treasures.system.treasure;
 
+import com.google.gson.reflect.TypeToken;
 import lombok.Getter;
 import org.bukkit.Location;
 import org.bukkit.inventory.ItemStack;
@@ -36,7 +37,14 @@ public class TreasureManager {
 
     public void load() {
         this.loadedTreasures.clear();
-        this.loadedTreasures.putAll(gsonHelper.load("/data.json"));
+
+        Map<UUID, Treasure> treasures = gsonHelper.load("/data.json", new TypeToken<Map<UUID, Treasure>>() {
+        }.getType());
+
+        if (treasures == null) treasures = new HashMap<>();
+
+        this.loadedTreasures.putAll(treasures);
+
         plugin.getConsoleOutput().info("Loaded " + this.loadedTreasures.size() + " treasure(s)...");
     }
 

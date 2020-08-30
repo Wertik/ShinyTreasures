@@ -5,6 +5,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.inventory.ItemStack;
+import space.devport.utils.text.StringUtil;
 import space.devport.wertik.treasures.TreasurePlugin;
 import space.devport.wertik.treasures.system.tool.struct.PlacementTool;
 import space.devport.wertik.treasures.system.treasure.struct.Treasure;
@@ -29,6 +30,6 @@ public class PlacementListener implements Listener {
         if (tool == null) return;
 
         Treasure treasure = plugin.getTreasureManager().createTreasure(event.getBlockPlaced().getLocation(), tool.getTemplate());
-        event.getPlayer().sendMessage("&aTreasure placed with template " + treasure.getTemplate().getName());
+        event.getPlayer().sendMessage(StringUtil.color("&aTreasure placed with template " + treasure.getTemplate().getName()));
     }
 }

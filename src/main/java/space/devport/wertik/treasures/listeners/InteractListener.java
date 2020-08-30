@@ -15,7 +15,6 @@ import org.bukkit.inventory.meta.FireworkMeta;
 import org.bukkit.scheduler.BukkitRunnable;
 import space.devport.utils.xseries.XSound;
 import space.devport.wertik.treasures.TreasurePlugin;
-import space.devport.wertik.treasures.system.treasure.Treasure;
 import space.devport.wertik.treasures.system.treasure.TreasureManager;
 import space.devport.wertik.treasures.system.treasure.struct.Treasure;
 

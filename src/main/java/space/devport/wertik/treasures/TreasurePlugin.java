@@ -4,9 +4,8 @@ import lombok.Getter;
 import space.devport.utils.DevportPlugin;
 import space.devport.utils.UsageFlag;
 import space.devport.wertik.treasures.commands.CommandParser;
-import space.devport.wertik.treasures.commands.editor.EditorCommand;
-import space.devport.wertik.treasures.commands.editor.subcommands.CreateSubCommand;
-import space.devport.wertik.treasures.commands.editor.subcommands.FinishSubCommand;
+import space.devport.wertik.treasures.commands.tool.ToolCommand;
+import space.devport.wertik.treasures.commands.tool.subcommands.*;
 import space.devport.wertik.treasures.commands.treasure.TreasureCommand;
 import space.devport.wertik.treasures.commands.treasure.subcommands.ReloadSubCommand;
 import space.devport.wertik.treasures.listeners.InteractListener;
@@ -52,9 +51,12 @@ public class TreasurePlugin extends DevportPlugin {
         addMainCommand(new TreasureCommand())
                 .addSubCommand(new ReloadSubCommand(this));
 
-        addMainCommand(new EditorCommand())
+        addMainCommand(new ToolCommand())
+                .addSubCommand(new GetSubCommand(this))
                 .addSubCommand(new CreateSubCommand(this))
-                .addSubCommand(new FinishSubCommand(this));
+                .addSubCommand(new SaveSubCommand(this))
+                .addSubCommand(new MaterialSubCommand(this))
+                .addSubCommand(new CancelSubCommand(this));
     }
 
     @Override

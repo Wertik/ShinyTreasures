@@ -1,4 +1,4 @@
-package space.devport.wertik.treasures.commands.editor.subcommands;
+package space.devport.wertik.treasures.commands.tool.subcommands;
 
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -6,6 +6,7 @@ import org.jetbrains.annotations.NotNull;
 import space.devport.utils.commands.struct.ArgumentRange;
 import space.devport.utils.commands.struct.CommandResult;
 import space.devport.utils.commands.struct.Preconditions;
+import space.devport.utils.text.StringUtil;
 import space.devport.wertik.treasures.TreasurePlugin;
 import space.devport.wertik.treasures.commands.TreasureSubCommand;
 import space.devport.wertik.treasures.system.editor.struct.EditSession;
@@ -26,13 +27,13 @@ public class CreateSubCommand extends TreasureSubCommand {
 
         if (getPlugin().getEditorManager().hasSession(player)) {
             //TODO
-            sender.sendMessage("&cYou already have a session.");
+            sender.sendMessage(StringUtil.color("&cYou are already creating a placement tool."));
             return CommandResult.FAILURE;
         }
 
         if (getPlugin().getToolManager().getTool(args[0]) != null) {
             //TODO
-            sender.sendMessage("&cTool with that name already exists.");
+            sender.sendMessage(StringUtil.color("&cTool with that name already exists."));
             return CommandResult.FAILURE;
         }
 
@@ -45,7 +46,7 @@ public class CreateSubCommand extends TreasureSubCommand {
 
         getPlugin().getEditorManager().registerSession(session);
         //TODO
-        sender.sendMessage("&aSession started.");
+        sender.sendMessage(StringUtil.color("&aSession started."));
         return CommandResult.SUCCESS;
     }
 
