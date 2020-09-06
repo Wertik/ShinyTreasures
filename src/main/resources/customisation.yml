@@ -4,7 +4,6 @@
 
 items:
   placement-tool:
-    type: %template_material%
     name: '&aPlacement tool: &f%template_name%'
     lore:
-      - '&7Place to create a treasure &f%template_name%'
+      - '&7Place to create a treasure with template &f%template_name%'

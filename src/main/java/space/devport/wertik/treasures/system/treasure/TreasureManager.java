@@ -3,7 +3,6 @@ package space.devport.wertik.treasures.system.treasure;
 import com.google.gson.reflect.TypeToken;
 import lombok.Getter;
 import org.bukkit.Location;
-import org.bukkit.inventory.ItemStack;
 import space.devport.utils.struct.Rewards;
 import space.devport.wertik.treasures.TreasurePlugin;
 import space.devport.wertik.treasures.system.GsonHelper;
@@ -38,7 +37,7 @@ public class TreasureManager {
     public void load() {
         this.loadedTreasures.clear();
 
-        Map<UUID, Treasure> treasures = gsonHelper.load("/data.json", new TypeToken<Map<UUID, Treasure>>() {
+        Map<UUID, Treasure> treasures = gsonHelper.load(plugin.getDataFolder() + "/data.json", new TypeToken<Map<UUID, Treasure>>() {
         }.getType());
 
         if (treasures == null) treasures = new HashMap<>();
@@ -49,13 +48,8 @@ public class TreasureManager {
     }
 
     public void save() {
-        gsonHelper.save(this.loadedTreasures, "/data.json");
+        gsonHelper.save(this.loadedTreasures, plugin.getDataFolder() + "/data.json");
         plugin.getConsoleOutput().info("Saved " + this.loadedTreasures.size() + " treasure(s)...");
-    }
-
-    public Rewards parseRewardsFromItem(ItemStack item) {
-        //TODO parse rewards from NBT
-        return new Rewards();
     }
 
     public Treasure createTreasure(Location location) {

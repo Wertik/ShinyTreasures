@@ -52,6 +52,7 @@ public class ToolManager {
         if (tool == null) return null;
 
         return new ItemBuilder(plugin.getCustomisationManager().getItemBuilder("placement-tool"))
+                .type(tool.getTemplate().getMaterial())
                 .addNBT("treasures_tool", tool.getName())
                 .build();
     }
@@ -60,14 +61,6 @@ public class ToolManager {
         PlacementTool tool = getTool(name);
         return craftTool(tool);
     }
-
-    /*public PlacementTool getToolIgnoreCase(String name) {
-        for (PlacementTool tool : this.tools.values()) {
-            if (tool.getName().equalsIgnoreCase(name))
-                return tool;
-        }
-        return null;
-    }*/
 
     public PlacementTool getTool(String name) {
         return this.tools.get(name);

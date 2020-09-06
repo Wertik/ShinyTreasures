@@ -26,8 +26,8 @@ worlds:
 # General treasure rewards
 rewards:
   commands:
-    - 'tm add %player% 10'
+    - 'say Hello %player%'
   broadcast:
-    - ''
+    - ' '
     - '&f%player% &7found a treasure!'
-    - ''
+    - ' '

@@ -40,6 +40,8 @@ public class TreasurePlugin extends DevportPlugin {
         toolManager = new ToolManager(this);
         editorManager = new EditorManager(this);
 
+        templateManager.load();
+
         treasureManager.loadOptions();
         treasureManager.load();
 
@@ -67,6 +69,7 @@ public class TreasurePlugin extends DevportPlugin {
     @Override
     public void onReload() {
         treasureManager.loadOptions();
+        templateManager.load();
     }
 
     @Override

@@ -1,0 +1,9 @@
+# Template configuration for ${project.name}
+#
+# Version: ${project.version}
+
+template-one:
+  material: 'CHEST'
+  rewards:
+    commands:
+      - 'say Hello world!'
