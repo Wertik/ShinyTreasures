@@ -16,7 +16,7 @@ public class ListSubCommand extends TreasureSubCommand {
 
     @Override
     protected CommandResult perform(CommandSender sender, String label, String[] args) {
-        sender.sendMessage(StringUtil.color("&7Loaded tools:\n" + String.join("\n&8 - &f", getPlugin().getToolManager().getLoadedTools().keySet())));
+        sender.sendMessage(StringUtil.color("&7Loaded tools:\n&8 - &f" + String.join("\n&8 - &f", getPlugin().getToolManager().getLoadedTools().keySet())));
         return CommandResult.SUCCESS;
     }
 

@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import space.devport.utils.configuration.Configuration;
 import space.devport.wertik.treasures.TreasurePlugin;
@@ -28,6 +29,12 @@ public class PlacementTool {
     public PlacementTool(String name, TreasureTemplate rootTemplate) {
         this.name = name;
         rootTemplate(rootTemplate);
+    }
+
+    public void reward(Player player) {
+        getTemplate().getRewards().give(player);
+        if (this.rootTemplate != null)
+            this.rootTemplate.getRewards().give(player);
     }
 
     @NotNull
@@ -70,8 +77,8 @@ public class PlacementTool {
         if (rootTemplate != null)
             section.set("root-template", rootTemplate.getName());
 
-        //TODO
-        //ConfigurationSection rewardSection = configuration.section(path + ".rewards");
+        section.set("material", getTemplate().getMaterial());
+        configuration.setRewards(path + ".rewards", template.getRewards());
         return true;
     }
 }

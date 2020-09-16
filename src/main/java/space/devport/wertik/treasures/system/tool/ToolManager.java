@@ -6,6 +6,7 @@ import org.bukkit.inventory.ItemStack;
 import space.devport.utils.CustomisationManager;
 import space.devport.utils.configuration.Configuration;
 import space.devport.utils.item.ItemBuilder;
+import space.devport.utils.text.Placeholders;
 import space.devport.wertik.treasures.TreasurePlugin;
 import space.devport.wertik.treasures.system.tool.struct.PlacementTool;
 
@@ -83,22 +84,21 @@ public class ToolManager {
         return this.getTool(builder.getNBT().get("treasures_tool"));
     }
 
-    public boolean exists(String name) {
-        return this.loadedTools.containsKey(name);
-    }
-
     public ItemStack craftTool(PlacementTool tool) {
         if (tool == null) return null;
 
         return new ItemBuilder(plugin.getManager(CustomisationManager.class).getItemBuilder("placement-tool"))
                 .type(tool.getMaterial())
+                .parseWith(new Placeholders()
+                        .add("%toolName%", tool.getName())
+                        .add("%commands%", tool.getTemplate().getRewards().getCommands().size())
+                        .add("%rootTemplate%", tool.getRootTemplate() == null ? "None" : tool.getRootTemplate().getName()))
                 .addNBT("treasures_tool", tool.getName())
                 .build();
     }
 
     public ItemStack craftTool(String name) {
-        PlacementTool tool = getTool(name);
-        return craftTool(tool);
+        return craftTool(getTool(name));
     }
 
     public PlacementTool getTool(String name) {

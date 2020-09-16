@@ -3,7 +3,45 @@
 # Version: ${project.version}
 
 template-one:
+
+  # Default material.
   material: 'CHEST'
+
   rewards:
+    # Broadcast and inform both parse PlaceholderAPI placeholders.
+    #broadcast:
+    #  - ''
+    #inform:
+    #  - ''
+
+    # Commands parse PlaceholderAPI placeholders.
     commands:
-      - 'say Hello world!'
+      - 'say Hello %player%!'
+      - 'p! me I found a treasure!'
+      - 'op! plugins'
+
+    # You can add one or multiple items...
+    items:
+      diamond:
+        type: DIAMOND
+
+        # Dynamic amounts
+        amount: 1-5
+        #amount: x of course still works. Amount is 1 by default.
+
+        # Names and lores parse PlaceholderAPI placeholders.
+        name: '&3A little diamond'
+        lore:
+          - '&7Found in a treasure by &f%player%'
+
+        # Items everywhere support more options...
+        glow: true
+        #enchants:
+        #  - 'UNBREAKING;1'
+        #flags:
+        #  - 'HIDE_ENCHANTS'
+      stick:
+        type: STICK
+        name: '&6A Stick'
+        lore:
+          - "&7I don't know.. a stick?"

@@ -1,9 +1,7 @@
 package space.devport.wertik.treasures.system.treasure;
 
 import com.google.gson.reflect.TypeToken;
-import lombok.Getter;
 import org.bukkit.Location;
-import space.devport.utils.struct.Rewards;
 import space.devport.wertik.treasures.TreasurePlugin;
 import space.devport.wertik.treasures.system.GsonHelper;
 import space.devport.wertik.treasures.system.tool.struct.PlacementTool;
@@ -22,16 +20,9 @@ public class TreasureManager {
 
     private final Map<UUID, Treasure> loadedTreasures = new HashMap<>();
 
-    @Getter
-    private Rewards defaultRewards;
-
     public TreasureManager(TreasurePlugin plugin) {
         this.plugin = plugin;
         this.gsonHelper = plugin.getGsonHelper();
-    }
-
-    public void loadOptions() {
-        this.defaultRewards = plugin.getConfiguration().getRewards("rewards");
     }
 
     public void load() {

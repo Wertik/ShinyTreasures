@@ -1,14 +1,13 @@
 package space.devport.wertik.treasures.listeners;
 
 import com.google.common.base.Strings;
-import org.bukkit.Color;
-import org.bukkit.FireworkEffect;
-import org.bukkit.Location;
-import org.bukkit.Material;
+import org.bukkit.*;
+import org.bukkit.block.Block;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Firework;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -53,13 +52,10 @@ public class InteractListener implements Listener {
         this.treasureManager = plugin.getTreasureManager();
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.LOWEST)
     public void onClick(PlayerInteractEvent event) {
 
         if (event.getHand() == EquipmentSlot.OFF_HAND || event.getClickedBlock() == null || event.getAction() == Action.PHYSICAL)
-            return;
-
-        if (!plugin.getConfig().getStringList("worlds").contains(event.getClickedBlock().getWorld().getName()))
             return;
 
         Player player = event.getPlayer();
@@ -110,18 +106,9 @@ public class InteractListener implements Listener {
             }
         }
 
-        treasure.getTool().getTemplate().getRewards().give(player);
-        treasure.getTool().getRootTemplate().getRewards().give(player);
+        treasure.getTool().reward(player);
 
-        // Try to hide the block
-        if (plugin.getConfig().getBoolean("hide-block", false)) {
-            new BukkitRunnable() {
-                @Override
-                public void run() {
-                    player.sendBlockChange(event.getClickedBlock().getLocation(), Material.AIR, (byte) 0);
-                }
-            }.runTaskLater(plugin, 1);
-        }
+        hideBlock(event.getClickedBlock(), player);
 
         // Fireworks
         //TODO change to particles
@@ -150,6 +137,35 @@ public class InteractListener implements Listener {
                     fw.detonate();
                 }
             }.runTaskLaterAsynchronously(plugin, 2);
+        }
+    }
+
+    private void hideBlock(Block block, Player player) {
+
+        if (plugin.getConfig().getBoolean("hide-block.enabled", false))
+            return;
+
+        if (plugin.getConfig().getBoolean("hide-block.only-for-player", false)) {
+            new BukkitRunnable() {
+                @Override
+                public void run() {
+                    player.sendBlockChange(block.getLocation(), Material.AIR, (byte) 0);
+                }
+            }.runTaskLater(plugin, 1L);
+        } else {
+            Material original = block.getType();
+
+            new BukkitRunnable() {
+                @Override
+                public void run() {
+                    block.setType(Material.AIR);
+                }
+            }.runTaskLater(plugin, 1L);
+
+            if (plugin.getConfig().getBoolean("hide-block.place-back", false))
+                return;
+
+            Bukkit.getScheduler().runTaskLater(plugin, () -> block.setType(original), plugin.getConfig().getInt("hide-block.time", 15) * 20L);
         }
     }
 }

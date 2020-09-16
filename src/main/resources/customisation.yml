@@ -1,10 +1,14 @@
-# Configuration for ${project.name}
+# Customisation configuration for ${project.name}
 #
 # Version: ${project.version}
 
 items:
   placement-tool:
+    # Type gets overridden by placement tool/template material, it's here just for fallback reasons.
     type: CHEST
-    name: '&aPlacement tool: &f%template_name%'
+    name: '&aPlacement tool: &f%toolName%'
     lore:
-      - '&7Place to create a treasure with template &f%template_name%'
+      - '&7Rooting to template: &f%rootTemplate%'
+      - '&7Attached extra commands: &f%commands%'
+      - ' '
+      - '&7Place to create a treasure!'

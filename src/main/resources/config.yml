@@ -2,32 +2,38 @@
 #
 # Version: ${project.version}
 
-plugin-prefix: '&3Treasures &8>> '
+plugin-prefix: '&3Treasures &8| '
 debug-enabled: false
 
-# Should we hide the block for the player?
-# Note: Sends a block change, so only MC client can't see the block, server will still use it and block player movement. Reappears on interaction.
-hide-block: true
+# Block hide settings
+hide-block:
+  enabled: true
 
-# Should we shoot fireworks?
+  # When hiding only for the player who found it, it's through block change packets.
+  # It's not permanent, any interaction set's the block right back.
+  # Setting to false removes the block completely and places it back after configured time.
+  only-for-player: true
+
+  # Settings below do not apply if only-for-player is set to true, don't see a point in that.
+
+  # Place it back?
+  # This could be useful to create "who gets the most" egg hunts, with this set to false, the egg block just disappears.
+  place-back: true
+
+  # For how long to hide it?
+  # In seconds.
+  time: 60
+
+# Fireworks? Picks them randomly.
 fireworks: true
 
-# Sound to play when the players opens a treasure.
+# Sound to play when the player opens a treasure.
 sound:
   enabled: true
   type: ENTITY_CHEST_OPEN
   pitch: 1
   volume: 1
 
-# Worlds where this plugin is enabled.
-worlds:
-  - 'world'
-
-# General treasure rewards
-rewards:
-  commands:
-    - 'say Hello %player%'
-  broadcast:
-    - ' '
-    - '&f%player% &7found a treasure!'
-    - ' '
+# Worlds where this plugin is disabled.
+disabled-worlds:
+  - 'world_i_dont_want_you_to_use'

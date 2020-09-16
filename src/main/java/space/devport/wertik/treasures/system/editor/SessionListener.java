@@ -68,7 +68,7 @@ public class SessionListener extends DevportListener {
                 session.getTool().getTemplate().getRewards().getCommands().removeIf(cmd -> {
                     boolean bool = match(combine(Arrays.copyOfRange(args, 1, args.length)), cmd);
                     if (bool)
-                        player.sendMessage(StringUtil.color("&7Removing &f%command%&7..."));
+                        player.sendMessage(StringUtil.color("&7Removing &f%command%&7...".replace("%command%", cmd)));
                     return bool;
                 });
                 break;

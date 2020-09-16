@@ -63,7 +63,6 @@ public class TreasurePlugin extends DevportPlugin {
 
         toolManager.load();
 
-        treasureManager.loadOptions();
         treasureManager.load();
 
         userManager.load();
@@ -92,7 +91,6 @@ public class TreasurePlugin extends DevportPlugin {
 
     @Override
     public void onReload() {
-        treasureManager.loadOptions();
         templateManager.load();
     }
 
