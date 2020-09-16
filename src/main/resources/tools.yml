@@ -1,0 +1,5 @@
+tool-one:
+  template: 'template-one'
+  rewards:
+    commands:
+      - 'say Cool tool command!'

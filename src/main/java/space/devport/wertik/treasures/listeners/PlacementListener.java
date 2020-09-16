@@ -29,7 +29,7 @@ public class PlacementListener implements Listener {
 
         if (tool == null) return;
 
-        Treasure treasure = plugin.getTreasureManager().createTreasure(event.getBlockPlaced().getLocation(), tool.getTemplate());
-        event.getPlayer().sendMessage(StringUtil.color("&aTreasure placed with template " + treasure.getTemplate().getName()));
+        Treasure treasure = plugin.getTreasureManager().createTreasure(event.getBlockPlaced().getLocation(), tool);
+        event.getPlayer().sendMessage(StringUtil.color("&7Treasure placed with tool " + treasure.getTool().getName()));
     }
 }

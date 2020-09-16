@@ -4,6 +4,7 @@
 
 items:
   placement-tool:
+    type: CHEST
     name: '&aPlacement tool: &f%template_name%'
     lore:
       - '&7Place to create a treasure with template &f%template_name%'

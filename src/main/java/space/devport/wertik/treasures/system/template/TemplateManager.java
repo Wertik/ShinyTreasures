@@ -31,6 +31,7 @@ public class TemplateManager {
         configuration.load();
         for (String name : configuration.getFileConfiguration().getKeys(false)) {
             ConfigurationSection section = configuration.getFileConfiguration().getConfigurationSection(name);
+
             TreasureTemplate template = TreasureTemplate.from(configuration, section);
 
             if (template == null) continue;

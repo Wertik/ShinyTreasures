@@ -12,6 +12,8 @@ import space.devport.wertik.treasures.commands.TreasureSubCommand;
 import space.devport.wertik.treasures.system.editor.struct.EditSession;
 import space.devport.wertik.treasures.system.template.struct.TreasureTemplate;
 
+import java.util.Arrays;
+
 public class CreateSubCommand extends TreasureSubCommand {
 
     public CreateSubCommand(TreasurePlugin plugin) {
@@ -22,6 +24,12 @@ public class CreateSubCommand extends TreasureSubCommand {
 
     @Override
     protected CommandResult perform(CommandSender sender, String label, String[] args) {
+
+        boolean openChatEditor = false;
+        if (containsSwitch(args, "e")) {
+            args = filterSwitch(args, "e");
+            openChatEditor = true;
+        }
 
         Player player = (Player) sender;
 
@@ -41,18 +49,36 @@ public class CreateSubCommand extends TreasureSubCommand {
 
         if (args.length > 1) {
             TreasureTemplate template = getPlugin().getCommandParser().parseTemplate(sender, args[1]);
-            session.getTool().importTemplate(template);
+            session.getTool().rootTemplate(template);
         }
 
-        getPlugin().getEditorManager().registerSession(session);
+        if (openChatEditor) {
+            sender.sendMessage(StringUtil.color("&7Opening a chat editor..."));
+            getPlugin().getEditorManager().registerSession(session);
+            session.startChatSession(player);
+            return CommandResult.SUCCESS;
+        }
+
         //TODO
-        sender.sendMessage(StringUtil.color("&aSession started."));
+        session.complete();
+        sender.sendMessage(StringUtil.color("&7Tool &e%tool% &7created."
+                .replace("%tool%", session.getName())));
         return CommandResult.SUCCESS;
+    }
+
+    private boolean containsSwitch(String[] args, String switchSign) {
+        return Arrays.stream(args).anyMatch(a -> a.equalsIgnoreCase("-" + switchSign));
+    }
+
+    private String[] filterSwitch(String[] args, String switchSign) {
+        return Arrays.stream(args)
+                .filter(a -> !a.equalsIgnoreCase("-" + switchSign))
+                .toArray(String[]::new);
     }
 
     @Override
     public @NotNull String getDefaultUsage() {
-        return "/%label% create <name> (template)";
+        return "/%label% create <name> (template) -e";
     }
 
     @Override
@@ -62,6 +88,6 @@ public class CreateSubCommand extends TreasureSubCommand {
 
     @Override
     public @NotNull ArgumentRange getRange() {
-        return new ArgumentRange(0, 1);
+        return new ArgumentRange(1, 3);
     }
 }

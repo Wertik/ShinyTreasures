@@ -1,5 +1,6 @@
 package space.devport.wertik.treasures.system.editor;
 
+import lombok.Getter;
 import org.bukkit.OfflinePlayer;
 import space.devport.wertik.treasures.TreasurePlugin;
 import space.devport.wertik.treasures.system.editor.struct.EditSession;
@@ -11,12 +12,14 @@ import java.util.UUID;
 
 public class EditorManager {
 
+    @Getter
     private final TreasurePlugin plugin;
 
     private final Map<UUID, EditSession> sessions = new HashMap<>();
 
     public EditorManager(TreasurePlugin plugin) {
         this.plugin = plugin;
+        new SessionListener(this);
     }
 
     public EditSession getSession(OfflinePlayer offlinePlayer) {
@@ -37,10 +40,12 @@ public class EditorManager {
     }
 
     public void unregisterSession(EditSession session) {
-        if (session != null) {
-            this.sessions.remove(session.getUniqueID());
-            plugin.getConsoleOutput().debug("Unregistered session for " + session.getUniqueID() + " - " + session.getName());
+        if (session == null || !this.sessions.containsKey(session.getUniqueID())) {
+            return;
         }
+
+        this.sessions.remove(session.getUniqueID());
+        plugin.getConsoleOutput().debug("Unregistered session for " + session.getUniqueID() + " - " + session.getName());
     }
 
     public boolean hasSession(OfflinePlayer offlinePlayer) {

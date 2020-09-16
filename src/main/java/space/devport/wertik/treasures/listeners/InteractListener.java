@@ -1,5 +1,6 @@
 package space.devport.wertik.treasures.listeners;
 
+import com.google.common.base.Strings;
 import org.bukkit.Color;
 import org.bukkit.FireworkEffect;
 import org.bukkit.Location;
@@ -11,12 +12,15 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.meta.FireworkMeta;
 import org.bukkit.scheduler.BukkitRunnable;
+import space.devport.utils.text.StringUtil;
 import space.devport.utils.xseries.XSound;
 import space.devport.wertik.treasures.TreasurePlugin;
 import space.devport.wertik.treasures.system.treasure.TreasureManager;
 import space.devport.wertik.treasures.system.treasure.struct.Treasure;
+import space.devport.wertik.treasures.system.user.struct.User;
 
 import java.util.Arrays;
 import java.util.List;
@@ -52,7 +56,7 @@ public class InteractListener implements Listener {
     @EventHandler
     public void onClick(PlayerInteractEvent event) {
 
-        if (event.getClickedBlock() == null || event.getAction() == Action.PHYSICAL)
+        if (event.getHand() == EquipmentSlot.OFF_HAND || event.getClickedBlock() == null || event.getAction() == Action.PHYSICAL)
             return;
 
         if (!plugin.getConfig().getStringList("worlds").contains(event.getClickedBlock().getWorld().getName()))
@@ -73,34 +77,44 @@ public class InteractListener implements Listener {
 
             treasureManager.deleteTreasure(treasure);
             //TODO lang removed
+            player.sendMessage(StringUtil.color("&7Treasure removed."));
             return;
         }
 
         if (!player.hasPermission("simpletreasures.open")) {
             //TODO lang no perm
+            player.sendMessage(StringUtil.color("&cYou have no permission to do this."));
             return;
         }
 
-        if (treasureManager.getTreasure(event.getClickedBlock().getLocation()).found(player)) {
-            //TODO lang found already
+        User user = plugin.getUserManager().getOrCreateUser(player.getUniqueId());
+
+        if (user.hasFound(treasure.getUniqueID())) {
+            //TODO
+            player.sendMessage(StringUtil.color("&cYou found this treasure already!"));
             return;
         }
 
-        treasure.addFinder(player);
+        user.addFind(treasure.getUniqueID());
 
         // Sound
         if (plugin.getConfig().getBoolean("sound.enabled", false)) {
-            Optional<XSound> sound = XSound.matchXSound(plugin.getConfiguration().getString("sound.type"));
+            //TODO Warn msg
+            String type = plugin.getConfiguration().getString("sound.type");
+            if (!Strings.isNullOrEmpty(type)) {
+                Optional<XSound> sound = XSound.matchXSound(type);
 
-            sound.ifPresent(xSound -> xSound.playSound(player,
-                    plugin.getConfig().getInt("sound.volume", 1),
-                    plugin.getConfig().getInt("sound.pitch", 1)));
+                sound.ifPresent(xSound -> xSound.playSound(player,
+                        plugin.getConfig().getInt("sound.volume", 1),
+                        plugin.getConfig().getInt("sound.pitch", 1)));
+            }
         }
 
-        treasureManager.getDefaultRewards().give(player);
+        treasure.getTool().getTemplate().getRewards().give(player);
+        treasure.getTool().getRootTemplate().getRewards().give(player);
 
         // Try to hide the block
-        if (plugin.getConfig().getBoolean("hide-block")) {
+        if (plugin.getConfig().getBoolean("hide-block", false)) {
             new BukkitRunnable() {
                 @Override
                 public void run() {

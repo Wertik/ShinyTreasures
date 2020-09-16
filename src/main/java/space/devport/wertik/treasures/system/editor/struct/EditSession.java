@@ -1,8 +1,11 @@
 package space.devport.wertik.treasures.system.editor.struct;
 
 import lombok.Getter;
+import lombok.Setter;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.entity.Player;
+import space.devport.utils.text.StringUtil;
 import space.devport.wertik.treasures.TreasurePlugin;
 import space.devport.wertik.treasures.system.tool.struct.PlacementTool;
 
@@ -11,6 +14,10 @@ import java.util.UUID;
 public class EditSession {
 
     private final TreasurePlugin plugin;
+
+    @Getter
+    @Setter
+    private boolean chatSession = false;
 
     @Getter
     private final UUID uniqueID;
@@ -24,17 +31,25 @@ public class EditSession {
         this.tool = new PlacementTool(name);
     }
 
+    public void startChatSession(Player player) {
+        player.sendMessage(StringUtil.color("&7Chat editor arguments:" +
+                "\n&ematerial &7<material>" +
+                "\n&eaddcommand &7<command>" +
+                "\n&eremovecommand &7<startOfTheCommand>" +
+                "\n&elistcommands" +
+                "\n\n&7Use &eexit &7or &ecancel &7to... exit the session without saving." +
+                "\n&7Use &asave &7or &afinish &7to save & exit safely."));
+        setChatSession(true);
+    }
+
     public String getName() {
         return tool.getName();
     }
 
-    //TODO exc, mby
     public void complete() {
 
-        OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(uniqueID);
-        if (!offlinePlayer.isOnline()) return;
-
-        if (plugin.getToolManager().getTool(this.tool.getName()) != null) return;
+        if (plugin.getToolManager().getTool(this.tool.getName()) != null)
+            return;
 
         plugin.getToolManager().addTool(this.tool);
         plugin.getEditorManager().unregisterSession(this);

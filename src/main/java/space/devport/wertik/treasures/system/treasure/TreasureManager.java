@@ -6,7 +6,7 @@ import org.bukkit.Location;
 import space.devport.utils.struct.Rewards;
 import space.devport.wertik.treasures.TreasurePlugin;
 import space.devport.wertik.treasures.system.GsonHelper;
-import space.devport.wertik.treasures.system.template.struct.TreasureTemplate;
+import space.devport.wertik.treasures.system.tool.struct.PlacementTool;
 import space.devport.wertik.treasures.system.treasure.struct.Treasure;
 
 import java.util.Collections;
@@ -27,7 +27,7 @@ public class TreasureManager {
 
     public TreasureManager(TreasurePlugin plugin) {
         this.plugin = plugin;
-        this.gsonHelper = new GsonHelper(plugin);
+        this.gsonHelper = plugin.getGsonHelper();
     }
 
     public void loadOptions() {
@@ -59,10 +59,10 @@ public class TreasureManager {
         return treasure;
     }
 
-    public Treasure createTreasure(Location location, TreasureTemplate template) {
+    public Treasure createTreasure(Location location, PlacementTool tool) {
         Treasure treasure = createTreasure(location);
-        treasure.withTemplate(template);
-        plugin.getConsoleOutput().debug("...with template " + treasure.getTemplate().getName());
+        treasure.withTool(tool);
+        plugin.getConsoleOutput().debug("...with template " + treasure.getTool().getName());
         return treasure;
     }
 
@@ -88,6 +88,7 @@ public class TreasureManager {
 
         this.loadedTreasures.remove(treasure.getUniqueID());
         plugin.getConsoleOutput().debug("Removed treasure " + treasure.getUniqueID());
+        plugin.getUserManager().deleteAllReferences(treasure.getUniqueID());
         return true;
     }
 

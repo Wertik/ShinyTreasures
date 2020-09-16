@@ -1,6 +1,9 @@
 package space.devport.wertik.treasures.system.tool;
 
+import com.google.common.base.Strings;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.ItemStack;
+import space.devport.utils.CustomisationManager;
 import space.devport.utils.configuration.Configuration;
 import space.devport.utils.item.ItemBuilder;
 import space.devport.wertik.treasures.TreasurePlugin;
@@ -14,29 +17,61 @@ public class ToolManager {
 
     private final TreasurePlugin plugin;
 
-    private final Map<String, PlacementTool> tools = new HashMap<>();
+    private final Map<String, PlacementTool> loadedTools = new HashMap<>();
 
-    private Configuration configuration;
+    private final Configuration configuration;
 
     public ToolManager(TreasurePlugin plugin) {
         this.plugin = plugin;
+        this.configuration = new Configuration(plugin, "tools");
     }
 
+    // Load a single tool after editing from configuration
+    public boolean load(String name) {
+        configuration.load();
+
+        ConfigurationSection section = configuration.getFileConfiguration().getConfigurationSection(name);
+        if (section == null) return false;
+
+        PlacementTool tool = PlacementTool.from(configuration, section);
+        if (tool == null) return false;
+
+        this.loadedTools.put(name, tool);
+        return true;
+    }
+
+    // Load all tools into memory
     public void load() {
-        //TODO
+        configuration.load();
+        this.loadedTools.clear();
+
+        for (String name : configuration.getFileConfiguration().getKeys(false)) {
+            ConfigurationSection section = configuration.getFileConfiguration().getConfigurationSection(name);
+            PlacementTool tool = PlacementTool.from(configuration, section);
+            if (tool == null)
+                continue;
+            this.loadedTools.put(name, tool);
+            plugin.getConsoleOutput().debug("Loaded tool " + name);
+        }
+        plugin.getConsoleOutput().info("Loaded " + this.loadedTools.size() + " tool(s)...");
     }
 
     public void save() {
-        //TODO
+        for (PlacementTool tool : this.loadedTools.values()) {
+            tool.to(configuration, tool.getName());
+            plugin.getConsoleOutput().debug("Saved " + tool.getName());
+        }
+        configuration.save();
+        plugin.getConsoleOutput().info("Saved " + loadedTools.size() + " tool(s)...");
     }
 
     public void removeTool(String name) {
-        this.tools.remove(name);
+        this.loadedTools.remove(name);
         plugin.getConsoleOutput().debug("Removed tool " + name);
     }
 
     public void addTool(PlacementTool tool) {
-        this.tools.put(tool.getName(), tool);
+        this.loadedTools.put(tool.getName(), tool);
         plugin.getConsoleOutput().debug("Added tool " + tool.getName());
     }
 
@@ -48,11 +83,15 @@ public class ToolManager {
         return this.getTool(builder.getNBT().get("treasures_tool"));
     }
 
+    public boolean exists(String name) {
+        return this.loadedTools.containsKey(name);
+    }
+
     public ItemStack craftTool(PlacementTool tool) {
         if (tool == null) return null;
 
-        return new ItemBuilder(plugin.getCustomisationManager().getItemBuilder("placement-tool"))
-                .type(tool.getTemplate().getMaterial())
+        return new ItemBuilder(plugin.getManager(CustomisationManager.class).getItemBuilder("placement-tool"))
+                .type(tool.getMaterial())
                 .addNBT("treasures_tool", tool.getName())
                 .build();
     }
@@ -63,10 +102,10 @@ public class ToolManager {
     }
 
     public PlacementTool getTool(String name) {
-        return this.tools.get(name);
+        return Strings.isNullOrEmpty(name) ? null : this.loadedTools.get(name);
     }
 
-    public Map<String, PlacementTool> getTools() {
-        return Collections.unmodifiableMap(tools);
+    public Map<String, PlacementTool> getLoadedTools() {
+        return Collections.unmodifiableMap(loadedTools);
     }
 }

@@ -16,11 +16,11 @@ public class TreasureTemplate {
 
     @Getter
     @Setter
-    private Material material;
+    private Material material = Material.CHEST;
 
     @Getter
     @Setter
-    private Rewards rewards;
+    private Rewards rewards = new Rewards();
 
     public TreasureTemplate(String name) {
         this.name = name;
@@ -49,7 +49,7 @@ public class TreasureTemplate {
         if (section == null) return null;
 
         String name = section.getName();
-        XMaterial xMaterial = XMaterial.matchXMaterial(section.getString("material", "")).orElse(null);
+        XMaterial xMaterial = XMaterial.matchXMaterial(section.getString("material", "CHEST")).orElse(null);
 
         if (xMaterial == null) return null;
 
