@@ -7,10 +7,9 @@ import space.devport.wertik.treasures.system.GsonHelper;
 import space.devport.wertik.treasures.system.tool.struct.PlacementTool;
 import space.devport.wertik.treasures.system.treasure.struct.Treasure;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 public class TreasureManager {
 
@@ -81,6 +80,10 @@ public class TreasureManager {
         plugin.getConsoleOutput().debug("Removed treasure " + treasure.getUniqueID());
         plugin.getUserManager().deleteAllReferences(treasure.getUniqueID());
         return true;
+    }
+
+    public Set<Treasure> getTreasures(Predicate<Treasure> condition) {
+        return this.loadedTreasures.values().stream().filter(condition).collect(Collectors.toSet());
     }
 
     public Map<UUID, Treasure> getLoadedTreasures() {

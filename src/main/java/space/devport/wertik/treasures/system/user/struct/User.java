@@ -1,6 +1,7 @@
 package space.devport.wertik.treasures.system.user.struct;
 
 import lombok.Getter;
+import space.devport.wertik.treasures.system.treasure.struct.Treasure;
 
 import java.util.Collections;
 import java.util.HashSet;
@@ -36,5 +37,9 @@ public class User {
 
     public boolean hasFound(UUID uniqueID) {
         return this.foundTreasures.contains(uniqueID);
+    }
+
+    public boolean hasFound(Treasure treasure) {
+        return hasFound(treasure.getUniqueID());
     }
 }

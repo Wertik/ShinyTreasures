@@ -1,8 +1,11 @@
 package space.devport.wertik.treasures;
 
 import lombok.Getter;
+import me.clip.placeholderapi.PlaceholderAPI;
+import org.bukkit.Bukkit;
 import space.devport.utils.DevportPlugin;
 import space.devport.utils.UsageFlag;
+import space.devport.utils.utility.VersionUtil;
 import space.devport.wertik.treasures.commands.CommandParser;
 import space.devport.wertik.treasures.commands.tool.ToolCommand;
 import space.devport.wertik.treasures.commands.tool.subcommands.CreateSubCommand;
@@ -43,6 +46,8 @@ public class TreasurePlugin extends DevportPlugin {
     @Getter
     private CommandParser commandParser;
 
+    private TreasurePlaceholders placeholders;
+
     public static TreasurePlugin getInstance() {
         return getPlugin(TreasurePlugin.class);
     }
@@ -80,6 +85,8 @@ public class TreasurePlugin extends DevportPlugin {
                 .addSubCommand(new GetSubCommand(this))
                 .addSubCommand(new CreateSubCommand(this))
                 .addSubCommand(new ListSubCommand(this));
+
+        Bukkit.getScheduler().runTaskLater(this, this::setupPlaceholders, 1L);
     }
 
     @Override
@@ -97,5 +104,21 @@ public class TreasurePlugin extends DevportPlugin {
     @Override
     public UsageFlag[] usageFlags() {
         return new UsageFlag[]{UsageFlag.COMMANDS, UsageFlag.CONFIGURATION, UsageFlag.LANGUAGE, UsageFlag.CUSTOMISATION};
+    }
+
+    private void setupPlaceholders() {
+        if (getPluginManager().getPlugin("PlaceholderAPI") != null) {
+
+            if (this.placeholders == null)
+                this.placeholders = new TreasurePlaceholders(this);
+
+            if (PlaceholderAPI.isRegistered("treasures") && VersionUtil.compareVersions(getPluginManager().getPlugin("PlaceholderAPI").getDescription().getVersion(), "2.10.9") > -1) {
+                this.placeholders.unregister();
+                consoleOutput.info("Unregistered old expansion.");
+            }
+
+            this.placeholders.register();
+            consoleOutput.info("Registered placeholder expansion.");
+        }
     }
 }
