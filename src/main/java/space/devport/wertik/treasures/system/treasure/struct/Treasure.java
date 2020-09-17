@@ -27,8 +27,8 @@ public class Treasure {
         this.jsonLocation = new JsonLocation(location);
     }
 
-    public PlacementTool getTool() {
-        if (tool == null)
+    public PlacementTool getTool(boolean... dontNagMe) {
+        if (tool == null && (dontNagMe.length == 0 || !dontNagMe[0]))
             ConsoleOutput.getInstance().err("Treasure " + uniqueID + " doesn't have a valid tool assigned. Fix the tool and reload, or purge it with /treasures purgeinvalid");
         return tool;
     }

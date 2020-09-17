@@ -10,9 +10,10 @@ import space.devport.wertik.treasures.commands.TreasureSubCommand;
 import space.devport.wertik.treasures.system.treasure.struct.Treasure;
 
 import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
-import java.util.stream.Stream;
+import java.util.stream.Collectors;
 
 public class PurgeInvalidSubCommand extends TreasureSubCommand {
 
@@ -24,20 +25,22 @@ public class PurgeInvalidSubCommand extends TreasureSubCommand {
     protected CommandResult perform(CommandSender sender, String label, String[] args) {
 
         CompletableFuture.runAsync(() -> {
-            Stream<UUID> uuidStream = new HashSet<>(getPlugin().getTreasureManager().getTreasures((t) -> t.getTool() == null)).stream()
-                    .map(Treasure::getUniqueID);
+            Set<UUID> toRemove = new HashSet<>(getPlugin().getTreasureManager().getTreasures((t) -> t.getTool(true) == null)).stream()
+                    .map(Treasure::getUniqueID)
+                    .collect(Collectors.toSet());
 
-            if (uuidStream.count() == 0) {
+            if (toRemove.isEmpty()) {
                 //TODO
                 sender.sendMessage(StringUtil.color("&cThere are no invalid treasures!"));
                 return;
             }
 
-            int count = (int) uuidStream.count();
+            int count = toRemove.size();
 
-            //TODO maybe remove?
-            sender.sendMessage(StringUtil.color("&7&oRemoving &f" + count + "&7&otreasure(s)..."));
-            uuidStream.forEach(uuid -> getPlugin().getTreasureManager().deleteTreasure(uuid));
+            //TODO
+            sender.sendMessage(StringUtil.color("&7&oRemoving &f" + count + " &7&otreasure(s)..."));
+            toRemove.forEach(uuid -> getPlugin().getTreasureManager().deleteTreasure(uuid));
+            getPlugin().getTreasureManager().save();
 
             //TODO
             sender.sendMessage(StringUtil.color("&7Done!"));
