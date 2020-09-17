@@ -29,7 +29,7 @@ public class PlacementTool {
     }
 
     public PlacementTool(String name, TreasureTemplate rootTemplate) {
-        this.name = name;
+        this(name);
         rootTemplate(rootTemplate);
     }
 

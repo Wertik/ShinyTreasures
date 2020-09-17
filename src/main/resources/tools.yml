@@ -1,4 +1,5 @@
 tool-one:
+  root-template: 'template-one'
   rewards:
     commands:
       - 'say Cool tool command!'

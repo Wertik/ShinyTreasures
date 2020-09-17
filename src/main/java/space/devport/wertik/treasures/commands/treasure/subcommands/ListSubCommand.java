@@ -18,6 +18,12 @@ public class ListSubCommand extends TreasureSubCommand {
 
     @Override
     protected CommandResult perform(CommandSender sender, String label, String[] args) {
+
+        if (getPlugin().getTreasureManager().getTreasures().isEmpty()) {
+            sender.sendMessage(StringUtil.color("&cNo treasures placed yet."));
+            return CommandResult.FAILURE;
+        }
+
         int page = 0;
         if (args.length > 0) {
             page = ParserUtil.parseInt(args[0]);
@@ -28,10 +34,15 @@ public class ListSubCommand extends TreasureSubCommand {
             }
         }
 
+        if (Math.max(0, page - 1) * 10 > getPlugin().getTreasureManager().getTreasures().size()) {
+            sender.sendMessage(StringUtil.color("&cNot enough treasures for this page."));
+            return CommandResult.FAILURE;
+        }
+
         StringBuilder list = new StringBuilder("&8&m    &3 Treasures &7#&f" + page);
-        getPlugin().getTreasureManager().getTreasures().stream().skip(Math.min(0, page - 1) * 10).limit(page * 10)
+        getPlugin().getTreasureManager().getTreasures().stream().skip(Math.max(0, page - 1) * 10).limit(Math.max(1, page) * 10)
                 .forEach((treasure) -> list.append("\n&8 - &f%uniqueID% &7( %location% &7)"
-                        .replace("%uniqueID%", treasure.getUniqueID().toString().substring(8))
+                        .replace("%uniqueID%", treasure.getUniqueID().toString().substring(0, 8))
                         .replace("%location%", LocationUtil.locationToString(treasure.getLocation()))));
         sender.sendMessage(StringUtil.color(list.toString()));
         return CommandResult.SUCCESS;

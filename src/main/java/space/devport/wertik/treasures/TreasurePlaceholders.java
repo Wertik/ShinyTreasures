@@ -77,7 +77,7 @@ public class TreasurePlaceholders extends PlaceholderExpansion {
     }
 
     private String getCount(Predicate<Treasure> condition) {
-        return String.valueOf(plugin.getTreasureManager().getTreasures(condition));
+        return String.valueOf(plugin.getTreasureManager().getTreasures(condition).size());
     }
 
     @Override

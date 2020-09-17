@@ -66,17 +66,6 @@ public class InteractListener implements Listener {
 
         event.setCancelled(true);
 
-        // Remove the treasure
-        if (event.getAction().equals(Action.LEFT_CLICK_BLOCK) &&
-                player.isSneaking() &&
-                player.hasPermission("simpletreasures.admin")) {
-
-            treasureManager.deleteTreasure(treasure);
-            //TODO lang removed
-            player.sendMessage(StringUtil.color("&7Treasure removed."));
-            return;
-        }
-
         if (!player.hasPermission("simpletreasures.open")) {
             //TODO lang no perm
             player.sendMessage(StringUtil.color("&cYou have no permission to do this."));

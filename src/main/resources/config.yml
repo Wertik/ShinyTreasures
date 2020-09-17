@@ -34,6 +34,13 @@ sound:
   pitch: 1
   volume: 1
 
+# Tool settings
+tools:
+  # Consume the tool item when you place a treasure?
+  consume: true
+  # Whether or not to drop the tool item when you delete a treasure.
+  drop-on-remove: true
+
 # Worlds where this plugin is disabled.
 disabled-worlds:
   - 'world_i_dont_want_you_to_use'
