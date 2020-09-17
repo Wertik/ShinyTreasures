@@ -13,6 +13,7 @@ import space.devport.wertik.treasures.commands.tool.subcommands.GetSubCommand;
 import space.devport.wertik.treasures.commands.tool.subcommands.ListSubCommand;
 import space.devport.wertik.treasures.commands.tool.subcommands.LoadSubCommand;
 import space.devport.wertik.treasures.commands.treasure.TreasureCommand;
+import space.devport.wertik.treasures.commands.treasure.subcommands.PurgeInvalidSubCommand;
 import space.devport.wertik.treasures.commands.treasure.subcommands.ReloadSubCommand;
 import space.devport.wertik.treasures.listeners.InteractListener;
 import space.devport.wertik.treasures.listeners.PlacementListener;
@@ -79,7 +80,8 @@ public class TreasurePlugin extends DevportPlugin {
 
         addMainCommand(new TreasureCommand())
                 .addSubCommand(new ReloadSubCommand(this))
-                .addSubCommand(new space.devport.wertik.treasures.commands.treasure.subcommands.ListSubCommand(this));
+                .addSubCommand(new space.devport.wertik.treasures.commands.treasure.subcommands.ListSubCommand(this))
+                .addSubCommand(new PurgeInvalidSubCommand(this));
 
         addMainCommand(new ToolCommand())
                 .addSubCommand(new LoadSubCommand(this))

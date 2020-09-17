@@ -47,7 +47,7 @@ public class TreasureRewards extends Rewards {
 
         this.give(player);
 
-        int count = user.getFindCount((t) -> t.getTool().getRootTemplate().equals(treasure.getTool().getRootTemplate()));
+        int count = user.getFindCount((t) -> t.getTool() != null && t.getTool().getRootTemplate().equals(treasure.getTool().getRootTemplate()));
 
         cumulative.forEach(r -> r.give(player, count));
         repeat.forEach(r -> r.give(player, count));

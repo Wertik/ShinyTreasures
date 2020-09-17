@@ -5,23 +5,16 @@ import lombok.experimental.UtilityClass;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.Nullable;
 import space.devport.utils.ConsoleOutput;
+import space.devport.utils.item.Amount;
 
 @UtilityClass
 public class ParserUtil {
+
     public int parseInt(String str) {
         try {
             return Integer.parseInt(str.trim());
         } catch (NumberFormatException e) {
             return -1;
-        }
-    }
-
-    public double parseDouble(String str) {
-        try {
-            return Double.parseDouble(str.trim());
-        } catch (NumberFormatException e) {
-            ConsoleOutput.getInstance().warn("Could not parse double from " + str + ", using 0 as the default.");
-            return 0;
         }
     }
 
@@ -38,6 +31,12 @@ public class ParserUtil {
             return new Vector();
         }
 
-        return new Vector(parseDouble(arr[0]), parseDouble(arr[1]), parseDouble(arr[2]));
+        Amount x = Amount.fromString(arr[0]);
+        Amount y = Amount.fromString(arr[1]);
+        Amount z = Amount.fromString(arr[2]);
+
+        return new Vector(x == null ? 0 : x.getDouble(),
+                y == null ? 0 : y.getDouble(),
+                z == null ? 0 : z.getDouble());
     }
 }

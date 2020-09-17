@@ -67,13 +67,13 @@ public class TreasurePlaceholders extends PlaceholderExpansion {
             if (tool == null)
                 return "invalid_tool";
 
-            return getCount((treasure) -> treasure.getTool().equals(tool) && userCondition.test(treasure));
+            return getCount((treasure) -> treasure.getTool() != null && treasure.getTool().equals(tool) && userCondition.test(treasure));
         }
 
         if (template == null)
             return "invalid_template";
 
-        return getCount((treasure) -> treasure.getTool().getRootTemplate().equals(template) && userCondition.test(treasure));
+        return getCount((treasure) -> treasure.getTool() != null && treasure.getTool().getRootTemplate().equals(template) && userCondition.test(treasure));
     }
 
     private String getCount(Predicate<Treasure> condition) {

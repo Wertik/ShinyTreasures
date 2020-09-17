@@ -37,20 +37,17 @@ public class PlacementListener implements Listener {
 
         if (tool == null) return;
 
-        if (plugin.getConfig().getBoolean("tools.consume", false)) {
-            consume(event.getPlayer(), event.getHand());
+        if (!plugin.getConfig().getBoolean("tools.consume", false)) {
+            compensate(event.getPlayer(), event.getHand());
         }
 
         Treasure treasure = plugin.getTreasureManager().createTreasure(event.getBlockPlaced().getLocation(), tool);
         event.getPlayer().sendMessage(StringUtil.color("&7Treasure placed with tool " + treasure.getTool().getName()));
     }
 
-    private void consume(Player player, EquipmentSlot slot) {
+    private void compensate(Player player, EquipmentSlot slot) {
         ItemStack item = player.getInventory().getItem(slot);
-
-        if (item.getAmount() > 1)
-            item.setAmount(item.getAmount() - 1);
-        else player.getInventory().setItem(slot, null);
+        Bukkit.getScheduler().runTaskLaterAsynchronously(plugin, () -> item.setAmount(item.getAmount()), 5L);
     }
 
     @EventHandler
@@ -69,14 +66,16 @@ public class PlacementListener implements Listener {
 
         plugin.getTreasureManager().deleteTreasure(treasure);
 
-        ItemStack itemStack = plugin.getToolManager().craftTool(treasure.getTool());
-        Vector popVector = ParserUtil.parseVector(plugin.getConfig().getString("tools.pop-vector"));
+        if (plugin.getConfig().getBoolean("tools.drop-on-remove", false) && treasure.getTool() != null) {
+            ItemStack itemStack = plugin.getToolManager().craftTool(treasure.getTool());
+            Vector popVector = ParserUtil.parseVector(plugin.getConfig().getString("tools.pop-vector"));
 
-        // Pop the item
-        Bukkit.getScheduler().runTaskLater(plugin, () -> {
-            Item item = player.getWorld().dropItemNaturally(event.getClickedBlock().getLocation(), itemStack);
-            item.setVelocity(popVector);
-        }, 2L);
+            // Pop the item
+            Bukkit.getScheduler().runTaskLater(plugin, () -> {
+                Item item = player.getWorld().dropItemNaturally(event.getClickedBlock().getLocation(), itemStack);
+                item.setVelocity(popVector);
+            }, 2L);
+        }
 
         event.getClickedBlock().setType(Material.AIR);
 

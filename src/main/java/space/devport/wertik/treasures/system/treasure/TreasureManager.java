@@ -2,6 +2,7 @@ package space.devport.wertik.treasures.system.treasure;
 
 import com.google.gson.reflect.TypeToken;
 import org.bukkit.Location;
+import space.devport.utils.ConsoleOutput;
 import space.devport.wertik.treasures.TreasurePlugin;
 import space.devport.wertik.treasures.system.GsonHelper;
 import space.devport.wertik.treasures.system.tool.struct.PlacementTool;
@@ -31,6 +32,13 @@ public class TreasureManager {
         }.getType());
 
         if (treasures == null) treasures = new HashMap<>();
+
+        for (Treasure treasure : treasures.values()) {
+            PlacementTool tool = plugin.getToolManager().getTool(treasure.getToolName());
+            if (tool == null) {
+                ConsoleOutput.getInstance().warn("Found a treasure which has an invalid tool " + treasure.getToolName() + " assigned, it won't work.");
+            } else treasure.withTool(tool);
+        }
 
         this.loadedTreasures.putAll(treasures);
 

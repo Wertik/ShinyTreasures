@@ -14,9 +14,11 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.meta.FireworkMeta;
 import org.bukkit.scheduler.BukkitRunnable;
+import space.devport.utils.ConsoleOutput;
 import space.devport.utils.text.StringUtil;
 import space.devport.utils.xseries.XSound;
 import space.devport.wertik.treasures.TreasurePlugin;
+import space.devport.wertik.treasures.system.tool.struct.PlacementTool;
 import space.devport.wertik.treasures.system.treasure.TreasureManager;
 import space.devport.wertik.treasures.system.treasure.struct.Treasure;
 import space.devport.wertik.treasures.system.user.struct.User;
@@ -100,7 +102,10 @@ public class InteractListener implements Listener {
             }
         }
 
-        treasure.getTool().reward(player);
+        PlacementTool tool = treasure.getTool();
+        if (tool == null) return;
+
+        tool.reward(user, treasure);
 
         hideBlock(event.getClickedBlock(), player);
 
@@ -159,7 +164,11 @@ public class InteractListener implements Listener {
             if (plugin.getConfig().getBoolean("hide-block.place-back", false))
                 return;
 
-            Bukkit.getScheduler().runTaskLater(plugin, () -> block.setType(original), plugin.getConfig().getInt("hide-block.time", 15) * 20L);
+            Bukkit.getScheduler().runTaskLater(plugin, () -> {
+                block.getState().setType(original);
+                block.getState().update(true);
+                ConsoleOutput.getInstance().debug("Reverted treasure back to " + original.toString());
+            }, plugin.getConfig().getInt("hide-block.time", 15) * 20L);
         }
     }
 }

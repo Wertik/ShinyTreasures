@@ -20,25 +20,28 @@ public class ListSubCommand extends TreasureSubCommand {
     protected CommandResult perform(CommandSender sender, String label, String[] args) {
 
         if (getPlugin().getTreasureManager().getTreasures().isEmpty()) {
+            //TODO
             sender.sendMessage(StringUtil.color("&cNo treasures placed yet."));
             return CommandResult.FAILURE;
         }
 
-        int page = 0;
+        int page = 1;
         if (args.length > 0) {
             page = ParserUtil.parseInt(args[0]);
 
             if (page < 0) {
-                sender.sendMessage(StringUtil.color("&cPage has to be a number."));
+                sender.sendMessage(StringUtil.color("&cPage has to be a positive number."));
                 return CommandResult.FAILURE;
             }
         }
 
         if (Math.max(0, page - 1) * 10 > getPlugin().getTreasureManager().getTreasures().size()) {
+            //TODO
             sender.sendMessage(StringUtil.color("&cNot enough treasures for this page."));
             return CommandResult.FAILURE;
         }
 
+        //TODO
         StringBuilder list = new StringBuilder("&8&m    &3 Treasures &7#&f" + page);
         getPlugin().getTreasureManager().getTreasures().stream().skip(Math.max(0, page - 1) * 10).limit(Math.max(1, page) * 10)
                 .forEach((treasure) -> list.append("\n&8 - &f%uniqueID% &7( %location% &7)"

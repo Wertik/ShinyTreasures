@@ -4,13 +4,14 @@ import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import space.devport.utils.ConsoleOutput;
 import space.devport.utils.configuration.Configuration;
 import space.devport.wertik.treasures.TreasurePlugin;
 import space.devport.wertik.treasures.system.template.struct.TreasureTemplate;
+import space.devport.wertik.treasures.system.treasure.struct.Treasure;
+import space.devport.wertik.treasures.system.user.struct.User;
 
 public class PlacementTool {
 
@@ -33,10 +34,10 @@ public class PlacementTool {
         rootTemplate(rootTemplate);
     }
 
-    public void reward(Player player) {
-        getTemplate().getRewards().give(player);
+    public void reward(User user, Treasure treasure) {
+        getTemplate().getRewards().give(user.getPlayer());
         if (this.rootTemplate != null)
-            this.rootTemplate.getRewards().give(player);
+            this.rootTemplate.getRewards().give(user, treasure);
     }
 
     @NotNull
