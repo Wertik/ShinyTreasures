@@ -76,7 +76,7 @@ public class PlacementListener implements Listener {
         Bukkit.getScheduler().runTaskLater(plugin, () -> {
             Item item = player.getWorld().dropItemNaturally(event.getClickedBlock().getLocation(), itemStack);
             item.setVelocity(popVector);
-        }, 10L);
+        }, 2L);
 
         event.getClickedBlock().setType(Material.AIR);
 

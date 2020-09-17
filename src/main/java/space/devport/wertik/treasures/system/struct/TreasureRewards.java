@@ -97,6 +97,9 @@ public class TreasureRewards extends Rewards {
     }
 
     public void to(Configuration configuration, String path) {
+
+        configuration.setRewards(path, this);
+
         Set<CountingRewards> rewards = new HashSet<>(this.cumulative);
         rewards.addAll(this.repeat);
 

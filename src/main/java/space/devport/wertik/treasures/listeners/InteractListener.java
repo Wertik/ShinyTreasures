@@ -136,7 +136,7 @@ public class InteractListener implements Listener {
 
     private void hideBlock(Block block, Player player) {
 
-        if (plugin.getConfig().getBoolean("hide-block.enabled", false))
+        if (!plugin.getConfig().getBoolean("hide-block.enabled", false))
             return;
 
         if (plugin.getConfig().getBoolean("hide-block.only-for-player", false)) {

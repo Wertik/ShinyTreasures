@@ -75,9 +75,6 @@ public class PlacementTool {
         String templateName = section.getString("root-template");
         TreasureTemplate rootTemplate = TreasurePlugin.getInstance().getTemplateManager().getTemplate(templateName);
 
-        if (rootTemplate == null)
-            rootTemplate = new TreasureTemplate(name);
-
         PlacementTool tool = new PlacementTool(name, rootTemplate);
         tool.setTemplate(template);
         ConsoleOutput.getInstance().debug("Loaded tool at " + configuration.getFile().getName() + "@" + path);
