@@ -1,7 +1,7 @@
 package space.devport.wertik.treasures.system.template;
 
 import lombok.Getter;
-import org.bukkit.configuration.ConfigurationSection;
+import space.devport.utils.ConsoleOutput;
 import space.devport.utils.configuration.Configuration;
 import space.devport.wertik.treasures.TreasurePlugin;
 import space.devport.wertik.treasures.system.template.struct.TreasureTemplate;
@@ -29,14 +29,15 @@ public class TemplateManager {
 
     public void load() {
         configuration.load();
-        for (String name : configuration.getFileConfiguration().getKeys(false)) {
-            ConfigurationSection section = configuration.getFileConfiguration().getConfigurationSection(name);
+        this.loadedTemplates.clear();
 
-            TreasureTemplate template = TreasureTemplate.from(configuration, section);
+        for (String name : configuration.getFileConfiguration().getKeys(false)) {
+            TreasureTemplate template = TreasureTemplate.from(configuration, name, false);
 
             if (template == null) continue;
 
             this.loadedTemplates.put(name, template);
+            ConsoleOutput.getInstance().debug("Loaded treasure template " + name);
         }
         plugin.getConsoleOutput().info("Loaded " + this.loadedTemplates.size() + " template(s)...");
     }

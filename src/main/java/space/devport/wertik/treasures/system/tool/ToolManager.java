@@ -1,7 +1,6 @@
 package space.devport.wertik.treasures.system.tool;
 
 import com.google.common.base.Strings;
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.ItemStack;
 import space.devport.utils.CustomisationManager;
 import space.devport.utils.configuration.Configuration;
@@ -31,11 +30,10 @@ public class ToolManager {
     public boolean load(String name) {
         configuration.load();
 
-        ConfigurationSection section = configuration.getFileConfiguration().getConfigurationSection(name);
-        if (section == null) return false;
+        PlacementTool tool = PlacementTool.from(configuration, name);
 
-        PlacementTool tool = PlacementTool.from(configuration, section);
-        if (tool == null) return false;
+        if (tool == null)
+            return false;
 
         this.loadedTools.put(name, tool);
         return true;
@@ -47,24 +45,20 @@ public class ToolManager {
         this.loadedTools.clear();
 
         for (String name : configuration.getFileConfiguration().getKeys(false)) {
-            ConfigurationSection section = configuration.getFileConfiguration().getConfigurationSection(name);
-            PlacementTool tool = PlacementTool.from(configuration, section);
+            PlacementTool tool = PlacementTool.from(configuration, name);
             if (tool == null)
                 continue;
             this.loadedTools.put(name, tool);
-            plugin.getConsoleOutput().debug("Loaded tool " + name);
         }
         plugin.getConsoleOutput().info("Loaded " + this.loadedTools.size() + " tool(s)...");
     }
 
     public void save() {
         for (PlacementTool tool : this.loadedTools.values()) {
-            if (!tool.to(configuration, tool.getName())) {
-                plugin.getConsoleOutput().err("Could not save tool " + tool.getName());
-                continue;
-            }
+            tool.to(configuration, tool.getName());
             plugin.getConsoleOutput().debug("Saved " + tool.getName());
         }
+
         configuration.save();
         plugin.getConsoleOutput().info("Saved " + loadedTools.size() + " tool(s)...");
     }

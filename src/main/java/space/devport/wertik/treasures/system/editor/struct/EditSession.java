@@ -2,8 +2,6 @@ package space.devport.wertik.treasures.system.editor.struct;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.bukkit.Bukkit;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import space.devport.utils.text.StringUtil;
 import space.devport.wertik.treasures.TreasurePlugin;
@@ -32,6 +30,8 @@ public class EditSession {
     }
 
     public void startChatSession(Player player) {
+        plugin.getEditorManager().registerSession(this);
+
         player.sendMessage(StringUtil.color("&7Chat editor arguments:" +
                 "\n&ematerial &7<material>" +
                 "\n&eaddcommand &7<command>" +

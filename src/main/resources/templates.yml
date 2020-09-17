@@ -45,3 +45,18 @@ template-one:
         name: '&6A Stick'
         lore:
           - "&7I don't know.. a stick?"
+
+    # Rewards in both of these sections have all of the options used above ^^
+
+    # Every x found treasures reward the player with...
+    repeat:
+      '5':
+        commands:
+          - 'say This runs every 5 treasures...'
+
+    # Cumulative rewards.
+    cumulative:
+      # After the player finds x treasures with this template, reward him with...
+      '10':
+        commands:
+          - 'say %player% found 10 treasures!'

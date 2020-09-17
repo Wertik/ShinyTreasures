@@ -25,12 +25,6 @@ public class CreateSubCommand extends TreasureSubCommand {
     @Override
     protected CommandResult perform(CommandSender sender, String label, String[] args) {
 
-        boolean openChatEditor = false;
-        if (containsSwitch(args, "e")) {
-            args = filterSwitch(args, "e");
-            openChatEditor = true;
-        }
-
         Player player = (Player) sender;
 
         if (getPlugin().getEditorManager().hasSession(player)) {
@@ -52,17 +46,8 @@ public class CreateSubCommand extends TreasureSubCommand {
             session.getTool().rootTemplate(template);
         }
 
-        if (openChatEditor) {
-            sender.sendMessage(StringUtil.color("&7Opening a chat editor..."));
-            getPlugin().getEditorManager().registerSession(session);
-            session.startChatSession(player);
-            return CommandResult.SUCCESS;
-        }
-
-        //TODO
-        session.complete();
-        sender.sendMessage(StringUtil.color("&7Tool &e%tool% &7created."
-                .replace("%tool%", session.getName())));
+        sender.sendMessage(StringUtil.color("&7Opening a chat editor..."));
+        session.startChatSession(player);
         return CommandResult.SUCCESS;
     }
 

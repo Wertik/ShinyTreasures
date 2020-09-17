@@ -82,6 +82,10 @@ public class TreasureManager {
         return true;
     }
 
+    public Set<Treasure> getTreasures() {
+        return new HashSet<>(this.loadedTreasures.values());
+    }
+
     public Set<Treasure> getTreasures(Predicate<Treasure> condition) {
         return this.loadedTreasures.values().stream().filter(condition).collect(Collectors.toSet());
     }

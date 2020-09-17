@@ -78,7 +78,8 @@ public class TreasurePlugin extends DevportPlugin {
         this.commandParser = new CommandParser(this);
 
         addMainCommand(new TreasureCommand())
-                .addSubCommand(new ReloadSubCommand(this));
+                .addSubCommand(new ReloadSubCommand(this))
+                .addSubCommand(new space.devport.wertik.treasures.commands.treasure.subcommands.ListSubCommand(this));
 
         addMainCommand(new ToolCommand())
                 .addSubCommand(new LoadSubCommand(this))

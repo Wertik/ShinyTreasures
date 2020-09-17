@@ -5,22 +5,23 @@ import lombok.Setter;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.jetbrains.annotations.Nullable;
+import space.devport.utils.ConsoleOutput;
 import space.devport.utils.configuration.Configuration;
-import space.devport.utils.struct.Rewards;
 import space.devport.utils.xseries.XMaterial;
+import space.devport.wertik.treasures.system.struct.TreasureRewards;
 
 public class TreasureTemplate {
 
     @Getter
-    private String name;
+    private final String name;
 
     @Getter
     @Setter
-    private Material material = Material.CHEST;
+    private Material material;
 
     @Getter
     @Setter
-    private Rewards rewards = new Rewards();
+    private TreasureRewards rewards = new TreasureRewards();
 
     public TreasureTemplate(String name) {
         this.name = name;
@@ -29,31 +30,51 @@ public class TreasureTemplate {
     public TreasureTemplate(TreasureTemplate template) {
         this.name = template.getName();
         this.material = template.getMaterial();
-        this.rewards = new Rewards(template.getRewards());
+        this.rewards = new TreasureRewards(template.getRewards());
     }
 
-    public TreasureTemplate(String name, TreasureTemplate template) {
-        this(template);
-        this.name = name;
-    }
-
-    public TreasureTemplate(String name, Material material, Rewards rewards) {
+    public TreasureTemplate(String name, @Nullable Material material, TreasureRewards rewards) {
         this.name = name;
         this.material = material;
         this.rewards = rewards;
     }
 
     @Nullable
-    public static TreasureTemplate from(Configuration configuration, @Nullable ConfigurationSection section) {
+    public static TreasureTemplate from(Configuration configuration, String path, boolean silent) {
 
-        if (section == null) return null;
+        ConfigurationSection section = configuration.getFileConfiguration().getConfigurationSection(path);
+
+        if (section == null) {
+            if (!silent)
+                ConsoleOutput.getInstance().warn("Could not load treasure template at " + configuration.getFile().getName() + "@" + path + ", section is invalid.");
+            return null;
+        }
 
         String name = section.getName();
-        XMaterial xMaterial = XMaterial.matchXMaterial(section.getString("material", "CHEST")).orElse(null);
+        String materialName = section.getString("material");
+        Material material = null;
 
-        if (xMaterial == null) return null;
+        if (materialName != null) {
+            XMaterial xMaterial = XMaterial.matchXMaterial(materialName).orElse(null);
 
-        Rewards rewards = configuration.getRewards(section.getCurrentPath() + ".rewards");
-        return new TreasureTemplate(name, xMaterial.parseMaterial(), rewards);
+            if (xMaterial == null) {
+                ConsoleOutput.getInstance().warn("Material at " + configuration.getFile().getName() + "@" + path + ".material is invalid.");
+            } else material = xMaterial.parseMaterial();
+        }
+
+        TreasureRewards rewards = TreasureRewards.from(configuration, path + ".rewards", silent);
+
+        if (rewards == null)
+            rewards = new TreasureRewards();
+
+        return new TreasureTemplate(name, material, rewards);
+    }
+
+    public void to(Configuration configuration, String path) {
+        ConfigurationSection section = configuration.section(path);
+
+        section.set("material", material);
+
+        rewards.to(configuration, path + ".rewards");
     }
 }

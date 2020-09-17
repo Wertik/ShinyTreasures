@@ -1,12 +1,19 @@
 package space.devport.wertik.treasures.system.user.struct;
 
 import lombok.Getter;
+import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
+import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import space.devport.wertik.treasures.TreasurePlugin;
 import space.devport.wertik.treasures.system.treasure.struct.Treasure;
 
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
+import java.util.function.Predicate;
 
 public class User {
 
@@ -41,5 +48,22 @@ public class User {
 
     public boolean hasFound(Treasure treasure) {
         return hasFound(treasure.getUniqueID());
+    }
+
+    public int getFindCount(Predicate<Treasure> condition) {
+        return (int) foundTreasures.stream().filter(uuid -> {
+            Treasure treasure = TreasurePlugin.getInstance().getTreasureManager().getTreasure(uuid);
+            return treasure != null && condition.test(treasure);
+        }).count();
+    }
+
+    @NotNull
+    public OfflinePlayer getOfflinePlayer() {
+        return Bukkit.getOfflinePlayer(uniqueID);
+    }
+
+    @Nullable
+    public Player getPlayer() {
+        return getOfflinePlayer().isOnline() ? getOfflinePlayer().getPlayer() : null;
     }
 }
