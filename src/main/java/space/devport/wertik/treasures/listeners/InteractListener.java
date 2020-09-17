@@ -16,6 +16,7 @@ import org.bukkit.inventory.meta.FireworkMeta;
 import org.bukkit.scheduler.BukkitRunnable;
 import space.devport.utils.ConsoleOutput;
 import space.devport.utils.text.StringUtil;
+import space.devport.utils.text.language.LanguageManager;
 import space.devport.utils.xseries.XSound;
 import space.devport.wertik.treasures.TreasurePlugin;
 import space.devport.wertik.treasures.system.tool.struct.PlacementTool;
@@ -82,8 +83,7 @@ public class InteractListener implements Listener {
         User user = plugin.getUserManager().getOrCreateUser(player.getUniqueId());
 
         if (user.hasFound(treasure.getUniqueID())) {
-            //TODO
-            player.sendMessage(StringUtil.color("&cYou found this treasure already!"));
+            plugin.getManager(LanguageManager.class).send(player, "Treasure.Found-Already");
             return;
         }
 

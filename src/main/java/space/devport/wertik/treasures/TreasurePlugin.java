@@ -66,12 +66,12 @@ public class TreasurePlugin extends DevportPlugin {
         editorManager = new EditorManager(this);
 
         templateManager.load();
-
         toolManager.load();
 
         treasureManager.load();
-
         userManager.load();
+
+        new TreasureLanguage(this);
 
         registerListener(new InteractListener(this));
         registerListener(new PlacementListener(this));
