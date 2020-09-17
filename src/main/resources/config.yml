@@ -40,6 +40,8 @@ tools:
   consume: true
   # Whether or not to drop the tool item when you delete a treasure.
   drop-on-remove: true
+  # When dropping the item, it pops up a bit. Configure the vector applied. x;y;z
+  pop-vector: 0;0.125;0
 
 # Worlds where this plugin is disabled.
 disabled-worlds:

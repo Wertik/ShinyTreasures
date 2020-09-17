@@ -1,5 +1,6 @@
 package space.devport.wertik.treasures.listeners;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
@@ -12,6 +13,7 @@ import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 import space.devport.utils.text.StringUtil;
+import space.devport.wertik.treasures.ParserUtil;
 import space.devport.wertik.treasures.TreasurePlugin;
 import space.devport.wertik.treasures.system.tool.struct.PlacementTool;
 import space.devport.wertik.treasures.system.treasure.struct.Treasure;
@@ -35,10 +37,20 @@ public class PlacementListener implements Listener {
 
         if (tool == null) return;
 
-        event.setCancelled(!plugin.getConfig().getBoolean("tools.consume", false));
+        if (plugin.getConfig().getBoolean("tools.consume", false)) {
+            consume(event.getPlayer(), event.getHand());
+        }
 
         Treasure treasure = plugin.getTreasureManager().createTreasure(event.getBlockPlaced().getLocation(), tool);
         event.getPlayer().sendMessage(StringUtil.color("&7Treasure placed with tool " + treasure.getTool().getName()));
+    }
+
+    private void consume(Player player, EquipmentSlot slot) {
+        ItemStack item = player.getInventory().getItem(slot);
+
+        if (item.getAmount() > 1)
+            item.setAmount(item.getAmount() - 1);
+        else player.getInventory().setItem(slot, null);
     }
 
     @EventHandler
@@ -57,10 +69,16 @@ public class PlacementListener implements Listener {
 
         plugin.getTreasureManager().deleteTreasure(treasure);
 
-        // Pop the item
         ItemStack itemStack = plugin.getToolManager().craftTool(treasure.getTool());
-        Item item = player.getWorld().dropItemNaturally(event.getClickedBlock().getLocation(), itemStack);
-        item.setVelocity(new Vector(0, 0.5, 0));
+        Vector popVector = ParserUtil.parseVector(plugin.getConfig().getString("tools.pop-vector"));
+
+        // Pop the item
+        Bukkit.getScheduler().runTaskLater(plugin, () -> {
+            Item item = player.getWorld().dropItemNaturally(event.getClickedBlock().getLocation(), itemStack);
+            item.setVelocity(popVector);
+        }, 10L);
+
+        event.getClickedBlock().setType(Material.AIR);
 
         //TODO lang removed
         player.sendMessage(StringUtil.color("&7Treasure removed."));

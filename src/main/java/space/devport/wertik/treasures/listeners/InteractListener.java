@@ -59,10 +59,15 @@ public class InteractListener implements Listener {
             return;
 
         Player player = event.getPlayer();
+
+        if (event.getAction() == Action.LEFT_CLICK_BLOCK && player.isSneaking() && player.hasPermission("simpletreasures.admin"))
+            return;
+
         Location location = event.getClickedBlock().getLocation();
         Treasure treasure = treasureManager.getTreasure(location);
 
-        if (treasure == null) return;
+        if (treasure == null)
+            return;
 
         event.setCancelled(true);
 

@@ -73,7 +73,8 @@ public class TreasureTemplate {
     public void to(Configuration configuration, String path) {
         ConfigurationSection section = configuration.section(path);
 
-        section.set("material", material.name());
+        if (material != null)
+            section.set("material", material.toString());
 
         rewards.to(configuration, path + ".rewards");
     }
