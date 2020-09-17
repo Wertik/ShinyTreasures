@@ -18,8 +18,7 @@ public class PlacementTool {
     @Getter
     private final String name;
 
-    @Getter
-    private TreasureTemplate rootTemplate;
+    private String rootTemplate;
 
     @Setter
     private TreasureTemplate template;
@@ -36,8 +35,13 @@ public class PlacementTool {
 
     public void reward(User user, Treasure treasure) {
         getTemplate().getRewards().give(user.getPlayer());
-        if (this.rootTemplate != null)
-            this.rootTemplate.getRewards().give(user, treasure);
+        if (this.getRootTemplate() != null)
+            this.getRootTemplate().getRewards().give(user, treasure);
+    }
+
+    @Nullable
+    public TreasureTemplate getRootTemplate() {
+        return TreasurePlugin.getInstance().getTemplateManager().getTemplate(rootTemplate);
     }
 
     @NotNull
@@ -48,11 +52,14 @@ public class PlacementTool {
     }
 
     public void rootTemplate(TreasureTemplate template) {
-        this.rootTemplate = template;
+        this.rootTemplate = template.getName();
     }
 
     public Material getMaterial() {
-        return template.getMaterial() == null ? rootTemplate.getMaterial() : template.getMaterial();
+        Material material = template.getMaterial() == null ? (getRootTemplate() == null ? null : getRootTemplate().getMaterial()) : template.getMaterial();
+        if (material == null)
+            ConsoleOutput.getInstance().err("Could not find a material to use in tool " + name + ", falling back to a chest.");
+        return material == null ? Material.CHEST : material;
     }
 
     @Nullable
@@ -85,8 +92,8 @@ public class PlacementTool {
     public void to(Configuration configuration, String path) {
         ConfigurationSection section = configuration.section(path);
 
-        if (rootTemplate != null)
-            section.set("root-template", rootTemplate.getName());
+        if (getRootTemplate() != null)
+            section.set("root-template", getRootTemplate().getName());
 
         this.getTemplate().to(configuration, path);
     }

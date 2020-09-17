@@ -161,11 +161,11 @@ public class InteractListener implements Listener {
                 }
             }.runTaskLater(plugin, 1L);
 
-            if (plugin.getConfig().getBoolean("hide-block.place-back", false))
+            if (!plugin.getConfig().getBoolean("hide-block.place-back", false))
                 return;
 
             Bukkit.getScheduler().runTaskLater(plugin, () -> {
-                block.getState().setType(original);
+                block.setType(original);
                 block.getState().update(true);
                 ConsoleOutput.getInstance().debug("Reverted treasure back to " + original.toString());
             }, plugin.getConfig().getInt("hide-block.time", 15) * 20L);
