@@ -12,8 +12,6 @@ import space.devport.wertik.treasures.commands.TreasureSubCommand;
 import space.devport.wertik.treasures.system.editor.struct.EditSession;
 import space.devport.wertik.treasures.system.template.struct.TreasureTemplate;
 
-import java.util.Arrays;
-
 public class CreateSubCommand extends TreasureSubCommand {
 
     public CreateSubCommand(TreasurePlugin plugin) {
@@ -49,16 +47,6 @@ public class CreateSubCommand extends TreasureSubCommand {
         sender.sendMessage(StringUtil.color("&7Opening a chat editor..."));
         session.startChatSession(player);
         return CommandResult.SUCCESS;
-    }
-
-    private boolean containsSwitch(String[] args, String switchSign) {
-        return Arrays.stream(args).anyMatch(a -> a.equalsIgnoreCase("-" + switchSign));
-    }
-
-    private String[] filterSwitch(String[] args, String switchSign) {
-        return Arrays.stream(args)
-                .filter(a -> !a.equalsIgnoreCase("-" + switchSign))
-                .toArray(String[]::new);
     }
 
     @Override

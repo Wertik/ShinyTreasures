@@ -7,15 +7,12 @@ import org.bukkit.event.player.AsyncPlayerChatEvent;
 import space.devport.utils.DevportListener;
 import space.devport.utils.text.StringUtil;
 import space.devport.utils.xseries.XMaterial;
-import space.devport.wertik.treasures.TreasurePlugin;
 import space.devport.wertik.treasures.system.editor.struct.EditSession;
 
 import java.util.Arrays;
 import java.util.List;
 
 public class SessionListener extends DevportListener {
-
-    private final TreasurePlugin plugin;
 
     private final EditorManager editorManager;
 
@@ -24,7 +21,6 @@ public class SessionListener extends DevportListener {
     public SessionListener(EditorManager editorManager) {
         super(editorManager.getPlugin());
         this.editorManager = editorManager;
-        this.plugin = editorManager.getPlugin();
     }
 
     @EventHandler(priority = EventPriority.LOWEST)

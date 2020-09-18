@@ -9,7 +9,13 @@ public class JsonLocation {
 
     @Getter
     @Setter
-    private double x, y, z;
+    private double x;
+    @Getter
+    @Setter
+    private double y;
+    @Getter
+    @Setter
+    private double z;
 
     @Getter
     @Setter
