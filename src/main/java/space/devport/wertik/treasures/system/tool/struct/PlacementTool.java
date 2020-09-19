@@ -52,7 +52,7 @@ public class PlacementTool {
     }
 
     public void rootTemplate(TreasureTemplate template) {
-        this.rootTemplate = template.getName();
+        this.rootTemplate = template == null ? null : template.getName();
     }
 
     public Material getMaterial() {
