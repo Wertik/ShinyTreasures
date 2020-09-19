@@ -69,6 +69,7 @@ public class TreasurePlugin extends DevportPlugin {
         toolManager.load();
 
         treasureManager.load();
+        treasureManager.loadAdditionalData();
         userManager.load();
 
         new TreasureLanguage(this);
@@ -95,6 +96,7 @@ public class TreasurePlugin extends DevportPlugin {
     @Override
     public void onPluginDisable() {
         treasureManager.save();
+        treasureManager.saveAdditionalData();
         userManager.save();
         toolManager.save();
     }

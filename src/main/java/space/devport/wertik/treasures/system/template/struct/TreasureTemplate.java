@@ -8,7 +8,7 @@ import org.jetbrains.annotations.Nullable;
 import space.devport.utils.ConsoleOutput;
 import space.devport.utils.configuration.Configuration;
 import space.devport.utils.xseries.XMaterial;
-import space.devport.wertik.treasures.system.struct.TreasureRewards;
+import space.devport.wertik.treasures.system.struct.rewards.TreasureRewards;
 
 public class TreasureTemplate {
 

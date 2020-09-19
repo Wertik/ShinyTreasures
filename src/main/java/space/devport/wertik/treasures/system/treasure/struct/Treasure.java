@@ -22,6 +22,10 @@ public class Treasure {
 
     private transient PlacementTool tool;
 
+    @Getter
+    @Setter
+    private boolean found = false;
+
     public Treasure(Location location) {
         this.uniqueID = UUID.randomUUID();
         this.jsonLocation = new JsonLocation(location);

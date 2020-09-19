@@ -2,6 +2,7 @@ package space.devport.wertik.treasures.commands.treasure.subcommands;
 
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
+import space.devport.utils.ConsoleOutput;
 import space.devport.utils.commands.struct.ArgumentRange;
 import space.devport.utils.commands.struct.CommandResult;
 import space.devport.utils.text.StringUtil;
@@ -40,6 +41,8 @@ public class ListSubCommand extends TreasureSubCommand {
             sender.sendMessage(StringUtil.color("&cNot enough treasures for this page."));
             return CommandResult.FAILURE;
         }
+
+        ConsoleOutput.getInstance().debug("Skip: " + Math.max(0, page - 1) * 10 + " Limit: " + Math.max(1, page) * 10);
 
         //TODO
         StringBuilder list = new StringBuilder("&8&m    &3 Treasures &7#&f" + page);

@@ -1,14 +1,21 @@
 package space.devport.wertik.treasures.system.treasure;
 
 import com.google.gson.reflect.TypeToken;
+import lombok.Getter;
 import org.bukkit.Location;
 import space.devport.utils.ConsoleOutput;
 import space.devport.wertik.treasures.TreasurePlugin;
 import space.devport.wertik.treasures.system.GsonHelper;
+import space.devport.wertik.treasures.system.struct.AdditionalData;
 import space.devport.wertik.treasures.system.tool.struct.PlacementTool;
 import space.devport.wertik.treasures.system.treasure.struct.Treasure;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
@@ -20,9 +27,19 @@ public class TreasureManager {
 
     private final Map<UUID, Treasure> loadedTreasures = new HashMap<>();
 
+    @Getter
+    private AdditionalData additionalData;
+
     public TreasureManager(TreasurePlugin plugin) {
         this.plugin = plugin;
         this.gsonHelper = plugin.getGsonHelper();
+    }
+
+    public void loadAdditionalData() {
+        AdditionalData loadedData = gsonHelper.load(plugin.getDataFolder() + "/additional-data.json", new TypeToken<AdditionalData>() {
+        }.getType());
+        this.additionalData = loadedData == null ? new AdditionalData() : loadedData;
+        plugin.getConsoleOutput().info("Loaded additional data...");
     }
 
     public void load() {
@@ -43,6 +60,11 @@ public class TreasureManager {
         this.loadedTreasures.putAll(treasures);
 
         plugin.getConsoleOutput().info("Loaded " + this.loadedTreasures.size() + " treasure(s)...");
+    }
+
+    public void saveAdditionalData() {
+        gsonHelper.save(this.additionalData, plugin.getDataFolder() + "/additional-data.json");
+        plugin.getConsoleOutput().info("Saved additional data...");
     }
 
     public void save() {

@@ -111,6 +111,7 @@ public class InteractListener implements Listener {
         if (tool == null) return;
 
         tool.reward(user, treasure);
+        treasure.setFound(true);
 
         hideBlock(event.getClickedBlock(), player);
 

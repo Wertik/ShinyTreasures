@@ -1,4 +1,4 @@
-package space.devport.wertik.treasures.system.struct;
+package space.devport.wertik.treasures.system.struct.rewards;
 
 import lombok.Getter;
 import org.bukkit.configuration.ConfigurationSection;
