@@ -28,15 +28,16 @@ public class PlacementTool {
         this.template = new TreasureTemplate(name);
     }
 
-    public PlacementTool(String name, TreasureTemplate rootTemplate) {
-        this(name);
-        rootTemplate(rootTemplate);
-    }
-
     public void reward(User user, Treasure treasure) {
         getTemplate().getRewards().give(user, treasure, true);
+
+        // Fire rewards from root template
         if (this.getRootTemplate() != null)
             this.getRootTemplate().getRewards().give(user, treasure, false);
+
+        // Set found
+        if (!treasure.isFound())
+            treasure.setFound(true);
     }
 
     @Nullable
@@ -46,9 +47,7 @@ public class PlacementTool {
 
     @NotNull
     public TreasureTemplate getTemplate() {
-        if (template == null)
-            this.template = new TreasureTemplate(name);
-        return template;
+        return template == null ? new TreasureTemplate(name) : template;
     }
 
     public void rootTemplate(TreasureTemplate template) {
@@ -80,11 +79,23 @@ public class PlacementTool {
             template = new TreasureTemplate(name);
         }
 
-        String templateName = section.getString("root-template");
-        TreasureTemplate rootTemplate = TreasurePlugin.getInstance().getTemplateManager().getTemplate(templateName);
+        PlacementTool tool = new PlacementTool(name);
 
-        PlacementTool tool = new PlacementTool(name, rootTemplate);
+        String templateName = section.getString("root-template");
+
+        if (templateName != null) {
+            TreasureTemplate rootTemplate = TreasurePlugin.getInstance().getTemplateManager().getTemplate(templateName);
+
+            if (rootTemplate == null) {
+                ConsoleOutput.getInstance().warn("Could not root tool " + name + " to template " + templateName + ", it's invalid.");
+            } else {
+                tool.rootTemplate(rootTemplate);
+                ConsoleOutput.getInstance().debug("Rooted tool " + name + " to template " + templateName);
+            }
+        }
+
         tool.setTemplate(template);
+
         ConsoleOutput.getInstance().debug("Loaded tool at " + configuration.getFile().getName() + "@" + path);
         return tool;
     }

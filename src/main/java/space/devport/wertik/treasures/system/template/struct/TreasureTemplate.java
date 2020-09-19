@@ -62,7 +62,7 @@ public class TreasureTemplate {
             } else material = xMaterial.parseMaterial();
         }
 
-        TreasureRewards rewards = TreasureRewards.from(configuration, path + ".rewards", silent);
+        TreasureRewards rewards = TreasureRewards.from(configuration, path + ".rewards", !ConsoleOutput.getInstance().isDebug() && silent);
 
         if (rewards == null)
             rewards = new TreasureRewards();

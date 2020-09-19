@@ -69,8 +69,7 @@ public class TreasureRewards extends Rewards {
 
         if (!treasure.isFound()) {
             first.give(player);
-            treasure.setFound(true);
-            ConsoleOutput.getInstance().debug("Rewarding " + user.getOfflinePlayer().getName() + " for the first find of " + treasure.getUniqueID().toString());
+            ConsoleOutput.getInstance().debug("Rewarding " + user.getOfflinePlayer().getName() + " for the first find of " + treasure.getUniqueID().toString() + " with " + first.toString());
         }
 
         PlacementTool tool = treasure.getTool();
@@ -176,8 +175,11 @@ public class TreasureRewards extends Rewards {
         }
 
         treasureRewards.setComplete(configuration.getRewards(path + ".complete"));
+        ConsoleOutput.getInstance().debug("With complete rewards " + treasureRewards.getComplete().toString());
         treasureRewards.setFirst(configuration.getRewards(path + ".first"));
+        ConsoleOutput.getInstance().debug("With first find rewards " + treasureRewards.getFirst().toString());
         treasureRewards.setFirstComplete(configuration.getRewards(path + ".first-complete"));
+        ConsoleOutput.getInstance().debug("With first complete rewards " + treasureRewards.getFirstComplete().toString());
 
         ConsoleOutput.getInstance().debug("Loaded treasure rewards at " + configuration.getFile().getName() + "@" + path);
         return treasureRewards;
