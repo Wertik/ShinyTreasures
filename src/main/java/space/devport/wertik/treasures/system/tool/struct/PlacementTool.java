@@ -34,9 +34,9 @@ public class PlacementTool {
     }
 
     public void reward(User user, Treasure treasure) {
-        getTemplate().getRewards().give(user.getPlayer());
+        getTemplate().getRewards().give(user, treasure, true);
         if (this.getRootTemplate() != null)
-            this.getRootTemplate().getRewards().give(user, treasure);
+            this.getRootTemplate().getRewards().give(user, treasure, false);
     }
 
     @Nullable

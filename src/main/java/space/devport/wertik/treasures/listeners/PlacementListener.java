@@ -1,6 +1,7 @@
 package space.devport.wertik.treasures.listeners;
 
 import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
@@ -47,7 +48,10 @@ public class PlacementListener implements Listener {
 
     private void compensate(Player player, EquipmentSlot slot) {
         ItemStack item = player.getInventory().getItem(slot);
-        Bukkit.getScheduler().runTaskLaterAsynchronously(plugin, () -> item.setAmount(item.getAmount()), 5L);
+        if (player.getGameMode() != GameMode.CREATIVE) {
+            item.setAmount(item.getAmount());
+            player.getInventory().setItem(slot, item);
+        }
     }
 
     @EventHandler

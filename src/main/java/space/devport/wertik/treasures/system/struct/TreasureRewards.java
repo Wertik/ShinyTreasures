@@ -8,6 +8,9 @@ import org.jetbrains.annotations.Nullable;
 import space.devport.utils.ConsoleOutput;
 import space.devport.utils.configuration.Configuration;
 import space.devport.utils.struct.Rewards;
+import space.devport.wertik.treasures.TreasurePlugin;
+import space.devport.wertik.treasures.system.template.struct.TreasureTemplate;
+import space.devport.wertik.treasures.system.tool.struct.PlacementTool;
 import space.devport.wertik.treasures.system.treasure.struct.Treasure;
 import space.devport.wertik.treasures.system.user.struct.User;
 
@@ -23,6 +26,10 @@ public class TreasureRewards extends Rewards {
     @Setter
     private Set<CountingRewards> repeat = new HashSet<>();
 
+    @Getter
+    @Setter
+    private Rewards complete = new Rewards();
+
     public TreasureRewards() {
     }
 
@@ -34,10 +41,10 @@ public class TreasureRewards extends Rewards {
         super(rewards);
         this.cumulative = new HashSet<>(rewards.getCumulative());
         this.repeat = new HashSet<>(rewards.getRepeat());
+        this.complete = new Rewards(rewards.getComplete());
     }
 
-    public void give(User user, Treasure treasure) {
-
+    public void give(User user, Treasure treasure, boolean checkTool) {
         Player player = user.getPlayer();
 
         if (player == null) {
@@ -47,12 +54,45 @@ public class TreasureRewards extends Rewards {
 
         this.give(player);
 
-        int count = user.getFindCount((t) -> t.getTool() != null &&
-                t.getTool().getRootTemplate() != null &&
-                t.getTool().getRootTemplate().equals(treasure.getTool().getRootTemplate()));
+        PlacementTool tool = treasure.getTool();
 
-        cumulative.forEach(r -> r.give(player, count));
-        repeat.forEach(r -> r.give(player, count));
+        if (tool == null)
+            return;
+
+        if (checkTool) {
+            // Tool rewards cumulative, repeat and complete
+            int toolsFound = user.getFindCount((t) -> t.getTool() != null && t.getTool().equals(treasure.getTool()));
+            cumulative.forEach(r -> r.give(player, toolsFound));
+            repeat.forEach(r -> r.give(player, toolsFound));
+
+            int toolsPlaced = TreasurePlugin.getInstance().getTreasureManager().getTreasures((t -> t.getTool() != null &&
+                    t.getTool().equals(tool)))
+                    .size();
+
+            if (toolsPlaced == toolsFound)
+                complete.give(player);
+        } else {
+
+            TreasureTemplate rootTemplate = treasure.getTool().getRootTemplate();
+
+            if (rootTemplate == null)
+                return;
+
+            // Template rewards cumulative, repeat and complete
+            int templatesFound = user.getFindCount((t) -> t.getTool() != null &&
+                    t.getTool().getRootTemplate() != null &&
+                    t.getTool().getRootTemplate().equals(rootTemplate));
+            cumulative.forEach(r -> r.give(player, templatesFound));
+            repeat.forEach(r -> r.give(player, templatesFound));
+
+            int templatesPlaced = TreasurePlugin.getInstance().getTreasureManager().getTreasures(t -> t.getTool() != null &&
+                    t.getTool().getRootTemplate() != null &&
+                    t.getTool().getRootTemplate().equals(rootTemplate))
+                    .size();
+
+            if (templatesPlaced == templatesFound)
+                complete.give(player);
+        }
     }
 
     @Nullable
@@ -94,6 +134,8 @@ public class TreasureRewards extends Rewards {
             ConsoleOutput.getInstance().debug("Loaded " + treasureRewards.getRepeat().size() + " repeating rewards...");
         }
 
+        treasureRewards.setComplete(configuration.getRewards(path + ".complete"));
+
         ConsoleOutput.getInstance().debug("Loaded treasure rewards at " + configuration.getFile().getName() + "@" + path);
         return treasureRewards;
     }
@@ -108,5 +150,7 @@ public class TreasureRewards extends Rewards {
         for (CountingRewards reward : rewards) {
             reward.to(configuration, path + "." + reward.getCount());
         }
+
+        configuration.setRewards(path + ".complete", this.complete);
     }
 }
