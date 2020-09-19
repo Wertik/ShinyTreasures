@@ -95,6 +95,7 @@ public class TreasurePlugin extends DevportPlugin {
 
     @Override
     public void onPluginDisable() {
+        treasureManager.placeAllBack();
         treasureManager.save();
         treasureManager.saveAdditionalData();
         userManager.save();

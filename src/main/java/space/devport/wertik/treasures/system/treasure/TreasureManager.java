@@ -2,8 +2,13 @@ package space.devport.wertik.treasures.system.treasure;
 
 import com.google.gson.reflect.TypeToken;
 import lombok.Getter;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.block.Block;
+import org.bukkit.scheduler.BukkitTask;
 import space.devport.utils.ConsoleOutput;
+import space.devport.utils.item.Amount;
 import space.devport.wertik.treasures.TreasurePlugin;
 import space.devport.wertik.treasures.system.GsonHelper;
 import space.devport.wertik.treasures.system.struct.AdditionalData;
@@ -29,6 +34,52 @@ public class TreasureManager {
 
     @Getter
     private AdditionalData additionalData;
+
+    private final Set<RegenerationTask> regenerationTasks = new HashSet<>();
+
+    public static class RegenerationTask implements Runnable {
+
+        private BukkitTask task;
+        private final Material original;
+        private final Block block;
+
+        public RegenerationTask(Block block, Material original) {
+            this.original = original;
+            this.block = block;
+        }
+
+        public void start() {
+            int comeBackTime = TreasurePlugin.getInstance().getConfiguration().getAmount("hide-block.time", new Amount(5)).getInt();
+
+            task = Bukkit.getScheduler().runTaskLater(TreasurePlugin.getInstance(), this, comeBackTime * 20L);
+        }
+
+        public void regenerate() {
+            block.setType(original);
+            block.getState().update(true);
+            ConsoleOutput.getInstance().debug("Reverted treasure back to " + original.toString());
+
+            if (task != null) {
+                this.task.cancel();
+                this.task = null;
+            }
+        }
+
+        @Override
+        public void run() {
+            regenerate();
+        }
+    }
+
+    public void regenerate(Block block, Material original) {
+        RegenerationTask regenerationTask = new RegenerationTask(block, original);
+        this.regenerationTasks.add(regenerationTask);
+        regenerationTask.start();
+    }
+
+    public void placeAllBack() {
+        regenerationTasks.forEach(RegenerationTask::regenerate);
+    }
 
     public TreasureManager(TreasurePlugin plugin) {
         this.plugin = plugin;

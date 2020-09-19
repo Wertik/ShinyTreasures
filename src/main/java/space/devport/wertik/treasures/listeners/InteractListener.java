@@ -1,7 +1,6 @@
 package space.devport.wertik.treasures.listeners;
 
 import com.google.common.base.Strings;
-import org.bukkit.Bukkit;
 import org.bukkit.Color;
 import org.bukkit.FireworkEffect;
 import org.bukkit.Location;
@@ -18,8 +17,6 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.meta.FireworkMeta;
 import org.bukkit.scheduler.BukkitRunnable;
-import space.devport.utils.ConsoleOutput;
-import space.devport.utils.item.Amount;
 import space.devport.utils.text.StringUtil;
 import space.devport.utils.text.language.LanguageManager;
 import space.devport.utils.xseries.XSound;
@@ -170,13 +167,7 @@ public class InteractListener implements Listener {
             if (!plugin.getConfig().getBoolean("hide-block.place-back", false))
                 return;
 
-            int comeBackTime = plugin.getConfiguration().getAmount("hide-block.time", new Amount(5)).getInt();
-
-            Bukkit.getScheduler().runTaskLater(plugin, () -> {
-                block.setType(original);
-                block.getState().update(true);
-                ConsoleOutput.getInstance().debug("Reverted treasure back to " + original.toString());
-            }, comeBackTime * 20L);
+            plugin.getTreasureManager().regenerate(block, original);
         }
     }
 }
