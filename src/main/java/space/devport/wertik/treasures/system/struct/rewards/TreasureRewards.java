@@ -68,7 +68,7 @@ public class TreasureRewards extends Rewards {
         this.give(player);
 
         if (!treasure.isFound()) {
-            first.give(player);
+            first.give(player, true);
             ConsoleOutput.getInstance().debug("Rewarding " + user.getOfflinePlayer().getName() + " for the first find of " + treasure.getUniqueID().toString() + " with " + first.toString());
         }
 
@@ -88,7 +88,7 @@ public class TreasureRewards extends Rewards {
                     .size();
 
             if (toolsPlaced == toolsFound)
-                complete.give(player);
+                complete.give(player, true);
 
             if (!TreasurePlugin.getInstance().getTreasureManager().getAdditionalData().hasToolBeenFound(tool.getName()) &&
                     TreasurePlugin.getInstance().getTreasureManager().getTreasures(t -> t.getTool() != null &&
@@ -96,7 +96,7 @@ public class TreasureRewards extends Rewards {
                             t.getTool().equals(tool) &&
                             !user.hasFound(t)).isEmpty()) {
 
-                firstComplete.give(player);
+                firstComplete.give(player, true);
                 TreasurePlugin.getInstance().getTreasureManager().getAdditionalData().setToolFound(tool.getName());
                 ConsoleOutput.getInstance().debug("Rewarding " + user.getOfflinePlayer().getName() + " for the first complete of " + tool.getName());
             }
@@ -120,7 +120,7 @@ public class TreasureRewards extends Rewards {
                     .size();
 
             if (templatesPlaced == templatesFound)
-                complete.give(player);
+                complete.give(player, true);
 
             if (!TreasurePlugin.getInstance().getTreasureManager().getAdditionalData().hasTemplateBeenFound(rootTemplate.getName()) &&
                     TreasurePlugin.getInstance().getTreasureManager().getTreasures(t -> t.getTool() != null &&
@@ -128,7 +128,7 @@ public class TreasureRewards extends Rewards {
                             t.getTool().getRootTemplate().equals(rootTemplate) &&
                             !user.hasFound(t)).isEmpty()) {
 
-                firstComplete.give(player);
+                firstComplete.give(player, true);
                 TreasurePlugin.getInstance().getTreasureManager().getAdditionalData().setTemplateFound(rootTemplate.getName());
                 ConsoleOutput.getInstance().debug("Rewarding " + user.getOfflinePlayer().getName() + " for the first complete of " + rootTemplate.getName());
             }

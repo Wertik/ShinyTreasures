@@ -25,7 +25,7 @@ public class CountingRewards extends Rewards {
 
     public void give(Player player, int count) {
         if (condition.test(count, this.count))
-            super.give(player);
+            super.give(player, true);
     }
 
     public static CountingRewards from(Configuration configuration, String path, BiPredicate<Integer, Integer> condition, boolean silent) {
