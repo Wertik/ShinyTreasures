@@ -106,6 +106,8 @@ public class TreasurePlugin extends DevportPlugin {
     public void onReload() {
         templateManager.load();
         toolManager.load();
+
+        setupPlaceholders();
     }
 
     @Override
