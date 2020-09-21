@@ -87,18 +87,14 @@ public class TreasureRewards extends Rewards {
                     t.getTool().equals(tool)))
                     .size();
 
-            if (toolsPlaced == toolsFound)
+            if (toolsPlaced == toolsFound) {
                 complete.give(player, true);
 
-            if (!TreasurePlugin.getInstance().getTreasureManager().getAdditionalData().hasToolBeenFound(tool.getName()) &&
-                    TreasurePlugin.getInstance().getTreasureManager().getTreasures(t -> t.getTool() != null &&
-                            t.getTool().getRootTemplate() != null &&
-                            t.getTool().equals(tool) &&
-                            !user.hasFound(t)).isEmpty()) {
-
-                firstComplete.give(player, true);
-                TreasurePlugin.getInstance().getTreasureManager().getAdditionalData().setToolFound(tool.getName());
-                ConsoleOutput.getInstance().debug("Rewarding " + user.getOfflinePlayer().getName() + " for the first complete of " + tool.getName());
+                if (!TreasurePlugin.getInstance().getTreasureManager().getAdditionalData().hasToolBeenFound(tool.getName())) {
+                    firstComplete.give(player, true);
+                    TreasurePlugin.getInstance().getTreasureManager().getAdditionalData().setToolFound(tool.getName());
+                    ConsoleOutput.getInstance().debug("Rewarding " + user.getOfflinePlayer().getName() + " for the first complete of " + tool.getName());
+                }
             }
         } else {
 
@@ -119,18 +115,14 @@ public class TreasureRewards extends Rewards {
                     t.getTool().getRootTemplate().equals(rootTemplate))
                     .size();
 
-            if (templatesPlaced == templatesFound)
+            if (templatesPlaced == templatesFound) {
                 complete.give(player, true);
 
-            if (!TreasurePlugin.getInstance().getTreasureManager().getAdditionalData().hasTemplateBeenFound(rootTemplate.getName()) &&
-                    TreasurePlugin.getInstance().getTreasureManager().getTreasures(t -> t.getTool() != null &&
-                            t.getTool().getRootTemplate() != null &&
-                            t.getTool().getRootTemplate().equals(rootTemplate) &&
-                            !user.hasFound(t)).isEmpty()) {
-
-                firstComplete.give(player, true);
-                TreasurePlugin.getInstance().getTreasureManager().getAdditionalData().setTemplateFound(rootTemplate.getName());
-                ConsoleOutput.getInstance().debug("Rewarding " + user.getOfflinePlayer().getName() + " for the first complete of " + rootTemplate.getName());
+                if (!TreasurePlugin.getInstance().getTreasureManager().getAdditionalData().hasTemplateBeenFound(rootTemplate.getName())) {
+                    firstComplete.give(player, true);
+                    TreasurePlugin.getInstance().getTreasureManager().getAdditionalData().setTemplateFound(rootTemplate.getName());
+                    ConsoleOutput.getInstance().debug("Rewarding " + user.getOfflinePlayer().getName() + " for the first complete of " + rootTemplate.getName());
+                }
             }
         }
     }

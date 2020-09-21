@@ -11,11 +11,11 @@ public class AdditionalData {
     private final Map<String, Boolean> foundTemplates = new HashMap<>();
 
     public boolean hasToolBeenFound(String name) {
-        return this.foundTools.containsKey(name);
+        return this.foundTools.containsKey(name) && this.foundTools.get(name);
     }
 
     public boolean hasTemplateBeenFound(String name) {
-        return this.foundTemplates.containsKey(name);
+        return this.foundTemplates.containsKey(name) && this.foundTemplates.get(name);
     }
 
     public void setToolFound(String name) {
