@@ -21,6 +21,10 @@ public class TreasureTemplate {
 
     @Getter
     @Setter
+    private int limit = 0;
+
+    @Getter
+    @Setter
     private TreasureRewards rewards = new TreasureRewards();
 
     public TreasureTemplate(String name) {
@@ -30,6 +34,7 @@ public class TreasureTemplate {
     public TreasureTemplate(TreasureTemplate template) {
         this.name = template.getName();
         this.material = template.getMaterial();
+        this.limit = template.getLimit();
         this.rewards = new TreasureRewards(template.getRewards());
     }
 
@@ -67,7 +72,9 @@ public class TreasureTemplate {
         if (rewards == null)
             rewards = new TreasureRewards();
 
-        return new TreasureTemplate(name, material, rewards);
+        TreasureTemplate treasureTemplate = new TreasureTemplate(name, material, rewards);
+        treasureTemplate.setLimit(section.getInt("limit", 0));
+        return treasureTemplate;
     }
 
     public void to(Configuration configuration, String path) {

@@ -56,7 +56,6 @@ public class TreasureRewards extends Rewards {
         this.firstComplete = new Rewards(rewards.getFirstComplete());
     }
 
-    //TODO Run rewards async, there's a lot of reward logic now.
     public void give(User user, Treasure treasure, boolean checkTool) {
         Player player = user.getPlayer();
 
@@ -77,6 +76,10 @@ public class TreasureRewards extends Rewards {
         if (tool == null)
             return;
 
+        int treasureTotalFinds = TreasurePlugin.getInstance().getUserManager()
+                .getUsers((u) -> u.hasFound(treasure))
+                .size();
+
         if (checkTool) {
             // Tool rewards cumulative, repeat and complete
             int toolsFound = user.getFindCount((t) -> t.getTool() != null && t.getTool().equals(treasure.getTool()));
@@ -96,6 +99,12 @@ public class TreasureRewards extends Rewards {
                     ConsoleOutput.getInstance().debug("Rewarding " + user.getOfflinePlayer().getName() + " for the first complete of " + tool.getName());
                 }
             }
+
+            // Remove when the limit is reached
+            if (treasure.getTool().getTemplate().getLimit() == treasureTotalFinds) {
+                ConsoleOutput.getInstance().debug("Treasure " + treasure.getUniqueID().toString() + " has reached it's tool limit, deleting.");
+                TreasurePlugin.getInstance().getTreasureManager().deleteTreasure(treasure);
+            }
         } else {
 
             TreasureTemplate rootTemplate = treasure.getTool().getRootTemplate();
@@ -103,18 +112,20 @@ public class TreasureRewards extends Rewards {
             if (rootTemplate == null)
                 return;
 
-            // Template rewards cumulative, repeat and complete
+            // How many treasures with this template the player has found.
             int templatesFound = user.getFindCount((t) -> t.getTool() != null &&
                     t.getTool().getRootTemplate() != null &&
                     t.getTool().getRootTemplate().equals(rootTemplate));
             cumulative.forEach(r -> r.give(player, templatesFound));
             repeat.forEach(r -> r.give(player, templatesFound));
 
+            // How many treasures there are with this template.
             int templatesPlaced = TreasurePlugin.getInstance().getTreasureManager().getTreasures(t -> t.getTool() != null &&
                     t.getTool().getRootTemplate() != null &&
                     t.getTool().getRootTemplate().equals(rootTemplate))
                     .size();
 
+            // Complete rewards
             if (templatesPlaced == templatesFound) {
                 complete.give(player, true);
 
@@ -123,6 +134,11 @@ public class TreasureRewards extends Rewards {
                     TreasurePlugin.getInstance().getTreasureManager().getAdditionalData().setTemplateFound(rootTemplate.getName());
                     ConsoleOutput.getInstance().debug("Rewarding " + user.getOfflinePlayer().getName() + " for the first complete of " + rootTemplate.getName());
                 }
+            }
+
+            if (rootTemplate.getLimit() == treasureTotalFinds) {
+                ConsoleOutput.getInstance().debug("Treasure " + treasure.getUniqueID().toString() + " has reached it's template limit, deleting.");
+                TreasurePlugin.getInstance().getTreasureManager().deleteTreasure(treasure);
             }
         }
     }

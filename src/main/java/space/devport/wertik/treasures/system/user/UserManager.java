@@ -6,11 +6,10 @@ import space.devport.wertik.treasures.TreasurePlugin;
 import space.devport.wertik.treasures.system.GsonHelper;
 import space.devport.wertik.treasures.system.user.struct.User;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 public class UserManager {
 
@@ -75,5 +74,11 @@ public class UserManager {
 
         gsonHelper.save(this.loadedUsers, plugin.getDataFolder() + "/user-data.json");
         plugin.getConsoleOutput().info("Saved " + this.loadedUsers.size() + " user(s)...");
+    }
+
+    public Set<User> getUsers(Predicate<User> condition) {
+        return this.loadedUsers.values().stream()
+                .filter(condition)
+                .collect(Collectors.toSet());
     }
 }

@@ -28,7 +28,9 @@ public class PlacementTool {
         this.template = new TreasureTemplate(name);
     }
 
+    //TODO Sync command dispatch in rewards.
     public void reward(User user, Treasure treasure) {
+        //CompletableFuture.runAsync(() -> {
         getTemplate().getRewards().give(user, treasure, true);
 
         // Fire rewards from root template
@@ -38,6 +40,7 @@ public class PlacementTool {
         // Set found
         if (!treasure.isFound())
             treasure.setFound(true);
+        //});
     }
 
     @Nullable
