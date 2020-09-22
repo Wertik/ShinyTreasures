@@ -1,25 +1,22 @@
 package space.devport.wertik.treasures.system.treasure.struct;
 
 import lombok.Getter;
-import lombok.Setter;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 
 public class JsonLocation {
 
     @Getter
-    @Setter
-    private double x;
+    private final double x;
     @Getter
-    @Setter
-    private double y;
+    private final double y;
     @Getter
-    @Setter
-    private double z;
+    private final double z;
 
     @Getter
-    @Setter
-    private String world;
+    private final String world;
+
+    private transient Location cachedLocation;
 
     public JsonLocation(Location location) {
 
@@ -34,6 +31,8 @@ public class JsonLocation {
     }
 
     public Location toBukkitLocation() {
-        return new Location(Bukkit.getWorld(world), x, y, z);
+        if (this.cachedLocation == null)
+            this.cachedLocation = new Location(Bukkit.getWorld(world), x, y, z);
+        return this.cachedLocation;
     }
 }

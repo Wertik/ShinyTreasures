@@ -11,11 +11,11 @@ public class AdditionalData {
     private final Map<String, Boolean> foundTemplates = new HashMap<>();
 
     public boolean hasToolBeenFound(String name) {
-        return this.foundTools.containsKey(name) && this.foundTools.get(name);
+        return this.foundTools.getOrDefault(name, false);
     }
 
     public boolean hasTemplateBeenFound(String name) {
-        return this.foundTemplates.containsKey(name) && this.foundTemplates.get(name);
+        return this.foundTemplates.getOrDefault(name, false);
     }
 
     public void setToolFound(String name) {
@@ -36,6 +36,11 @@ public class AdditionalData {
     public void resetTemplate(String name) {
         this.foundTemplates.put(name, false);
         ConsoleOutput.getInstance().debug("Template " + name + " found status reset.");
+    }
+
+    public void reset() {
+        resetTools();
+        resetTemplates();
     }
 
     public void resetTools() {

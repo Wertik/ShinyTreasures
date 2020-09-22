@@ -8,10 +8,7 @@ import space.devport.utils.UsageFlag;
 import space.devport.utils.utility.VersionUtil;
 import space.devport.wertik.treasures.commands.CommandParser;
 import space.devport.wertik.treasures.commands.tool.ToolCommand;
-import space.devport.wertik.treasures.commands.tool.subcommands.CreateSubCommand;
-import space.devport.wertik.treasures.commands.tool.subcommands.GetSubCommand;
-import space.devport.wertik.treasures.commands.tool.subcommands.ListSubCommand;
-import space.devport.wertik.treasures.commands.tool.subcommands.LoadSubCommand;
+import space.devport.wertik.treasures.commands.tool.subcommands.*;
 import space.devport.wertik.treasures.commands.treasure.TreasureCommand;
 import space.devport.wertik.treasures.commands.treasure.subcommands.DeleteSubCommand;
 import space.devport.wertik.treasures.commands.treasure.subcommands.PurgeInvalidSubCommand;
@@ -91,7 +88,8 @@ public class TreasurePlugin extends DevportPlugin {
                 .addSubCommand(new GetSubCommand(this))
                 .addSubCommand(new CreateSubCommand(this))
                 .addSubCommand(new ListSubCommand(this))
-                .addSubCommand(new space.devport.wertik.treasures.commands.tool.subcommands.DeleteSubCommand(this));
+                .addSubCommand(new space.devport.wertik.treasures.commands.tool.subcommands.DeleteSubCommand(this))
+                .addSubCommand(new ResetSubCommand(this));
 
         Bukkit.getScheduler().runTaskLater(this, this::setupPlaceholders, 1L);
     }
