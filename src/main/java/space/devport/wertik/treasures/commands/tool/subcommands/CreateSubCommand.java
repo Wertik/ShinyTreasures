@@ -25,22 +25,22 @@ public class CreateSubCommand extends TreasureSubCommand {
 
         Player player = (Player) sender;
 
-        if (getPlugin().getEditorManager().hasSession(player)) {
+        if (plugin.getEditorManager().hasSession(player)) {
             //TODO
             sender.sendMessage(StringUtil.color("&cYou are already creating a placement tool."));
             return CommandResult.FAILURE;
         }
 
-        if (getPlugin().getToolManager().getTool(args[0]) != null) {
+        if (plugin.getToolManager().getTool(args[0]) != null) {
             //TODO
             sender.sendMessage(StringUtil.color("&cTool with that name already exists."));
             return CommandResult.FAILURE;
         }
 
-        EditSession session = getPlugin().getEditorManager().createSession(player, args[0]);
+        EditSession session = plugin.getEditorManager().createSession(player, args[0]);
 
         if (args.length > 1) {
-            TreasureTemplate template = getPlugin().getCommandParser().parseTemplate(sender, args[1]);
+            TreasureTemplate template = plugin.getCommandParser().parseTemplate(sender, args[1]);
             session.getTool().rootTemplate(template);
         }
 

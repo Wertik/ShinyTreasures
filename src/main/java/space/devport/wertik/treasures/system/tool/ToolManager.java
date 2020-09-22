@@ -63,8 +63,14 @@ public class ToolManager {
         plugin.getConsoleOutput().info("Saved " + loadedTools.size() + " tool(s)...");
     }
 
-    public void removeTool(String name) {
+    public void deleteTool(PlacementTool tool) {
+        if (tool == null) return;
+        deleteTool(tool.getName());
+    }
+
+    public void deleteTool(String name) {
         this.loadedTools.remove(name);
+        save();
         plugin.getConsoleOutput().debug("Removed tool " + name);
     }
 

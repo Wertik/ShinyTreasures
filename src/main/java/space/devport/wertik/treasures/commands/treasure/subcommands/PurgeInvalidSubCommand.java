@@ -25,7 +25,7 @@ public class PurgeInvalidSubCommand extends TreasureSubCommand {
     protected CommandResult perform(CommandSender sender, String label, String[] args) {
 
         CompletableFuture.runAsync(() -> {
-            Set<UUID> toRemove = new HashSet<>(getPlugin().getTreasureManager().getTreasures((t) -> t.getTool(true) == null)).stream()
+            Set<UUID> toRemove = new HashSet<>(plugin.getTreasureManager().getTreasures((t) -> t.getTool(true) == null)).stream()
                     .map(Treasure::getUniqueID)
                     .collect(Collectors.toSet());
 
@@ -39,8 +39,8 @@ public class PurgeInvalidSubCommand extends TreasureSubCommand {
 
             //TODO
             sender.sendMessage(StringUtil.color("&7&oRemoving &f" + count + " &7&otreasure(s)..."));
-            toRemove.forEach(uuid -> getPlugin().getTreasureManager().deleteTreasure(uuid));
-            getPlugin().getTreasureManager().save();
+            toRemove.forEach(uuid -> plugin.getTreasureManager().deleteTreasure(uuid));
+            plugin.getTreasureManager().save();
 
             //TODO
             sender.sendMessage(StringUtil.color("&7Done!"));

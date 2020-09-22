@@ -60,3 +60,19 @@ template-one:
       '10':
         commands:
           - 'say %player% found 10 treasures!'
+
+    complete:
+      #items
+
+    # Fired when a player finds the treasure first.
+    first:
+      #items:
+      #commands:
+      #inform:
+      #broadcast:
+
+    # Fired when the player finds all treasures with this template first.
+    first-complete:
+      #items:
+      #commands:
+      #etc...

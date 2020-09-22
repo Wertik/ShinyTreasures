@@ -13,6 +13,7 @@ import space.devport.wertik.treasures.commands.tool.subcommands.GetSubCommand;
 import space.devport.wertik.treasures.commands.tool.subcommands.ListSubCommand;
 import space.devport.wertik.treasures.commands.tool.subcommands.LoadSubCommand;
 import space.devport.wertik.treasures.commands.treasure.TreasureCommand;
+import space.devport.wertik.treasures.commands.treasure.subcommands.DeleteSubCommand;
 import space.devport.wertik.treasures.commands.treasure.subcommands.PurgeInvalidSubCommand;
 import space.devport.wertik.treasures.commands.treasure.subcommands.ReloadSubCommand;
 import space.devport.wertik.treasures.listeners.InteractListener;
@@ -82,13 +83,15 @@ public class TreasurePlugin extends DevportPlugin {
         addMainCommand(new TreasureCommand())
                 .addSubCommand(new ReloadSubCommand(this))
                 .addSubCommand(new space.devport.wertik.treasures.commands.treasure.subcommands.ListSubCommand(this))
-                .addSubCommand(new PurgeInvalidSubCommand(this));
+                .addSubCommand(new PurgeInvalidSubCommand(this))
+                .addSubCommand(new DeleteSubCommand(this));
 
         addMainCommand(new ToolCommand())
                 .addSubCommand(new LoadSubCommand(this))
                 .addSubCommand(new GetSubCommand(this))
                 .addSubCommand(new CreateSubCommand(this))
-                .addSubCommand(new ListSubCommand(this));
+                .addSubCommand(new ListSubCommand(this))
+                .addSubCommand(new space.devport.wertik.treasures.commands.tool.subcommands.DeleteSubCommand(this));
 
         Bukkit.getScheduler().runTaskLater(this, this::setupPlaceholders, 1L);
     }

@@ -20,7 +20,7 @@ public class ListSubCommand extends TreasureSubCommand {
     @Override
     protected CommandResult perform(CommandSender sender, String label, String[] args) {
 
-        if (getPlugin().getTreasureManager().getTreasures().isEmpty()) {
+        if (plugin.getTreasureManager().getTreasures().isEmpty()) {
             //TODO
             sender.sendMessage(StringUtil.color("&cNo treasures placed yet."));
             return CommandResult.FAILURE;
@@ -31,12 +31,13 @@ public class ListSubCommand extends TreasureSubCommand {
             page = ParserUtil.parseInt(args[0]);
 
             if (page < 0) {
+                //TODO
                 sender.sendMessage(StringUtil.color("&cPage has to be a positive number."));
                 return CommandResult.FAILURE;
             }
         }
 
-        if (Math.max(0, page - 1) * 10 > getPlugin().getTreasureManager().getTreasures().size()) {
+        if (Math.max(0, page - 1) * 10 > plugin.getTreasureManager().getTreasures().size()) {
             //TODO
             sender.sendMessage(StringUtil.color("&cNot enough treasures for this page."));
             return CommandResult.FAILURE;
@@ -46,10 +47,12 @@ public class ListSubCommand extends TreasureSubCommand {
 
         //TODO
         StringBuilder list = new StringBuilder("&8&m    &3 Treasures &7#&f" + page);
-        getPlugin().getTreasureManager().getTreasures().stream().skip(Math.max(0, page - 1) * 10).limit(Math.max(1, page) * 10)
-                .forEach((treasure) -> list.append("\n&8 - &f%uniqueID% &7( %location% &7)"
+        plugin.getTreasureManager().getTreasures().stream().skip(Math.max(0, page - 1) * 10).limit(Math.max(1, page) * 10)
+                .forEach((treasure) -> list.append("\n&8 - &f%uniqueID% &7( %location%, %tool%, %rootTemplate% &7)"
                         .replace("%uniqueID%", treasure.getUniqueID().toString().substring(0, 8))
-                        .replace("%location%", LocationUtil.locationToString(treasure.getLocation()))));
+                        .replace("%location%", LocationUtil.locationToString(treasure.getLocation()))
+                        .replace("%tool%", treasure.getTool() == null ? "None" : treasure.getTool().getName())
+                        .replace("%rootTemplate%", treasure.getTool() == null || treasure.getTool().getRootTemplate() == null ? "None" : treasure.getTool().getRootTemplate().getName())));
         sender.sendMessage(StringUtil.color(list.toString()));
         return CommandResult.SUCCESS;
     }

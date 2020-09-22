@@ -18,7 +18,7 @@ public class LoadSubCommand extends TreasureSubCommand {
     protected CommandResult perform(CommandSender sender, String label, String[] args) {
 
         if (args.length > 0) {
-            if (!getPlugin().getToolManager().load(args[0])) {
+            if (!plugin.getToolManager().load(args[0])) {
                 //TODO
                 sender.sendMessage(StringUtil.color("&cCould not load tool."));
                 return CommandResult.FAILURE;
@@ -29,7 +29,7 @@ public class LoadSubCommand extends TreasureSubCommand {
             }
         }
 
-        getPlugin().getToolManager().load();
+        plugin.getToolManager().load();
         //TODO
         sender.sendMessage(StringUtil.color("&7Loaded all the tools."));
         return CommandResult.SUCCESS;

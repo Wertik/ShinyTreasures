@@ -7,37 +7,42 @@ import space.devport.utils.commands.struct.CommandResult;
 import space.devport.utils.text.StringUtil;
 import space.devport.wertik.treasures.TreasurePlugin;
 import space.devport.wertik.treasures.commands.TreasureSubCommand;
+import space.devport.wertik.treasures.system.tool.struct.PlacementTool;
 
-public class ListSubCommand extends TreasureSubCommand {
+public class DeleteSubCommand extends TreasureSubCommand {
 
-    public ListSubCommand(TreasurePlugin plugin) {
-        super(plugin, "list");
+    public DeleteSubCommand(TreasurePlugin plugin) {
+        super(plugin, "delete");
     }
 
     @Override
     protected CommandResult perform(CommandSender sender, String label, String[] args) {
-        if (plugin.getToolManager().getLoadedTools().isEmpty()) {
+        PlacementTool tool = plugin.getToolManager().getTool(args[0]);
+
+        if (tool == null) {
             //TODO
-            sender.sendMessage(StringUtil.color("&cNo tools created."));
+            sender.sendMessage(StringUtil.color("&cInvalid tool."));
             return CommandResult.FAILURE;
         }
+
+        plugin.getToolManager().deleteTool(tool);
         //TODO
-        sender.sendMessage(StringUtil.color("&7Loaded tools:\n&8 - &f" + String.join("\n&8 - &f", plugin.getToolManager().getLoadedTools().keySet())));
+        sender.sendMessage(StringUtil.color("&7Tool deleted."));
         return CommandResult.SUCCESS;
     }
 
     @Override
     public @Nullable String getDefaultUsage() {
-        return "/%label% list";
+        return "/%label% delete <toolName>";
     }
 
     @Override
     public @Nullable String getDefaultDescription() {
-        return "List loaded tools.";
+        return "Delete a tool.";
     }
 
     @Override
     public @Nullable ArgumentRange getRange() {
-        return new ArgumentRange(0);
+        return new ArgumentRange(1);
     }
 }

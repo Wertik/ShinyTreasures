@@ -21,7 +21,7 @@ public class GetSubCommand extends TreasureSubCommand {
 
     @Override
     protected CommandResult perform(CommandSender sender, String label, String[] args) {
-        PlacementTool tool = getPlugin().getToolManager().getTool(args[0]);
+        PlacementTool tool = plugin.getToolManager().getTool(args[0]);
 
         if (tool == null) {
             //TODO
@@ -31,7 +31,7 @@ public class GetSubCommand extends TreasureSubCommand {
 
         Player player = (Player) sender;
 
-        player.getInventory().addItem(getPlugin().getToolManager().craftTool(tool));
+        player.getInventory().addItem(plugin.getToolManager().craftTool(tool));
         //TODO
         sender.sendMessage(StringUtil.color("&aTool given."));
         return CommandResult.SUCCESS;
