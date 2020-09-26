@@ -30,6 +30,7 @@ public class ListSubCommand extends TreasureSubCommand {
             list.append(new Message(lineFormat)
                     .replace("%toolName%", tool.getName())
                     .replace("%rootTemplate%", tool.getRootTemplate() == null ? "None" : tool.getRootTemplate().getName())
+                    .replace("%count%", plugin.getTreasureManager().getTreasures(treasure -> treasure.getTool(true) != null && treasure.getTool().equals(tool)).size())
                     .color().toString());
         }
         list.send(sender);

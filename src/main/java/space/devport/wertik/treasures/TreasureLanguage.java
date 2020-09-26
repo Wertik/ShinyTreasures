@@ -69,19 +69,25 @@ public class TreasureLanguage extends LanguageDefaults {
 
         addDefault("Editor.Invalid-Argument", "&cArgument &f%param% &cis invalid.");
         addDefault("Editor.Not-Enough-Arguments", "&cNot enough arguments.");
+
         addDefault("Editor.Save.Done", "&7&oSaving and exiting...", "&7You can get your tool with &f/tt get &e%tool%");
         addDefault("Editor.Cancel.Done", "&7You're out. Everything was lost.");
+
         addDefault("Editor.List-Commands.No-Commands", "&cThere are no commands attached.");
         addDefault("Editor.List-Commands.Header", "&7Commands ( &f%count% &7) :");
         addDefault("Editor.List-Commands.Line", "&8 - &f%command%");
+
         addDefault("Editor.Remove-Command.No-Command", "&cSpecify a command to remove.");
         addDefault("Editor.Remove-Command.No-Commands", "&cThere are no commands attached.");
         addDefault("Editor.Remove-Command.Done", "&7Removed command &f%command%");
+
         addDefault("Editor.Add-Command.Done", "&7Added command &f%command%");
-        addDefault("Editor.Material", "&7Material: &f%material%");
+
+        addDefault("Editor.Material.Info", "&7Material: &f%material%");
         addDefault("Editor.Material.Invalid", "&cMaterial &f%param% &cis invalid.");
-        addDefault("Editor.Material.Done", "&7Material for tool &f%tool% &7set to &f%material%");
-        addDefault("Editor.Root-Template", "&7Root template: &f%template%");
+        addDefault("Editor.Material.Done", "&7Material set to &f%material%");
+
+        addDefault("Editor.Root-Template.Info", "&7Root template: &f%template%");
         addDefault("Editor.Root-Template.Invalid", "&cTemplate &f%param% &cis invalid.");
         addDefault("Editor.Root-Template.Done", "&7Rooted tool to template &f%template%");
     }

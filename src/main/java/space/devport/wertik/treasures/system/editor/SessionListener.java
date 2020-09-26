@@ -44,26 +44,27 @@ public class SessionListener extends DevportListener {
         String[] args = message.split(" ");
 
         if (args.length == 0) {
-            language.sendPrefixed(player, "Editor.Not-Enough-Arguments");
+            language.send(player, "Editor.Not-Enough-Arguments");
             return;
         }
 
         switch (matchArgument(args[0])) {
             case "finish":
             case "save":
-                language.getPrefixed("Editor.Save.Done")
+                language.get("Editor.Save.Done")
                         .replace("%tool%", session.getTool().getName())
                         .send(player);
+                session.complete();
                 break;
             case "cancel":
             case "exit":
-                language.sendPrefixed(player, "Editor.Cancel.Done");
+                language.send(player, "Editor.Cancel.Done");
                 session.cancel();
                 break;
             case "listcommands":
 
                 if (session.getTool().getTemplate().getRewards().getCommands().isEmpty()) {
-                    language.sendPrefixed(player, "Editor.List-Commands.No-Commands");
+                    language.send(player, "Editor.List-Commands.No-Commands");
                     return;
                 }
 
@@ -73,17 +74,18 @@ public class SessionListener extends DevportListener {
                 session.getTool().getTemplate().getRewards().getCommands().forEach(cmd -> list.append(new Message(lineFormat)
                         .replace("%command%", cmd)
                         .toString()));
-                list.send(player);
+                list.replace("%count%", session.getTool().getTemplate().getRewards().getCommands().size())
+                        .send(player);
                 break;
             case "removecommand":
 
                 if (args.length < 2) {
-                    language.sendPrefixed(player, "Editor.Remove-Command.No-Command");
+                    language.send(player, "Editor.Remove-Command.No-Command");
                     return;
                 }
 
                 if (session.getTool().getTemplate().getRewards().getCommands().isEmpty()) {
-                    language.sendPrefixed(player, "Editor.Remove-Command.No-Commands");
+                    language.send(player, "Editor.Remove-Command.No-Commands");
                     return;
                 }
 
@@ -106,7 +108,7 @@ public class SessionListener extends DevportListener {
             case "material":
 
                 if (args.length < 2) {
-                    language.get("Editor.Material")
+                    language.get("Editor.Material.Info")
                             .replace("%material%", session.getTool().getMaterial(true) == null ? "None" : session.getTool().getMaterial(true).toString())
                             .send(player);
                     return;
@@ -130,7 +132,7 @@ public class SessionListener extends DevportListener {
             case "roottemplate":
                 if (args.length < 2) {
                     TreasureTemplate template = session.getTool().getRootTemplate();
-                    language.get("Editor.Root-Template")
+                    language.get("Editor.Root-Template.Info")
                             .replace("%template%", template == null ? "None" : template.getName())
                             .send(player);
                     return;
