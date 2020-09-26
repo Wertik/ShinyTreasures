@@ -57,9 +57,9 @@ public class PlacementTool {
         this.rootTemplate = template == null ? null : template.getName();
     }
 
-    public Material getMaterial() {
+    public Material getMaterial(boolean... dontNagMe) {
         Material material = template.getMaterial() == null ? (getRootTemplate() == null ? null : getRootTemplate().getMaterial()) : template.getMaterial();
-        if (material == null)
+        if (material == null && (dontNagMe.length < 1 || !dontNagMe[0]))
             ConsoleOutput.getInstance().err("Could not find a material to use in tool " + name + ", falling back to a chest.");
         return material == null ? Material.CHEST : material;
     }

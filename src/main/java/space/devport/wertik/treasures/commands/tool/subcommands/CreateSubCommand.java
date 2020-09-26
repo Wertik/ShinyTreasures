@@ -41,9 +41,13 @@ public class CreateSubCommand extends TreasureSubCommand {
 
         if (args.length > 1) {
             TreasureTemplate template = plugin.getCommandParser().parseTemplate(sender, args[1]);
+
+            if (template == null) return CommandResult.FAILURE;
+
             session.getTool().rootTemplate(template);
         }
 
+        //TODO
         sender.sendMessage(StringUtil.color("&7Opening a chat editor..."));
         session.startChatSession(player);
         return CommandResult.SUCCESS;
@@ -51,7 +55,7 @@ public class CreateSubCommand extends TreasureSubCommand {
 
     @Override
     public @NotNull String getDefaultUsage() {
-        return "/%label% create <name> (template) -e";
+        return "/%label% create <name> (template)";
     }
 
     @Override

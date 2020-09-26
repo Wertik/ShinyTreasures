@@ -50,7 +50,7 @@ public class SessionListener extends DevportListener {
             case "finish":
             case "save":
                 //TODO
-                player.sendMessage(StringUtil.color("&7Saving and exiting..."));
+                player.sendMessage(StringUtil.color("&7Saving and exiting...\n&7You can get your tool with &f/tt get &e" + session.getTool().getName()));
                 session.complete();
                 break;
             case "cancel":
@@ -60,12 +60,32 @@ public class SessionListener extends DevportListener {
                 session.cancel();
                 break;
             case "listcommands":
+
+                if (session.getTool().getTemplate().getRewards().getCommands().isEmpty()) {
+                    //TODO
+                    player.sendMessage(StringUtil.color("&cThere are no commands attached."));
+                    return;
+                }
+
                 //TODO
-                StringBuilder list = new StringBuilder("&7Commands ( " + session.getTool().getTemplate().getRewards().getCommands().size() + " ) :");
-                session.getTool().getTemplate().getRewards().getCommands().forEach(str -> list.append("\n").append(str));
+                StringBuilder list = new StringBuilder("&7Commands ( " + session.getTool().getTemplate().getRewards().getCommands().size() + " ) : \n&8 - &f");
+                session.getTool().getTemplate().getRewards().getCommands().forEach(str -> list.append("\n&8 - &f").append(str));
                 player.sendMessage(StringUtil.color(list.toString()));
                 break;
             case "removecommand":
+
+                if (args.length < 2) {
+                    //TODO
+                    player.sendMessage(StringUtil.color("&cSpecify a command to remove."));
+                    return;
+                }
+
+                if (session.getTool().getTemplate().getRewards().getCommands().isEmpty()) {
+                    //TODO
+                    player.sendMessage(StringUtil.color("&cThere are no commands attached."));
+                    return;
+                }
+
                 session.getTool().getTemplate().getRewards().getCommands().removeIf(cmd -> {
                     boolean bool = match(combine(Arrays.copyOfRange(args, 1, args.length)), cmd);
                     if (bool)
@@ -85,7 +105,7 @@ public class SessionListener extends DevportListener {
                 if (args.length < 2) {
                     //TODO
                     player.sendMessage(StringUtil.color("&7Tool material: &f%material%"
-                            .replace("%material%", session.getTool().getMaterial() == null ? "None" : session.getTool().getMaterial().toString())));
+                            .replace("%material%", session.getTool().getMaterial(true) == null ? "None" : session.getTool().getMaterial(true).toString())));
                     return;
                 }
 

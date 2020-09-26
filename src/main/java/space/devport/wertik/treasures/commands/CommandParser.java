@@ -1,6 +1,7 @@
 package space.devport.wertik.treasures.commands;
 
 import org.bukkit.command.CommandSender;
+import space.devport.utils.text.StringUtil;
 import space.devport.wertik.treasures.TreasurePlugin;
 import space.devport.wertik.treasures.system.template.struct.TreasureTemplate;
 
@@ -17,7 +18,7 @@ public class CommandParser {
 
         if (template == null) {
             //TODO
-            sender.sendMessage("&cInvalid template.");
+            sender.sendMessage(StringUtil.color("&cInvalid template."));
             return null;
         }
 
