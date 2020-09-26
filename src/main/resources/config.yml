@@ -2,7 +2,7 @@
 #
 # Version: ${project.version}
 
-plugin-prefix: '&3Treasures &8| '
+plugin-prefix: '&eShiny Treasures &8| '
 debug-enabled: false
 
 # Block hide settings

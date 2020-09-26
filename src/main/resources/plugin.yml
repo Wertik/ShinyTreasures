@@ -3,18 +3,15 @@ main: ${project.groupId}.TreasurePlugin
 version: ${project.version}
 authors: [ Wertik1206 ]
 commands:
-  treasures:
-    aliases: [ t, treasure ]
+  shinytreasures:
+    aliases: [ st, treasure, shinytreasure, treasures ]
     description: Main plugin command
-  treasureeditor:
-    aliases: [ te ]
-    description: Main plugin command
-  treasuretools:
-    aliases: [ tt ]
+  shinytreasuretools:
+    aliases: [ stt, treasuretools, tt, treasuretool, shinytreasuretool ]
     description: Main plugin command
 permissions:
-  simpletreasures.open:
+  shinytreasures.open:
     default: true
     description: Permission to open treasures.
-  simpletreasures.admin:
+  shinytreasures.admin:
     description: Permission to manage treasures.
