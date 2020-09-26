@@ -23,7 +23,7 @@ public class ResetSubCommand extends TreasureSubCommand {
                 String toolName = args[0].replace("tool:", "");
 
                 if (toolName.equalsIgnoreCase("all")) {
-                    plugin.getTreasureManager().getAdditionalData().resetTools();
+                    plugin.getTreasureManager().getFoundData().resetTools();
                     //TODO
                     sender.sendMessage(StringUtil.color("&7Reset all tools."));
                 } else {
@@ -35,13 +35,13 @@ public class ResetSubCommand extends TreasureSubCommand {
                         return CommandResult.FAILURE;
                     }
 
-                    plugin.getTreasureManager().getAdditionalData().resetTool(toolName);
+                    plugin.getTreasureManager().getFoundData().resetTool(toolName);
                     //TODO
                     sender.sendMessage(StringUtil.color("&7Reset tool &f%tool%".replace("%tool%", toolName)));
                 }
             } else {
                 if (args[0].equalsIgnoreCase("all")) {
-                    plugin.getTreasureManager().getAdditionalData().resetTemplates();
+                    plugin.getTreasureManager().getFoundData().resetTemplates();
                     //TODO
                     sender.sendMessage(StringUtil.color("&7Reset all templates."));
                 } else {
@@ -53,12 +53,12 @@ public class ResetSubCommand extends TreasureSubCommand {
                         return CommandResult.FAILURE;
                     }
 
-                    plugin.getTreasureManager().getAdditionalData().resetTemplate(args[0]);
+                    plugin.getTreasureManager().getFoundData().resetTemplate(args[0]);
                     sender.sendMessage(StringUtil.color("&7Reset template &f%template%".replace("%template%", args[0])));
                 }
             }
         } else {
-            plugin.getTreasureManager().getAdditionalData().reset();
+            plugin.getTreasureManager().getFoundData().reset();
             //TODO
             sender.sendMessage(StringUtil.color("&7Reset all tools and templates."));
         }
