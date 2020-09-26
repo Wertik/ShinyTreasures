@@ -2,10 +2,8 @@ package space.devport.wertik.treasures.commands.treasure.subcommands;
 
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
-import space.devport.utils.ConsoleOutput;
 import space.devport.utils.commands.struct.ArgumentRange;
 import space.devport.utils.commands.struct.CommandResult;
-import space.devport.utils.text.StringUtil;
 import space.devport.utils.text.message.Message;
 import space.devport.utils.utility.LocationUtil;
 import space.devport.wertik.treasures.ParserUtil;
@@ -41,13 +39,10 @@ public class ListSubCommand extends TreasureSubCommand {
             return CommandResult.FAILURE;
         }
 
-        //TODO fix pagination, displays more items on second page, even though the start & end are correct.
-        ConsoleOutput.getInstance().debug("Skip: " + Math.max(0, page - 1) * 10 + " Limit: " + Math.max(1, page) * 10);
-
         Message list = language.get("Commands.Treasures.List.Header");
         String lineFormat = language.get("Commands.Treasures.List.Line").toString();
 
-        plugin.getTreasureManager().getTreasures().stream().skip(Math.max(0, page - 1) * 10).limit(Math.max(1, page) * 10)
+        plugin.getTreasureManager().getTreasures().stream().skip(Math.max(0, page - 1) * 10).limit(10)
                 .forEach((treasure) -> list.append(new Message(lineFormat)
                         .replace("%location%", LocationUtil.locationToString(treasure.getLocation()))
                         .replace("%tool%", treasure.getTool(true) == null ? "None" : treasure.getTool().getName()))
