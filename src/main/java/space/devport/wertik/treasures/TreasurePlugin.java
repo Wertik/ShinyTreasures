@@ -3,6 +3,7 @@ package space.devport.wertik.treasures;
 import lombok.Getter;
 import me.clip.placeholderapi.PlaceholderAPI;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import space.devport.utils.DevportPlugin;
 import space.devport.utils.UsageFlag;
 import space.devport.utils.utility.VersionUtil;
@@ -29,7 +30,6 @@ import space.devport.wertik.treasures.system.user.UserManager;
 public class TreasurePlugin extends DevportPlugin {
 
     //TODO Tab Completion
-    //TODO Permissions
 
     @Getter
     private TreasureManager treasureManager;
@@ -56,6 +56,11 @@ public class TreasurePlugin extends DevportPlugin {
 
     public static TreasurePlugin getInstance() {
         return getPlugin(TreasurePlugin.class);
+    }
+
+    @Override
+    public ChatColor getColor() {
+        return ChatColor.GOLD;
     }
 
     @Override

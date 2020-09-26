@@ -30,7 +30,7 @@ public class TreasureLanguage extends LanguageDefaults {
         addDefault("Commands.Tools.Get.Done", "&7Tool &f%tool% &7given.");
 
         addDefault("Commands.Tools.List.No-Tools", "&cNo tools created yet.");
-        addDefault("Commands.Tools.List.Header", "&8&m    &3 Loaded tools");
+        addDefault("Commands.Tools.List.Header", "&8&m    &6 Loaded tools");
         addDefault("Commands.Tools.List.Line", "&8 - &e%toolName% &7( &f%rootTemplate% ; %count% &7)");
 
         addDefault("Commands.Tools.Load.Could-Not", "&cCould not load tool with the name &f%param%");
@@ -51,14 +51,14 @@ public class TreasureLanguage extends LanguageDefaults {
 
         addDefault("Commands.Treasures.List.Page-Not-Number", "&cPage has to be a positive number.");
         addDefault("Commands.Treasures.List.Not-Enough-For-Page", "&cNot enough treasures to display this page.");
-        addDefault("Commands.Treasures.List.Header", "&8&m    &3 Treasures");
+        addDefault("Commands.Treasures.List.Header", "&8&m    &6 Treasures");
         addDefault("Commands.Treasures.List.Line", "&8 - &f%uniqueID% &7( %location%, %tool%, %rootTemplate% &7)");
 
         addDefault("Commands.Treasures.Purge-Invalid.No-Invalids", "&cNo invalid treasures.");
         addDefault("Commands.Treasures.Purge-Invalid.Removing", "&7&oRemoving &f&o%count% &7&otreasures...");
         addDefault("Commands.Treasures.Purge-Invalid.Done", "&7Done.");
 
-        addDefault("Editor.Info.Header", "&3Chat editor options:");
+        addDefault("Editor.Info.Header", "&6Chat editor options:");
         addDefault("Editor.Info.Material", "&ematerial &7(material) &8- &7Set the material for this tool.");
         addDefault("Editor.Info.List-Commands", "&elistcommands &8- &7List commands.");
         addDefault("Editor.Info.Add-Command", "&eaddcommand &7<command> &8- &7Add a command to the tool.");

@@ -7,7 +7,7 @@ import space.devport.utils.commands.struct.CommandResult;
 public class TreasureCommand extends MainCommand {
 
     public TreasureCommand() {
-        super("treasures");
+        super("shinytreasures");
     }
 
     @Override

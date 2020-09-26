@@ -7,7 +7,7 @@ import space.devport.utils.commands.struct.CommandResult;
 public class ToolCommand extends MainCommand {
 
     public ToolCommand() {
-        super("treasuretools");
+        super("shinytreasuretools");
     }
 
     @Override
