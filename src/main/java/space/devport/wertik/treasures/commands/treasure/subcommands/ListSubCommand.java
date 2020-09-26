@@ -2,11 +2,11 @@ package space.devport.wertik.treasures.commands.treasure.subcommands;
 
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
+import space.devport.utils.ParseUtil;
 import space.devport.utils.commands.struct.ArgumentRange;
 import space.devport.utils.commands.struct.CommandResult;
 import space.devport.utils.text.message.Message;
 import space.devport.utils.utility.LocationUtil;
-import space.devport.wertik.treasures.ParserUtil;
 import space.devport.wertik.treasures.TreasurePlugin;
 import space.devport.wertik.treasures.commands.TreasureSubCommand;
 
@@ -24,15 +24,10 @@ public class ListSubCommand extends TreasureSubCommand {
             return CommandResult.FAILURE;
         }
 
-        int page = 1;
-        if (args.length > 0) {
-            page = ParserUtil.parseInt(args[0]);
+        int page = parse(sender, args[0], value -> ParseUtil.parseInteger(value, -1, true), "Commands.Treasures.List.Page-Not-Number");
 
-            if (page < 0) {
-                language.sendPrefixed(sender, "Commands.Treasures.List.Page-Not-Number");
-                return CommandResult.FAILURE;
-            }
-        }
+        if (page < 0)
+            return CommandResult.FAILURE;
 
         if (Math.max(0, page - 1) * 10 > plugin.getTreasureManager().getTreasures().size()) {
             language.sendPrefixed(sender, "Commands.Treasures.List.Not-Enough-For-Page");

@@ -20,14 +20,11 @@ public class GetSubCommand extends TreasureSubCommand {
 
     @Override
     protected CommandResult perform(CommandSender sender, String label, String[] args) {
-        PlacementTool tool = plugin.getToolManager().getTool(args[0]);
 
-        if (tool == null) {
-            language.getPrefixed("Commands.Invalid-Tool")
-                    .replace("%param%", args[0])
-                    .send(sender);
+        PlacementTool tool = parse(sender, args[0], value -> plugin.getToolManager().getTool(value), "Commands.Invalid-Tool");
+
+        if (tool == null)
             return CommandResult.FAILURE;
-        }
 
         Player player = (Player) sender;
 

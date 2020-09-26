@@ -19,25 +19,27 @@ public class DeleteSubCommand extends TreasureSubCommand {
         super(plugin, "delete");
     }
 
-    //TODO -m switch
     @Override
     protected CommandResult perform(CommandSender sender, String label, String[] args) {
 
+        boolean multiple = containsSwitch(args, "multiple");
+        final String[] finalArgs = filterSwitch(args, "multiple");
+
         CompletableFuture.supplyAsync(() -> {
-            Set<UUID> toRemove = plugin.getTreasureManager().getTreasures((treasure) -> treasure.getUniqueID().toString().startsWith(args[0])).stream()
+            Set<UUID> toRemove = plugin.getTreasureManager().getTreasures((treasure) -> treasure.getUniqueID().toString().startsWith(finalArgs[0])).stream()
                     .map(Treasure::getUniqueID)
                     .collect(Collectors.toSet());
 
             if (toRemove.isEmpty()) {
                 language.getPrefixed("Commands.Treasures.Delete.Invalid-Treasure")
-                        .replace("%param%", args[0])
+                        .replace("%param%", finalArgs[0])
                         .send(sender);
                 return null;
             }
 
-            if (toRemove.size() > 1) {
+            if (toRemove.size() > 1 && !multiple) {
                 language.getPrefixed("Commands.Treasures.Delete.Multiple-Results")
-                        .replace("%param%", args[0])
+                        .replace("%param%", finalArgs[0])
                         .send(sender);
                 return null;
             }
@@ -62,12 +64,12 @@ public class DeleteSubCommand extends TreasureSubCommand {
 
     @Override
     public @Nullable String getDefaultUsage() {
-        return "/%label% delete <startOfTheUUID> -m";
+        return "/%label% delete <startOfTheUUID> -multiple";
     }
 
     @Override
     public @Nullable String getDefaultDescription() {
-        return "Delete a treasure by the start of it's uuid. -m to remove multiple.";
+        return "Delete a treasure by the start of it's uuid. -multiple (-m) to remove multiple.";
     }
 
     @Override

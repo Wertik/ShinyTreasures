@@ -17,51 +17,45 @@ public class ResetSubCommand extends TreasureSubCommand {
 
     @Override
     protected CommandResult perform(CommandSender sender, String label, String[] args) {
-        if (args.length > 0) {
-            if (args[0].toLowerCase().startsWith("tool:")) {
-                String toolName = args[0].replace("tool:", "");
 
-                if (toolName.equalsIgnoreCase("all")) {
-                    plugin.getTreasureManager().getFoundData().resetTools();
-                    language.sendPrefixed(sender, "Commands.Tools.Load.Could-Not");
-                } else {
-                    PlacementTool tool = plugin.getToolManager().getTool(toolName);
-
-                    if (tool == null) {
-                        language.getPrefixed("Commands.Invalid-Tool")
-                                .replace("%param%", toolName)
-                                .send(sender);
-                        return CommandResult.FAILURE;
-                    }
-
-                    plugin.getTreasureManager().getFoundData().resetTool(toolName);
-                    language.getPrefixed("Commands.Tools.Reset.Tool-Done")
-                            .replace("%tool%", tool.getName())
-                            .send(sender);
-                }
-            } else {
-                if (args[0].equalsIgnoreCase("all")) {
-                    plugin.getTreasureManager().getFoundData().resetTemplates();
-                    language.sendPrefixed(sender, "Commands.Tools.Reset.Template-Done-All");
-                } else {
-                    TreasureTemplate template = plugin.getTemplateManager().getTemplate(args[0]);
-
-                    if (template == null) {
-                        language.getPrefixed("Commands.Invalid-Template")
-                                .replace("%param%", args[0])
-                                .send(sender);
-                        return CommandResult.FAILURE;
-                    }
-
-                    plugin.getTreasureManager().getFoundData().resetTemplate(args[0]);
-                    language.getPrefixed("Commands.Tools.Reset.Template-Done")
-                            .replace("%template%", template.getName())
-                            .send(sender);
-                }
-            }
-        } else {
+        if (args.length <= 0) {
             plugin.getTreasureManager().getFoundData().reset();
             language.sendPrefixed(sender, "Commands.Tools.Reset.Done-All");
+            return CommandResult.SUCCESS;
+        }
+
+        if (args[0].toLowerCase().startsWith("tool:")) {
+            String toolName = args[0].replace("tool:", "");
+
+            if (toolName.equalsIgnoreCase("all")) {
+                plugin.getTreasureManager().getFoundData().resetTools();
+                language.sendPrefixed(sender, "Commands.Tools.Load.Could-Not");
+            } else {
+                PlacementTool tool = parse(sender, args[0], value -> plugin.getToolManager().getTool(toolName), "Commands.Invalid-Tool");
+
+                if (tool == null)
+                    return CommandResult.FAILURE;
+
+                plugin.getTreasureManager().getFoundData().resetTool(toolName);
+                language.getPrefixed("Commands.Tools.Reset.Tool-Done")
+                        .replace("%tool%", tool.getName())
+                        .send(sender);
+            }
+        } else {
+            if (args[0].equalsIgnoreCase("all")) {
+                plugin.getTreasureManager().getFoundData().resetTemplates();
+                language.sendPrefixed(sender, "Commands.Tools.Reset.Template-Done-All");
+            } else {
+                TreasureTemplate template = parse(sender, args[0], value -> plugin.getTemplateManager().getTemplate(value), "Commands.Invalid-Template");
+
+                if (template == null)
+                    return CommandResult.FAILURE;
+
+                plugin.getTreasureManager().getFoundData().resetTemplate(args[0]);
+                language.getPrefixed("Commands.Tools.Reset.Template-Done")
+                        .replace("%template%", template.getName())
+                        .send(sender);
+            }
         }
         return CommandResult.SUCCESS;
     }
