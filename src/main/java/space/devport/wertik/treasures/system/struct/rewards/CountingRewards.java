@@ -4,9 +4,9 @@ import lombok.Getter;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import space.devport.utils.ConsoleOutput;
+import space.devport.utils.ParseUtil;
 import space.devport.utils.configuration.Configuration;
 import space.devport.utils.struct.Rewards;
-import space.devport.wertik.treasures.ParserUtil;
 
 import java.util.function.BiPredicate;
 
@@ -38,7 +38,7 @@ public class CountingRewards extends Rewards {
             return null;
         }
 
-        int count = ParserUtil.parseInt(section.getName());
+        int count = ParseUtil.parseInteger(section.getName(), -1, true);
 
         if (count <= 0) {
             if (!silent)
