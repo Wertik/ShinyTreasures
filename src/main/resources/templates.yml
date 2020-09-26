@@ -4,10 +4,15 @@
 
 template-one:
 
+  # All options here can be defined for the placement tools as well and function the same.
+
   # Default material.
   material: 'CHEST'
 
+  # Rewards given.
+  # PlaceholderAPI placeholders are parsed where possible. (broadcast, inform, commands, lore, item name...)
   rewards:
+
     # Broadcast and inform both parse PlaceholderAPI placeholders.
     #broadcast:
     #  - ''
@@ -46,33 +51,32 @@ template-one:
         lore:
           - "&7I don't know.. a stick?"
 
-    # Rewards in both of these sections have all of the options used above ^^
+    # Rewards in all of these sections have all of the options used above ^^
+
+    # When the player finds all treasures placed with this template.
+    complete:
+      inform:
+        - '&7You found all of the template-one treasures!'
+
+    # When the treasure is found for the first time.
+    first:
+      inform:
+        - '&7You were the first one to find this treasure, gj!'
+
+    # When the player is the first to find all treasures with this template.
+    first-complete:
+      inform:
+        - '&7You were the first one to find all template-one treasures! Cg!'
 
     # Every x found treasures reward the player with...
     repeat:
       '5':
-        commands:
-          - 'say This runs every 5 treasures...'
+        inform:
+          - '&7This is shown every 5 treasures...'
 
     # Cumulative rewards.
     cumulative:
       # After the player finds x treasures with this template, reward him with...
       '10':
-        commands:
-          - 'say %player% found 10 treasures!'
-
-    complete:
-      #items
-
-    # Fired when a player finds the treasure first.
-    first:
-      #items:
-      #commands:
-      #inform:
-      #broadcast:
-
-    # Fired when the player finds all treasures with this template first.
-    first-complete:
-      #items:
-      #commands:
-      #etc...
+        broadcast:
+          - '&f%player% &7found &f10 &7treasures!'

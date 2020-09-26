@@ -32,9 +32,11 @@ public class EditSession {
     public void startChatSession(Player player) {
         plugin.getEditorManager().registerSession(this);
 
+        //TODO
         player.sendMessage(StringUtil.color("&7Chat editor arguments:" +
-                "\n&ematerial &7<material>" +
+                "\n&ematerial &7(material)" +
                 "\n&eaddcommand &7<command>" +
+                "\n&eroottemplate &7(templateName)" +
                 "\n&eremovecommand &7<startOfTheCommand>" +
                 "\n&elistcommands" +
                 "\n\n&7Use &eexit &7or &ecancel &7to... exit the session without saving." +

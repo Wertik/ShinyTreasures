@@ -5,7 +5,7 @@ import space.devport.utils.ConsoleOutput;
 import java.util.HashMap;
 import java.util.Map;
 
-public class AdditionalData {
+public class FoundData {
 
     private final Map<String, Boolean> foundTools = new HashMap<>();
     private final Map<String, Boolean> foundTemplates = new HashMap<>();

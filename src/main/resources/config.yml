@@ -10,21 +10,22 @@ hide-block:
   enabled: true
 
   # When hiding only for the player who found it, it's through block change packets.
-  # It's not permanent, any interaction set's the block right back.
+  # It's not permanent, any interaction sets the block right back.
   # Setting to false removes the block completely and places it back after configured time.
   only-for-player: true
 
-  # Settings below do not apply if only-for-player is set to true, don't see a point in that.
+  # Settings below do not apply if only-for-player is set to true.
 
   # Place it back?
-  # This could be useful to create "who gets the most" egg hunts, with this set to false, the egg block just disappears.
+  # With this set to false, the egg block just disappears and is not placed back.
   place-back: true
 
   # For how long to hide it?
   # In seconds.
   time: 60
 
-# Fireworks? Picks them randomly.
+# Fireworks?
+# Colors are picked randomly.
 fireworks: true
 
 # Sound to play when the player opens a treasure.

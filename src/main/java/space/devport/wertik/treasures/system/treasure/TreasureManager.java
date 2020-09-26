@@ -11,7 +11,7 @@ import space.devport.utils.ConsoleOutput;
 import space.devport.utils.item.Amount;
 import space.devport.wertik.treasures.TreasurePlugin;
 import space.devport.wertik.treasures.system.GsonHelper;
-import space.devport.wertik.treasures.system.struct.AdditionalData;
+import space.devport.wertik.treasures.system.struct.FoundData;
 import space.devport.wertik.treasures.system.tool.struct.PlacementTool;
 import space.devport.wertik.treasures.system.treasure.struct.Treasure;
 
@@ -33,7 +33,7 @@ public class TreasureManager {
     private final Map<UUID, Treasure> loadedTreasures = new HashMap<>();
 
     @Getter
-    private AdditionalData additionalData;
+    private FoundData foundData;
 
     private final Set<RegenerationTask> regenerationTasks = new HashSet<>();
 
@@ -87,9 +87,9 @@ public class TreasureManager {
     }
 
     public void loadAdditionalData() {
-        AdditionalData loadedData = gsonHelper.load(plugin.getDataFolder() + "/additional-data.json", new TypeToken<AdditionalData>() {
+        FoundData loadedData = gsonHelper.load(plugin.getDataFolder() + "/additional-data.json", new TypeToken<FoundData>() {
         }.getType());
-        this.additionalData = loadedData == null ? new AdditionalData() : loadedData;
+        this.foundData = loadedData == null ? new FoundData() : loadedData;
         plugin.getConsoleOutput().info("Loaded additional data...");
     }
 
@@ -114,7 +114,7 @@ public class TreasureManager {
     }
 
     public void saveAdditionalData() {
-        gsonHelper.save(this.additionalData, plugin.getDataFolder() + "/additional-data.json");
+        gsonHelper.save(this.foundData, plugin.getDataFolder() + "/additional-data.json");
         plugin.getConsoleOutput().info("Saved additional data...");
     }
 
