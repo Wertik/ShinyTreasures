@@ -93,9 +93,9 @@ public class TreasureRewards extends Rewards {
             if (toolsPlaced == toolsFound) {
                 complete.give(player, true);
 
-                if (!TreasurePlugin.getInstance().getTreasureManager().getAdditionalData().hasToolBeenFound(tool.getName())) {
+                if (!TreasurePlugin.getInstance().getTreasureManager().getFoundData().hasToolBeenFound(tool.getName())) {
                     firstComplete.give(player, true);
-                    TreasurePlugin.getInstance().getTreasureManager().getAdditionalData().setToolFound(tool.getName());
+                    TreasurePlugin.getInstance().getTreasureManager().getFoundData().setToolFound(tool.getName());
                     ConsoleOutput.getInstance().debug("Rewarding " + user.getOfflinePlayer().getName() + " for the first complete of " + tool.getName());
                 }
             }
@@ -129,9 +129,9 @@ public class TreasureRewards extends Rewards {
             if (templatesPlaced == templatesFound) {
                 complete.give(player, true);
 
-                if (!TreasurePlugin.getInstance().getTreasureManager().getAdditionalData().hasTemplateBeenFound(rootTemplate.getName())) {
+                if (!TreasurePlugin.getInstance().getTreasureManager().getFoundData().hasTemplateBeenFound(rootTemplate.getName())) {
                     firstComplete.give(player, true);
-                    TreasurePlugin.getInstance().getTreasureManager().getAdditionalData().setTemplateFound(rootTemplate.getName());
+                    TreasurePlugin.getInstance().getTreasureManager().getFoundData().setTemplateFound(rootTemplate.getName());
                     ConsoleOutput.getInstance().debug("Rewarding " + user.getOfflinePlayer().getName() + " for the first complete of " + rootTemplate.getName());
                 }
             }
