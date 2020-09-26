@@ -61,7 +61,14 @@ public class TreasurePlaceholders extends PlaceholderExpansion {
             if (position <= 0)
                 return "invalid_position";
 
-            List<User> top = getTop(plugin.getUserManager().getUsers(u -> true));
+            Predicate<Treasure> typeCondition = t -> true;
+            if (args.length > 3)
+                typeCondition = parseTypeCondition(args[3]);
+
+            if (typeCondition == null)
+                return "invalid_type_condition";
+
+            List<User> top = getTop(plugin.getUserManager().getUsers(u -> true), typeCondition);
 
             if (top.size() < position)
                 return "invalid_position";
@@ -77,9 +84,9 @@ public class TreasurePlaceholders extends PlaceholderExpansion {
         return "invalid_params";
     }
 
-    private List<User> getTop(Set<User> users) {
+    private List<User> getTop(Set<User> users, Predicate<Treasure> typeCondition) {
         return users.stream()
-                .sorted(Comparator.comparingInt((ToIntFunction<User>) User::getFindCount).reversed())
+                .sorted(Comparator.comparingInt((ToIntFunction<User>) user -> user.getFindCount(typeCondition)).reversed())
                 .collect(Collectors.toList());
     }
 
