@@ -11,6 +11,10 @@ import space.devport.wertik.treasures.commands.TreasureSubCommand;
 import space.devport.wertik.treasures.system.editor.struct.EditSession;
 import space.devport.wertik.treasures.system.template.struct.TreasureTemplate;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+
 public class CreateSubCommand extends TreasureSubCommand {
 
     public CreateSubCommand(TreasurePlugin plugin) {
@@ -54,6 +58,16 @@ public class CreateSubCommand extends TreasureSubCommand {
         language.sendPrefixed(sender, "Commands.Tools.Create.Opening-Editor");
         session.startChatSession(player);
         return CommandResult.SUCCESS;
+    }
+
+    @Override
+    public List<String> requestTabComplete(CommandSender sender, String[] args) {
+        if (args.length == 2) {
+            return plugin.getTemplateManager().getLoadedTemplates().values().stream()
+                    .map(TreasureTemplate::getName)
+                    .collect(Collectors.toList());
+        }
+        return new ArrayList<>();
     }
 
     @Override

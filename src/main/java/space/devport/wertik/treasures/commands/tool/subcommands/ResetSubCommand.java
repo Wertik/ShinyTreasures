@@ -9,6 +9,10 @@ import space.devport.wertik.treasures.commands.TreasureSubCommand;
 import space.devport.wertik.treasures.system.template.struct.TreasureTemplate;
 import space.devport.wertik.treasures.system.tool.struct.PlacementTool;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+
 public class ResetSubCommand extends TreasureSubCommand {
 
     public ResetSubCommand(TreasurePlugin plugin) {
@@ -58,6 +62,20 @@ public class ResetSubCommand extends TreasureSubCommand {
             }
         }
         return CommandResult.SUCCESS;
+    }
+
+    @Override
+    public List<String> requestTabComplete(CommandSender sender, String[] args) {
+        if (args.length == 1) {
+            List<String> list = plugin.getToolManager().getLoadedTools().values().stream()
+                    .map(PlacementTool::getName)
+                    .collect(Collectors.toList());
+            list.addAll(plugin.getTemplateManager().getLoadedTemplates().values().stream()
+                    .map(TreasureTemplate::getName)
+                    .collect(Collectors.toList()));
+            return list;
+        }
+        return new ArrayList<>();
     }
 
     @Override

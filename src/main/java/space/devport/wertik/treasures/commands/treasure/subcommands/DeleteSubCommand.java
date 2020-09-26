@@ -8,6 +8,10 @@ import space.devport.wertik.treasures.TreasurePlugin;
 import space.devport.wertik.treasures.commands.TreasureSubCommand;
 import space.devport.wertik.treasures.system.treasure.struct.Treasure;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
@@ -63,6 +67,18 @@ public class DeleteSubCommand extends TreasureSubCommand {
     }
 
     @Override
+    public List<String> requestTabComplete(CommandSender sender, String[] args) {
+        if (args.length == 1) {
+            return plugin.getTreasureManager().getTreasures(t -> true).stream()
+                    .map(treasure -> treasure.getUniqueID().toString().substring(0, 8))
+                    .collect(Collectors.toList());
+        } else if (args.length == 2) {
+            return Collections.singletonList("-multiple");
+        }
+        return new ArrayList<>();
+    }
+
+    @Override
     public @Nullable String getDefaultUsage() {
         return "/%label% delete <startOfTheUUID> -multiple";
     }
@@ -74,6 +90,6 @@ public class DeleteSubCommand extends TreasureSubCommand {
 
     @Override
     public @Nullable ArgumentRange getRange() {
-        return new ArgumentRange(1);
+        return new ArgumentRange(1, 2);
     }
 }

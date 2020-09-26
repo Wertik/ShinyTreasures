@@ -31,7 +31,7 @@ public class TreasureLanguage extends LanguageDefaults {
 
         addDefault("Commands.Tools.List.No-Tools", "&cNo tools created yet.");
         addDefault("Commands.Tools.List.Header", "&8&m    &6 Loaded tools");
-        addDefault("Commands.Tools.List.Line", "&8 - &e%toolName% &7( &f%rootTemplate% ; %count% &7)");
+        addDefault("Commands.Tools.List.Line", "&8 - &e%toolName% &7( &f%rootTemplate%, %count% &7)");
 
         addDefault("Commands.Tools.Load.Could-Not", "&cCould not load tool with the name &f%param%");
         addDefault("Commands.Tools.Load.Done", "&7Loaded tool &f%tool% &7successfully.");
@@ -52,7 +52,7 @@ public class TreasureLanguage extends LanguageDefaults {
         addDefault("Commands.Treasures.List.Page-Not-Number", "&cPage has to be a positive number.");
         addDefault("Commands.Treasures.List.Not-Enough-For-Page", "&cNot enough treasures to display this page.");
         addDefault("Commands.Treasures.List.Header", "&8&m    &6 Treasures");
-        addDefault("Commands.Treasures.List.Line", "&8 - &f%uniqueID% &7( %location%, %tool%, %rootTemplate% &7)");
+        addDefault("Commands.Treasures.List.Line", "&8 - &f%uuid% &7( %location%, %tool%, %rootTemplate% &7)");
 
         addDefault("Commands.Treasures.Purge-Invalid.No-Invalids", "&cNo invalid treasures.");
         addDefault("Commands.Treasures.Purge-Invalid.Removing", "&7&oRemoving &f&o%count% &7&otreasures...");

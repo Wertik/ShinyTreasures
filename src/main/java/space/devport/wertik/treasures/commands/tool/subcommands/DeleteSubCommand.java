@@ -8,6 +8,10 @@ import space.devport.wertik.treasures.TreasurePlugin;
 import space.devport.wertik.treasures.commands.TreasureSubCommand;
 import space.devport.wertik.treasures.system.tool.struct.PlacementTool;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+
 public class DeleteSubCommand extends TreasureSubCommand {
 
     public DeleteSubCommand(TreasurePlugin plugin) {
@@ -30,6 +34,16 @@ public class DeleteSubCommand extends TreasureSubCommand {
                 .replace("%tool%", tool.getName())
                 .send(sender);
         return CommandResult.SUCCESS;
+    }
+
+    @Override
+    public List<String> requestTabComplete(CommandSender sender, String[] args) {
+        if (args.length == 1) {
+            return plugin.getToolManager().getLoadedTools().values().stream()
+                    .map(PlacementTool::getName)
+                    .collect(Collectors.toList());
+        }
+        return new ArrayList<>();
     }
 
     @Override

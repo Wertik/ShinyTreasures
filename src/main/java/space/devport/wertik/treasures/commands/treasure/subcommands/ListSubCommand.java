@@ -10,6 +10,11 @@ import space.devport.utils.utility.LocationUtil;
 import space.devport.wertik.treasures.TreasurePlugin;
 import space.devport.wertik.treasures.commands.TreasureSubCommand;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+
 public class ListSubCommand extends TreasureSubCommand {
 
     public ListSubCommand(TreasurePlugin plugin) {
@@ -41,10 +46,22 @@ public class ListSubCommand extends TreasureSubCommand {
                 .forEach((treasure) -> list.append(new Message(lineFormat)
                         .replace("%location%", LocationUtil.locationToString(treasure.getLocation()))
                         .replace("%tool%", treasure.getTool(true) == null ? "None" : treasure.getTool().getName()))
-                        .replace("%uuid%", treasure.getUniqueID())
-                        .replace("%rootTemplate%", treasure.getTool(true) == null && treasure.getTool(true).getRootTemplate() == null ? "None" : treasure.getTool().getRootTemplate().getName()));
+                        .replace("%uuid%", treasure.getUniqueID().toString().substring(0, 8))
+                        .replace("%rootTemplate%", treasure.getTool(true) == null || treasure.getTool(true).getRootTemplate() == null ? "None" : treasure.getTool().getRootTemplate().getName()));
         list.send(sender);
         return CommandResult.SUCCESS;
+    }
+
+    @Override
+    public List<String> requestTabComplete(CommandSender sender, String[] args) {
+        if (args.length == 1) {
+            int max = plugin.getTreasureManager().getLoadedTreasures().size() / 10;
+            max = max % 10 == 0 ? max : max + 1;
+            return IntStream.range(1, max)
+                    .mapToObj(String::valueOf)
+                    .collect(Collectors.toList());
+        }
+        return new ArrayList<>();
     }
 
     @Override

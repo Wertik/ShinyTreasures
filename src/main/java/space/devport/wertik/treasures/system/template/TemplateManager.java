@@ -6,6 +6,7 @@ import space.devport.utils.configuration.Configuration;
 import space.devport.wertik.treasures.TreasurePlugin;
 import space.devport.wertik.treasures.system.template.struct.TreasureTemplate;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -40,5 +41,9 @@ public class TemplateManager {
             ConsoleOutput.getInstance().debug("Loaded treasure template " + name);
         }
         plugin.getConsoleOutput().info("Loaded " + this.loadedTemplates.size() + " template(s)...");
+    }
+
+    public Map<String, TreasureTemplate> getLoadedTemplates() {
+        return Collections.unmodifiableMap(loadedTemplates);
     }
 }
