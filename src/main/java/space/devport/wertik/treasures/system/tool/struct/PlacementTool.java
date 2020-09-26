@@ -28,7 +28,7 @@ public class PlacementTool {
         this.template = new TreasureTemplate(name);
     }
 
-    //TODO Sync command dispatch in rewards.
+    //TODO Sync command dispatch in rewards to allow async reward execution.
     public void reward(User user, Treasure treasure) {
         //CompletableFuture.runAsync(() -> {
         getTemplate().getRewards().give(user, treasure, true);

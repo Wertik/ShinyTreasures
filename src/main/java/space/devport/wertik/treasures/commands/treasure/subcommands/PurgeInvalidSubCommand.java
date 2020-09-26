@@ -24,26 +24,30 @@ public class PurgeInvalidSubCommand extends TreasureSubCommand {
     @Override
     protected CommandResult perform(CommandSender sender, String label, String[] args) {
 
-        CompletableFuture.runAsync(() -> {
+        CompletableFuture.supplyAsync(() -> {
             Set<UUID> toRemove = new HashSet<>(plugin.getTreasureManager().getTreasures((t) -> t.getTool(true) == null)).stream()
                     .map(Treasure::getUniqueID)
                     .collect(Collectors.toSet());
 
             if (toRemove.isEmpty()) {
-                //TODO
-                sender.sendMessage(StringUtil.color("&cThere are no invalid treasures!"));
-                return;
+                language.sendPrefixed(sender, "Commands.Treasures.Purge-Invalid.No-Invalids");
+                return null;
             }
 
             int count = toRemove.size();
 
-            //TODO
-            sender.sendMessage(StringUtil.color("&7&oRemoving &f" + count + " &7&otreasure(s)..."));
+            language.getPrefixed("Commands.Treasures.Purge-Invalid.Removing")
+                    .replace("%count%", count)
+                    .send(sender);
+
+            return toRemove;
+        }).thenAcceptAsync((toRemove) -> {
+            if (toRemove == null) return;
+
             toRemove.forEach(uuid -> plugin.getTreasureManager().deleteTreasure(uuid));
             plugin.getTreasureManager().save();
 
-            //TODO
-            sender.sendMessage(StringUtil.color("&7Done!"));
+            language.sendPrefixed(sender, "Commands.Treasures.Purge-Invalid.Done");
         });
         return CommandResult.SUCCESS;
     }

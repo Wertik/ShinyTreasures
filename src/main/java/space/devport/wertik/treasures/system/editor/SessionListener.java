@@ -5,7 +5,8 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import space.devport.utils.DevportListener;
-import space.devport.utils.text.StringUtil;
+import space.devport.utils.text.language.LanguageManager;
+import space.devport.utils.text.message.Message;
 import space.devport.utils.xseries.XMaterial;
 import space.devport.wertik.treasures.system.editor.struct.EditSession;
 import space.devport.wertik.treasures.system.template.struct.TreasureTemplate;
@@ -36,114 +37,122 @@ public class SessionListener extends DevportListener {
 
         event.setCancelled(true);
 
+        LanguageManager language = editorManager.getPlugin().getManager(LanguageManager.class);
+
         String message = event.getMessage();
 
         String[] args = message.split(" ");
 
         if (args.length == 0) {
-            //TODO
-            player.sendMessage(StringUtil.color("&cInvalid arguments."));
+            language.sendPrefixed(player, "Editor.Not-Enough-Arguments");
             return;
         }
 
         switch (matchArgument(args[0])) {
             case "finish":
             case "save":
-                //TODO
-                player.sendMessage(StringUtil.color("&7Saving and exiting...\n&7You can get your tool with &f/tt get &e" + session.getTool().getName()));
-                session.complete();
+                language.getPrefixed("Editor.Save.Done")
+                        .replace("%tool%", session.getTool().getName())
+                        .send(player);
                 break;
             case "cancel":
             case "exit":
-                //TODO
-                player.sendMessage(StringUtil.color("&7Exiting..."));
+                language.sendPrefixed(player, "Editor.Cancel.Done");
                 session.cancel();
                 break;
             case "listcommands":
 
                 if (session.getTool().getTemplate().getRewards().getCommands().isEmpty()) {
-                    //TODO
-                    player.sendMessage(StringUtil.color("&cThere are no commands attached."));
+                    language.sendPrefixed(player, "Editor.List-Commands.No-Commands");
                     return;
                 }
 
-                //TODO
-                StringBuilder list = new StringBuilder("&7Commands ( " + session.getTool().getTemplate().getRewards().getCommands().size() + " ) : \n&8 - &f");
-                session.getTool().getTemplate().getRewards().getCommands().forEach(str -> list.append("\n&8 - &f").append(str));
-                player.sendMessage(StringUtil.color(list.toString()));
+                Message list = language.get("Editor.List-Commands.Header");
+                String lineFormat = language.get("Editor.List-Commands.Line").toString();
+
+                session.getTool().getTemplate().getRewards().getCommands().forEach(cmd -> list.append(new Message(lineFormat)
+                        .replace("%command%", cmd)
+                        .toString()));
+                list.send(player);
                 break;
             case "removecommand":
 
                 if (args.length < 2) {
-                    //TODO
-                    player.sendMessage(StringUtil.color("&cSpecify a command to remove."));
+                    language.sendPrefixed(player, "Editor.Remove-Command.No-Command");
                     return;
                 }
 
                 if (session.getTool().getTemplate().getRewards().getCommands().isEmpty()) {
-                    //TODO
-                    player.sendMessage(StringUtil.color("&cThere are no commands attached."));
+                    language.sendPrefixed(player, "Editor.Remove-Command.No-Commands");
                     return;
                 }
 
                 session.getTool().getTemplate().getRewards().getCommands().removeIf(cmd -> {
                     boolean bool = match(combine(Arrays.copyOfRange(args, 1, args.length)), cmd);
                     if (bool)
-                        //TODO
-                        player.sendMessage(StringUtil.color("&7Removing &f%command%&7...".replace("%command%", cmd)));
+                        language.get("Editor.Remove-Command.Done")
+                                .replace("%command%", cmd)
+                                .send(player);
                     return bool;
                 });
                 break;
             case "addcommand":
                 String command = combine(Arrays.copyOfRange(args, 1, args.length));
                 session.getTool().getTemplate().getRewards().getCommands().add(command);
-                //TODO
-                player.sendMessage(StringUtil.color("&7Command added..."));
+                language.get("Editor.Add-Command.Done")
+                        .replace("%command%", command)
+                        .send(player);
                 break;
             case "material":
 
                 if (args.length < 2) {
-                    //TODO
-                    player.sendMessage(StringUtil.color("&7Tool material: &f%material%"
-                            .replace("%material%", session.getTool().getMaterial(true) == null ? "None" : session.getTool().getMaterial(true).toString())));
+                    language.get("Editor.Material")
+                            .replace("%material%", session.getTool().getMaterial(true) == null ? "None" : session.getTool().getMaterial(true).toString())
+                            .send(player);
                     return;
                 }
 
                 XMaterial xMaterial = XMaterial.matchXMaterial(args[1]).orElse(null);
                 if (xMaterial == null) {
-                    //TODO
-                    player.sendMessage(StringUtil.color("&cInvalid material."));
+                    language.get("Editor.Material.Invalid")
+                            .replace("%param%", args[1])
+                            .send(player);
                     return;
                 }
 
                 session.getTool().getTemplate().setMaterial(xMaterial.parseMaterial());
-                //TODO
-                player.sendMessage(StringUtil.color("&7Material for tool set to &e%material%"
-                        .replace("%material%", xMaterial.name())));
+                language.get("Editor.Material.Done")
+                        .replace("%tool%", session.getTool().getName())
+                        .replace("%material%", xMaterial.name())
+                        .send(player);
                 break;
             case "template":
             case "roottemplate":
                 if (args.length < 2) {
                     TreasureTemplate template = session.getTool().getRootTemplate();
-                    //TODO
-                    player.sendMessage(StringUtil.color("&7Tool root template: &f%template%".replace("%template%", template == null ? "None" : template.getName())));
+                    language.get("Editor.Root-Template")
+                            .replace("%template%", template == null ? "None" : template.getName())
+                            .send(player);
                     return;
                 }
 
                 TreasureTemplate template = editorManager.getPlugin().getTemplateManager().getTemplate(args[1]);
                 if (template == null) {
-                    //TODO
-                    player.sendMessage(StringUtil.color("&cInvalid templated."));
+                    language.get("Editor.Root-Template.Invalid")
+                            .replace("%param%", args[1])
+                            .send(player);
                     return;
                 }
 
                 session.getTool().rootTemplate(template);
-                //TODO
-                player.sendMessage(StringUtil.color("&7Rooted tool to template &f%template%".replace("%template%", template.getName())));
+                language.get("Editor.Root-Template.Done")
+                        .replace("%template%", template.getName())
+                        .send(player);
                 break;
             default:
-                //TODO
-                player.sendMessage(StringUtil.color("&cInvalid argument."));
+                language.get("Editor.Invalid-Argument")
+                        .replace("%param%", args[0])
+                        .send(player);
                 break;
         }
     }

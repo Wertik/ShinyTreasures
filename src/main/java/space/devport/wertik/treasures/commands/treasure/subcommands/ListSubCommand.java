@@ -6,6 +6,7 @@ import space.devport.utils.ConsoleOutput;
 import space.devport.utils.commands.struct.ArgumentRange;
 import space.devport.utils.commands.struct.CommandResult;
 import space.devport.utils.text.StringUtil;
+import space.devport.utils.text.message.Message;
 import space.devport.utils.utility.LocationUtil;
 import space.devport.wertik.treasures.ParserUtil;
 import space.devport.wertik.treasures.TreasurePlugin;
@@ -21,8 +22,7 @@ public class ListSubCommand extends TreasureSubCommand {
     protected CommandResult perform(CommandSender sender, String label, String[] args) {
 
         if (plugin.getTreasureManager().getTreasures().isEmpty()) {
-            //TODO
-            sender.sendMessage(StringUtil.color("&cNo treasures placed yet."));
+            language.sendPrefixed(sender, "Commands.No-Treasures");
             return CommandResult.FAILURE;
         }
 
@@ -31,29 +31,29 @@ public class ListSubCommand extends TreasureSubCommand {
             page = ParserUtil.parseInt(args[0]);
 
             if (page < 0) {
-                //TODO
-                sender.sendMessage(StringUtil.color("&cPage has to be a positive number."));
+                language.sendPrefixed(sender, "Commands.Treasures.List.Page-Not-Number");
                 return CommandResult.FAILURE;
             }
         }
 
         if (Math.max(0, page - 1) * 10 > plugin.getTreasureManager().getTreasures().size()) {
-            //TODO
-            sender.sendMessage(StringUtil.color("&cNot enough treasures for this page."));
+            language.sendPrefixed(sender, "Commands.Treasures.List.Not-Enough-For-Page");
             return CommandResult.FAILURE;
         }
 
+        //TODO fix pagination, displays more items on second page, even though the start & end are correct.
         ConsoleOutput.getInstance().debug("Skip: " + Math.max(0, page - 1) * 10 + " Limit: " + Math.max(1, page) * 10);
 
-        //TODO
-        StringBuilder list = new StringBuilder("&8&m    &3 Treasures &7#&f" + page);
+        Message list = language.get("Commands.Treasures.List.Header");
+        String lineFormat = language.get("Commands.Treasures.List.Line").toString();
+
         plugin.getTreasureManager().getTreasures().stream().skip(Math.max(0, page - 1) * 10).limit(Math.max(1, page) * 10)
-                .forEach((treasure) -> list.append("\n&8 - &f%uniqueID% &7( %location%, %tool%, %rootTemplate% &7)"
-                        .replace("%uniqueID%", treasure.getUniqueID().toString().substring(0, 8))
+                .forEach((treasure) -> list.append(new Message(lineFormat)
                         .replace("%location%", LocationUtil.locationToString(treasure.getLocation()))
-                        .replace("%tool%", treasure.getTool() == null ? "None" : treasure.getTool().getName())
-                        .replace("%rootTemplate%", treasure.getTool() == null || treasure.getTool().getRootTemplate() == null ? "None" : treasure.getTool().getRootTemplate().getName())));
-        sender.sendMessage(StringUtil.color(list.toString()));
+                        .replace("%tool%", treasure.getTool(true) == null ? "None" : treasure.getTool().getName()))
+                        .replace("%uuid%", treasure.getUniqueID())
+                        .replace("%rootTemplate%", treasure.getTool(true) == null && treasure.getTool(true).getRootTemplate() == null ? "None" : treasure.getTool().getRootTemplate().getName()));
+        list.send(sender);
         return CommandResult.SUCCESS;
     }
 

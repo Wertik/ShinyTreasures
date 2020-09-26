@@ -14,6 +14,7 @@ import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 import space.devport.utils.text.StringUtil;
+import space.devport.utils.text.language.LanguageManager;
 import space.devport.wertik.treasures.ParserUtil;
 import space.devport.wertik.treasures.TreasurePlugin;
 import space.devport.wertik.treasures.system.tool.struct.PlacementTool;
@@ -82,8 +83,6 @@ public class PlacementListener implements Listener {
         }
 
         event.getClickedBlock().setType(Material.AIR);
-
-        //TODO lang removed
-        player.sendMessage(StringUtil.color("&7Treasure removed."));
+        plugin.getManager(LanguageManager.class).sendPrefixed(player, "Treasure.Admin.Removed");
     }
 }

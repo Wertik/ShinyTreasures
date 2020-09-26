@@ -8,7 +8,11 @@ import space.devport.utils.UsageFlag;
 import space.devport.utils.utility.VersionUtil;
 import space.devport.wertik.treasures.commands.CommandParser;
 import space.devport.wertik.treasures.commands.tool.ToolCommand;
-import space.devport.wertik.treasures.commands.tool.subcommands.*;
+import space.devport.wertik.treasures.commands.tool.subcommands.CreateSubCommand;
+import space.devport.wertik.treasures.commands.tool.subcommands.GetSubCommand;
+import space.devport.wertik.treasures.commands.tool.subcommands.ListSubCommand;
+import space.devport.wertik.treasures.commands.tool.subcommands.LoadSubCommand;
+import space.devport.wertik.treasures.commands.tool.subcommands.ResetSubCommand;
 import space.devport.wertik.treasures.commands.treasure.TreasureCommand;
 import space.devport.wertik.treasures.commands.treasure.subcommands.DeleteSubCommand;
 import space.devport.wertik.treasures.commands.treasure.subcommands.PurgeInvalidSubCommand;
@@ -23,6 +27,9 @@ import space.devport.wertik.treasures.system.treasure.TreasureManager;
 import space.devport.wertik.treasures.system.user.UserManager;
 
 public class TreasurePlugin extends DevportPlugin {
+
+    //TODO Tab Completion
+    //TODO Permissions
 
     @Getter
     private TreasureManager treasureManager;

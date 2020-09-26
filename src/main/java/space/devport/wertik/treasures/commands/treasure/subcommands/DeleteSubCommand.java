@@ -4,7 +4,6 @@ import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.Nullable;
 import space.devport.utils.commands.struct.ArgumentRange;
 import space.devport.utils.commands.struct.CommandResult;
-import space.devport.utils.text.StringUtil;
 import space.devport.wertik.treasures.TreasurePlugin;
 import space.devport.wertik.treasures.commands.TreasureSubCommand;
 import space.devport.wertik.treasures.system.treasure.struct.Treasure;
@@ -20,35 +19,43 @@ public class DeleteSubCommand extends TreasureSubCommand {
         super(plugin, "delete");
     }
 
+    //TODO -m switch
     @Override
     protected CommandResult perform(CommandSender sender, String label, String[] args) {
+
         CompletableFuture.supplyAsync(() -> {
             Set<UUID> toRemove = plugin.getTreasureManager().getTreasures((treasure) -> treasure.getUniqueID().toString().startsWith(args[0])).stream()
                     .map(Treasure::getUniqueID)
                     .collect(Collectors.toSet());
 
             if (toRemove.isEmpty()) {
-                // TODO
-                sender.sendMessage(StringUtil.color("&cThere is no treasure uuid that starts with &f%param%".replace("%param%", args[0])));
+                language.getPrefixed("Commands.Treasures.Delete.Invalid-Treasure")
+                        .replace("%param%", args[0])
+                        .send(sender);
                 return null;
             }
 
             if (toRemove.size() > 1) {
-                //TODO
-                sender.sendMessage(StringUtil.color("&cFound multiple treasures to remove."));
+                language.getPrefixed("Commands.Treasures.Delete.Multiple-Results")
+                        .replace("%param%", args[0])
+                        .send(sender);
                 return null;
             }
 
             return toRemove;
         }).thenAccept((toRemove) -> {
+
             if (toRemove == null)
                 return;
 
             for (UUID uniqueID : toRemove) {
                 plugin.getTreasureManager().deleteTreasure(uniqueID);
             }
-            //TODO
-            sender.sendMessage(StringUtil.color("&7Removed."));
+
+            language.getPrefixed(toRemove.size() > 1 ? "Commands.Treasures.Delete.Done-Multiple" : "Commands.Treasures.Delete.Done")
+                    .replace("%uuid%", toRemove.stream().findFirst().isPresent() ? toRemove.stream().findFirst().get().toString() : "null")
+                    .replace("%count%", toRemove.size())
+                    .send(sender);
         });
         return CommandResult.SUCCESS;
     }

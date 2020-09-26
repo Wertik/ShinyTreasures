@@ -3,7 +3,7 @@ package space.devport.wertik.treasures.system.editor.struct;
 import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.entity.Player;
-import space.devport.utils.text.StringUtil;
+import space.devport.utils.text.language.LanguageManager;
 import space.devport.wertik.treasures.TreasurePlugin;
 import space.devport.wertik.treasures.system.tool.struct.PlacementTool;
 
@@ -32,15 +32,16 @@ public class EditSession {
     public void startChatSession(Player player) {
         plugin.getEditorManager().registerSession(this);
 
-        //TODO
-        player.sendMessage(StringUtil.color("&7Chat editor arguments:" +
-                "\n&ematerial &7(material)" +
-                "\n&eaddcommand &7<command>" +
-                "\n&eroottemplate &7(templateName)" +
-                "\n&eremovecommand &7<startOfTheCommand>" +
-                "\n&elistcommands" +
-                "\n\n&7Use &eexit &7or &ecancel &7to... exit the session without saving." +
-                "\n&7Use &asave &7or &afinish &7to save & exit safely."));
+        LanguageManager language = plugin.getManager(LanguageManager.class);
+        // Split into multiple language entries to allow adding new ones conveniently later on.
+        language.get("Editor.Info.Header")
+                .append(language.get("Editor.Info.Material"))
+                .append(language.get("Editor.Info.List-Commands"))
+                .append(language.get("Editor.Info.Add-Command"))
+                .append(language.get("Editor.Info.Remove-Command"))
+                .append(language.get("Editor.Info.Root-Template"))
+                .append(language.get("Editor.Info.Footer"))
+                .send(player);
         setChatSession(true);
     }
 

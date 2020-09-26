@@ -4,7 +4,6 @@ import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.Nullable;
 import space.devport.utils.commands.struct.ArgumentRange;
 import space.devport.utils.commands.struct.CommandResult;
-import space.devport.utils.text.StringUtil;
 import space.devport.wertik.treasures.TreasurePlugin;
 import space.devport.wertik.treasures.commands.TreasureSubCommand;
 import space.devport.wertik.treasures.system.template.struct.TreasureTemplate;
@@ -24,43 +23,45 @@ public class ResetSubCommand extends TreasureSubCommand {
 
                 if (toolName.equalsIgnoreCase("all")) {
                     plugin.getTreasureManager().getFoundData().resetTools();
-                    //TODO
-                    sender.sendMessage(StringUtil.color("&7Reset all tools."));
+                    language.sendPrefixed(sender, "Commands.Tools.Load.Could-Not");
                 } else {
                     PlacementTool tool = plugin.getToolManager().getTool(toolName);
 
                     if (tool == null) {
-                        //TODO
-                        sender.sendMessage(StringUtil.color("&cInvalid tool."));
+                        language.getPrefixed("Commands.Invalid-Tool")
+                                .replace("%param%", toolName)
+                                .send(sender);
                         return CommandResult.FAILURE;
                     }
 
                     plugin.getTreasureManager().getFoundData().resetTool(toolName);
-                    //TODO
-                    sender.sendMessage(StringUtil.color("&7Reset tool &f%tool%".replace("%tool%", toolName)));
+                    language.getPrefixed("Commands.Tools.Reset.Tool-Done")
+                            .replace("%tool%", tool.getName())
+                            .send(sender);
                 }
             } else {
                 if (args[0].equalsIgnoreCase("all")) {
                     plugin.getTreasureManager().getFoundData().resetTemplates();
-                    //TODO
-                    sender.sendMessage(StringUtil.color("&7Reset all templates."));
+                    language.sendPrefixed(sender, "Commands.Tools.Reset.Template-Done-All");
                 } else {
                     TreasureTemplate template = plugin.getTemplateManager().getTemplate(args[0]);
 
                     if (template == null) {
-                        //TODO
-                        sender.sendMessage(StringUtil.color("&cInvalid template."));
+                        language.getPrefixed("Commands.Invalid-Template")
+                                .replace("%param%", args[0])
+                                .send(sender);
                         return CommandResult.FAILURE;
                     }
 
                     plugin.getTreasureManager().getFoundData().resetTemplate(args[0]);
-                    sender.sendMessage(StringUtil.color("&7Reset template &f%template%".replace("%template%", args[0])));
+                    language.getPrefixed("Commands.Tools.Reset.Template-Done")
+                            .replace("%template%", template.getName())
+                            .send(sender);
                 }
             }
         } else {
             plugin.getTreasureManager().getFoundData().reset();
-            //TODO
-            sender.sendMessage(StringUtil.color("&7Reset all tools and templates."));
+            language.sendPrefixed(sender, "Commands.Tools.Reset.Done-All");
         }
         return CommandResult.SUCCESS;
     }

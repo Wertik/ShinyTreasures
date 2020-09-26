@@ -6,7 +6,6 @@ import org.jetbrains.annotations.NotNull;
 import space.devport.utils.commands.struct.ArgumentRange;
 import space.devport.utils.commands.struct.CommandResult;
 import space.devport.utils.commands.struct.Preconditions;
-import space.devport.utils.text.StringUtil;
 import space.devport.wertik.treasures.TreasurePlugin;
 import space.devport.wertik.treasures.commands.TreasureSubCommand;
 import space.devport.wertik.treasures.system.tool.struct.PlacementTool;
@@ -24,16 +23,18 @@ public class GetSubCommand extends TreasureSubCommand {
         PlacementTool tool = plugin.getToolManager().getTool(args[0]);
 
         if (tool == null) {
-            //TODO
-            sender.sendMessage(StringUtil.color("&cInvalid tool."));
+            language.getPrefixed("Commands.Invalid-Tool")
+                    .replace("%param%", args[0])
+                    .send(sender);
             return CommandResult.FAILURE;
         }
 
         Player player = (Player) sender;
 
         player.getInventory().addItem(plugin.getToolManager().craftTool(tool));
-        //TODO
-        sender.sendMessage(StringUtil.color("&aTool given."));
+        language.getPrefixed("Commands.Tools.Get.Done")
+                .replace("%tool%", tool.getName())
+                .send(sender);
         return CommandResult.SUCCESS;
     }
 

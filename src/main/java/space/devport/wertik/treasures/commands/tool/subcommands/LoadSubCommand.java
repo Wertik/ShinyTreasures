@@ -4,7 +4,6 @@ import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.Nullable;
 import space.devport.utils.commands.struct.ArgumentRange;
 import space.devport.utils.commands.struct.CommandResult;
-import space.devport.utils.text.StringUtil;
 import space.devport.wertik.treasures.TreasurePlugin;
 import space.devport.wertik.treasures.commands.TreasureSubCommand;
 
@@ -19,19 +18,20 @@ public class LoadSubCommand extends TreasureSubCommand {
 
         if (args.length > 0) {
             if (!plugin.getToolManager().load(args[0])) {
-                //TODO
-                sender.sendMessage(StringUtil.color("&cCould not load tool."));
+                language.getPrefixed("Commands.Tools.Load.Could-Not")
+                        .replace("%param%", args[0])
+                        .send(sender);
                 return CommandResult.FAILURE;
             } else {
-                //TODO
-                sender.sendMessage(StringUtil.color("&7Loaded &f%tool% &7successfully.".replace("%tool%", args[0])));
+                language.getPrefixed("Commands.Tools.Load.Done")
+                        .replace("%tool%", args[0])
+                        .send(sender);
                 return CommandResult.SUCCESS;
             }
         }
 
         plugin.getToolManager().load();
-        //TODO
-        sender.sendMessage(StringUtil.color("&7Loaded all the tools."));
+        language.sendPrefixed(sender, "Commands.Tools.Load.Done-All");
         return CommandResult.SUCCESS;
     }
 

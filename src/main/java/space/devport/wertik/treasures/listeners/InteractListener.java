@@ -17,7 +17,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.meta.FireworkMeta;
 import org.bukkit.scheduler.BukkitRunnable;
-import space.devport.utils.text.StringUtil;
+import space.devport.utils.ConsoleOutput;
 import space.devport.utils.text.language.LanguageManager;
 import space.devport.utils.xseries.XSound;
 import space.devport.wertik.treasures.TreasurePlugin;
@@ -65,7 +65,7 @@ public class InteractListener implements Listener {
 
         Player player = event.getPlayer();
 
-        if (event.getAction() == Action.LEFT_CLICK_BLOCK && player.isSneaking() && player.hasPermission("simpletreasures.admin"))
+        if (event.getAction() == Action.LEFT_CLICK_BLOCK && player.isSneaking() && player.hasPermission("treasures.admin"))
             return;
 
         Location location = event.getClickedBlock().getLocation();
@@ -76,9 +76,8 @@ public class InteractListener implements Listener {
 
         event.setCancelled(true);
 
-        if (!player.hasPermission("simpletreasures.open")) {
-            //TODO lang no perm
-            player.sendMessage(StringUtil.color("&cYou have no permission to do this."));
+        if (!player.hasPermission("treasures.open")) {
+            plugin.getManager(LanguageManager.class).sendPrefixed(player, "Treasure.No-Permission");
             return;
         }
 
@@ -93,18 +92,19 @@ public class InteractListener implements Listener {
 
         // Sound
         if (plugin.getConfig().getBoolean("sound.enabled", false)) {
-            //TODO Warn msg
             String type = plugin.getConfiguration().getString("sound.type");
+
             if (!Strings.isNullOrEmpty(type)) {
                 Optional<XSound> sound = XSound.matchXSound(type);
 
                 sound.ifPresent(xSound -> xSound.playSound(player,
                         plugin.getConfig().getInt("sound.volume", 1),
                         plugin.getConfig().getInt("sound.pitch", 1)));
-            }
+            } else ConsoleOutput.getInstance().warn("Sound type defined in config is invalid.");
         }
 
         PlacementTool tool = treasure.getTool();
+
         if (tool == null) return;
 
         tool.reward(user, treasure);
@@ -112,7 +112,7 @@ public class InteractListener implements Listener {
         hideBlock(event.getClickedBlock(), player);
 
         // Fireworks
-        //TODO change to particles
+        //TODO Add particles
         if (plugin.getConfig().getBoolean("fireworks", false)) {
 
             FireworkEffect.Builder b = FireworkEffect.builder();

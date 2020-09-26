@@ -6,7 +6,6 @@ import org.jetbrains.annotations.NotNull;
 import space.devport.utils.commands.struct.ArgumentRange;
 import space.devport.utils.commands.struct.CommandResult;
 import space.devport.utils.commands.struct.Preconditions;
-import space.devport.utils.text.StringUtil;
 import space.devport.wertik.treasures.TreasurePlugin;
 import space.devport.wertik.treasures.commands.TreasureSubCommand;
 import space.devport.wertik.treasures.system.editor.struct.EditSession;
@@ -26,14 +25,14 @@ public class CreateSubCommand extends TreasureSubCommand {
         Player player = (Player) sender;
 
         if (plugin.getEditorManager().hasSession(player)) {
-            //TODO
-            sender.sendMessage(StringUtil.color("&cYou are already creating a placement tool."));
+            language.sendPrefixed(sender, "Commands.Tools.Create.In-Session-Already");
             return CommandResult.FAILURE;
         }
 
         if (plugin.getToolManager().getTool(args[0]) != null) {
-            //TODO
-            sender.sendMessage(StringUtil.color("&cTool with that name already exists."));
+            language.getPrefixed("Commands.Tools.Create.Already-Exists")
+                    .replace("%param%", args[0])
+                    .send(sender);
             return CommandResult.FAILURE;
         }
 
@@ -42,13 +41,17 @@ public class CreateSubCommand extends TreasureSubCommand {
         if (args.length > 1) {
             TreasureTemplate template = plugin.getCommandParser().parseTemplate(sender, args[1]);
 
-            if (template == null) return CommandResult.FAILURE;
+            if (template == null) {
+                language.getPrefixed("Commands.Invalid-Template")
+                        .replace("%param%", args[1])
+                        .send(sender);
+                return CommandResult.FAILURE;
+            }
 
             session.getTool().rootTemplate(template);
         }
 
-        //TODO
-        sender.sendMessage(StringUtil.color("&7Opening a chat editor..."));
+        language.sendPrefixed(sender, "Commands.Tools.Create.Opening-Editor");
         session.startChatSession(player);
         return CommandResult.SUCCESS;
     }

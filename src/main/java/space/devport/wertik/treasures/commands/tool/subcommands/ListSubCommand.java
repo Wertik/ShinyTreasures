@@ -4,9 +4,10 @@ import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.Nullable;
 import space.devport.utils.commands.struct.ArgumentRange;
 import space.devport.utils.commands.struct.CommandResult;
-import space.devport.utils.text.StringUtil;
+import space.devport.utils.text.message.Message;
 import space.devport.wertik.treasures.TreasurePlugin;
 import space.devport.wertik.treasures.commands.TreasureSubCommand;
+import space.devport.wertik.treasures.system.tool.struct.PlacementTool;
 
 public class ListSubCommand extends TreasureSubCommand {
 
@@ -16,13 +17,22 @@ public class ListSubCommand extends TreasureSubCommand {
 
     @Override
     protected CommandResult perform(CommandSender sender, String label, String[] args) {
+
         if (plugin.getToolManager().getLoadedTools().isEmpty()) {
-            //TODO
-            sender.sendMessage(StringUtil.color("&cNo tools created."));
+            language.sendPrefixed(sender, "Commands.Tools.List.No-Tools");
             return CommandResult.FAILURE;
         }
-        //TODO
-        sender.sendMessage(StringUtil.color("&7Loaded tools:\n&8 - &f" + String.join("\n&8 - &f", plugin.getToolManager().getLoadedTools().keySet())));
+
+        Message list = language.get("Commands.Tools.List.Header");
+        String lineFormat = language.get("Commands.Tools.List.Line").toString();
+
+        for (PlacementTool tool : plugin.getToolManager().getLoadedTools().values()) {
+            list.append(new Message(lineFormat)
+                    .replace("%toolName%", tool.getName())
+                    .replace("%rootTemplate%", tool.getRootTemplate() == null ? "None" : tool.getRootTemplate().getName())
+                    .color().toString());
+        }
+        list.send(sender);
         return CommandResult.SUCCESS;
     }
 
