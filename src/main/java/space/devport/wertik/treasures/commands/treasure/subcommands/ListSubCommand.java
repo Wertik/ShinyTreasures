@@ -24,7 +24,7 @@ public class ListSubCommand extends TreasureSubCommand {
             return CommandResult.FAILURE;
         }
 
-        int page = parse(sender, args[0], value -> ParseUtil.parseInteger(value, -1, true), "Commands.Treasures.List.Page-Not-Number");
+        int page = args.length > 0 ? parse(sender, args[0], value -> ParseUtil.parseInteger(value, -1, true), "Commands.Treasures.List.Page-Not-Number") : 1;
 
         if (page < 0)
             return CommandResult.FAILURE;
