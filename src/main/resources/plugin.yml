@@ -5,13 +5,13 @@ authors: [ Wertik1206 ]
 commands:
   shinytreasures:
     aliases: [ st, treasure, shinytreasure, treasures ]
-    description: Main plugin command
+    description: Command to manage treasures.
   shinytreasuretools:
     aliases: [ stt, treasuretools, tt, treasuretool, shinytreasuretool ]
-    description: Main plugin command
+    description: Command to manage tools.
 permissions:
-  shinytreasures.open:
+  treasures.open:
     default: true
     description: Permission to open treasures.
-  shinytreasures.admin:
+  treasures.admin:
     description: Permission to manage treasures.
