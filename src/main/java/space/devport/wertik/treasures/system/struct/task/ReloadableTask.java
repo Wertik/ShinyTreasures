@@ -1,4 +1,4 @@
-package space.devport.wertik.treasures.system.task;
+package space.devport.wertik.treasures.system.struct.task;
 
 import lombok.Getter;
 import org.bukkit.Bukkit;

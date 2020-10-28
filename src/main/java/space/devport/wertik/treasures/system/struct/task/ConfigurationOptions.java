@@ -1,7 +1,6 @@
-package space.devport.wertik.treasures.system.task;
+package space.devport.wertik.treasures.system.struct.task;
 
 import org.bukkit.configuration.ConfigurationSection;
-import org.jetbrains.annotations.Nullable;
 import space.devport.utils.configuration.Configuration;
 
 import java.util.function.Function;
