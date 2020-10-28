@@ -4,6 +4,7 @@ import lombok.Getter;
 import me.clip.placeholderapi.PlaceholderAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import space.devport.utils.ConsoleOutput;
 import space.devport.utils.DevportPlugin;
 import space.devport.utils.UsageFlag;
 import space.devport.utils.utility.VersionUtil;
@@ -22,10 +23,14 @@ import space.devport.wertik.treasures.listeners.InteractListener;
 import space.devport.wertik.treasures.listeners.PlacementListener;
 import space.devport.wertik.treasures.system.GsonHelper;
 import space.devport.wertik.treasures.system.editor.EditorManager;
+import space.devport.wertik.treasures.system.task.ConfigurationOptions;
+import space.devport.wertik.treasures.system.task.ReloadableTask;
 import space.devport.wertik.treasures.system.template.TemplateManager;
 import space.devport.wertik.treasures.system.tool.ToolManager;
 import space.devport.wertik.treasures.system.treasure.TreasureManager;
 import space.devport.wertik.treasures.system.user.UserManager;
+
+import java.util.concurrent.CompletableFuture;
 
 public class TreasurePlugin extends DevportPlugin {
 
@@ -51,6 +56,9 @@ public class TreasurePlugin extends DevportPlugin {
 
     @Getter
     private CommandParser commandParser;
+
+    @Getter
+    private ReloadableTask autoSave;
 
     private TreasurePlaceholders placeholders;
 
@@ -103,14 +111,29 @@ public class TreasurePlugin extends DevportPlugin {
                 .addSubCommand(new space.devport.wertik.treasures.commands.tool.subcommands.DeleteSubCommand(this))
                 .addSubCommand(new ResetSubCommand(this));
 
-        Bukkit.getScheduler().runTaskLater(this, this::setupPlaceholders, 1L);
+        this.autoSave = new ReloadableTask(this) {
+            @Override
+            public void run() {
+                ConsoleOutput.getInstance().info("Running auto save...");
+                CompletableFuture.allOf(userManager.save(), treasureManager.save(), treasureManager.saveAdditionalData())
+                        .thenRun(this::schedule);
+            }
+        }.from(new ConfigurationOptions<Long>(getConfiguration(), "auto-save").withDefaults(() -> 300L));
+
+        Bukkit.getScheduler().runTaskLater(this, () -> {
+            setupPlaceholders();
+            this.autoSave.start();
+        }, 1L);
     }
 
     @Override
     public void onPluginDisable() {
+        autoSave.stop();
+
         treasureManager.placeAllBack();
         treasureManager.save();
         treasureManager.saveAdditionalData();
+
         userManager.save();
         toolManager.save();
     }
@@ -119,6 +142,8 @@ public class TreasurePlugin extends DevportPlugin {
     public void onReload() {
         templateManager.load();
         toolManager.load();
+
+        autoSave.reload();
 
         setupPlaceholders();
     }

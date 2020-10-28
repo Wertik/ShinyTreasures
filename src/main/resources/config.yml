@@ -5,6 +5,11 @@
 plugin-prefix: '&6Shiny Treasures &8| '
 debug-enabled: false
 
+# Auto save configuration
+auto-save:
+  # Save interval in seconds
+  interval: 300
+
 # Block hide settings
 hide-block:
   enabled: true

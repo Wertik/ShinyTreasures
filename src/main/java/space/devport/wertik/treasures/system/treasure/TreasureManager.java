@@ -21,6 +21,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
@@ -113,14 +114,14 @@ public class TreasureManager {
         plugin.getConsoleOutput().info("Loaded " + this.loadedTreasures.size() + " treasure(s)...");
     }
 
-    public void saveAdditionalData() {
-        gsonHelper.save(this.foundData, plugin.getDataFolder() + "/additional-data.json");
-        plugin.getConsoleOutput().info("Saved additional data...");
+    public CompletableFuture<Void> saveAdditionalData() {
+        return gsonHelper.save(this.foundData, plugin.getDataFolder() + "/additional-data.json")
+                .thenRun(() -> ConsoleOutput.getInstance().info("Saved additional data."));
     }
 
-    public void save() {
-        gsonHelper.save(this.loadedTreasures, plugin.getDataFolder() + "/data.json");
-        plugin.getConsoleOutput().info("Saved " + this.loadedTreasures.size() + " treasure(s)...");
+    public CompletableFuture<Void> save() {
+        return gsonHelper.save(this.loadedTreasures, plugin.getDataFolder() + "/data.json")
+                .thenRun(() -> ConsoleOutput.getInstance().info("Saved " + this.loadedTreasures.size() + " treasure(s)..."));
     }
 
     public Treasure createTreasure(Location location) {

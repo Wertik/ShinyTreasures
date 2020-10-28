@@ -6,7 +6,11 @@ import space.devport.wertik.treasures.TreasurePlugin;
 import space.devport.wertik.treasures.system.GsonHelper;
 import space.devport.wertik.treasures.system.user.struct.User;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -59,21 +63,20 @@ public class UserManager {
         plugin.getConsoleOutput().info("Loaded " + this.loadedUsers.size() + " user(s)...");
     }
 
-    public void save() {
-
-        // Purge empty
-        int count = 0;
-        for (UUID uniqueID : new HashSet<>(this.loadedUsers.keySet())) {
-            User user = this.loadedUsers.get(uniqueID);
-            if (user.getFoundTreasures().isEmpty()) {
-                this.loadedUsers.remove(uniqueID);
-                count++;
+    public CompletableFuture<Void> save() {
+        return CompletableFuture.runAsync(() -> {
+            // Purge empty
+            int count = 0;
+            for (UUID uniqueID : new HashSet<>(this.loadedUsers.keySet())) {
+                User user = this.loadedUsers.get(uniqueID);
+                if (user.getFoundTreasures().isEmpty()) {
+                    this.loadedUsers.remove(uniqueID);
+                    count++;
+                }
             }
-        }
-        plugin.getConsoleOutput().info("Purged " + count + " empty user(s)...");
-
-        gsonHelper.save(this.loadedUsers, plugin.getDataFolder() + "/user-data.json");
-        plugin.getConsoleOutput().info("Saved " + this.loadedUsers.size() + " user(s)...");
+            plugin.getConsoleOutput().info("Purged " + count + " empty user(s)...");
+        }).thenRun(() -> gsonHelper.save(this.loadedUsers, plugin.getDataFolder() + "/user-data.json")
+                .thenRun(() -> plugin.getConsoleOutput().info("Saved " + this.loadedUsers.size() + " user(s)...")));
     }
 
     public Set<User> getUsers(Predicate<User> condition) {
