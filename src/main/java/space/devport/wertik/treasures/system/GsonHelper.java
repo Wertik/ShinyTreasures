@@ -62,7 +62,7 @@ public class GsonHelper {
 
         AsynchronousFileChannel channel;
         try {
-            channel = AsynchronousFileChannel.open(path, StandardOpenOption.TRUNCATE_EXISTING, StandardOpenOption.CREATE);
+            channel = AsynchronousFileChannel.open(path, StandardOpenOption.WRITE, StandardOpenOption.TRUNCATE_EXISTING, StandardOpenOption.CREATE);
         } catch (IOException e) {
             if (ConsoleOutput.getInstance().isDebug())
                 e.printStackTrace();

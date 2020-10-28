@@ -97,7 +97,7 @@ public class InteractListener implements Listener {
             if (!Strings.isNullOrEmpty(type)) {
                 Optional<XSound> sound = XSound.matchXSound(type);
 
-                sound.ifPresent(xSound -> xSound.playSound(player,
+                sound.ifPresent(xSound -> xSound.play(player,
                         plugin.getConfig().getInt("sound.volume", 1),
                         plugin.getConfig().getInt("sound.pitch", 1)));
             } else ConsoleOutput.getInstance().warn("Sound type defined in config is invalid.");
@@ -141,6 +141,7 @@ public class InteractListener implements Listener {
         }
     }
 
+    @SuppressWarnings("deprecation")
     private void hideBlock(Block block, Player player) {
 
         if (!plugin.getConfig().getBoolean("hide-block.enabled", false))

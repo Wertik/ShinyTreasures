@@ -4,6 +4,7 @@ import lombok.Getter;
 import me.clip.placeholderapi.PlaceholderAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.plugin.Plugin;
 import space.devport.utils.ConsoleOutput;
 import space.devport.utils.DevportPlugin;
 import space.devport.utils.UsageFlag;
@@ -118,7 +119,7 @@ public class TreasurePlugin extends DevportPlugin {
                 CompletableFuture.allOf(userManager.save(), treasureManager.save(), treasureManager.saveAdditionalData())
                         .thenRun(this::schedule);
             }
-        }.from(new ConfigurationOptions<Long>(getConfiguration(), "auto-save").withDefaults(() -> 300L));
+        }.from(new ConfigurationOptions<Long>(getConfiguration(), "auto-save").withDefaults(() -> 6000L));
 
         Bukkit.getScheduler().runTaskLater(this, () -> {
             setupPlaceholders();
@@ -154,12 +155,13 @@ public class TreasurePlugin extends DevportPlugin {
     }
 
     private void setupPlaceholders() {
-        if (getPluginManager().getPlugin("PlaceholderAPI") != null) {
+        Plugin placeholderAPI = getPluginManager().getPlugin("PlaceholderAPI");
+        if (placeholderAPI != null) {
 
             if (this.placeholders == null)
                 this.placeholders = new TreasurePlaceholders(this);
 
-            if (PlaceholderAPI.isRegistered("treasures") && VersionUtil.compareVersions(getPluginManager().getPlugin("PlaceholderAPI").getDescription().getVersion(), "2.10.9") > -1) {
+            if (PlaceholderAPI.isRegistered("treasures") && VersionUtil.compareVersions(placeholderAPI.getDescription().getVersion(), "2.10.9") > -1) {
                 this.placeholders.unregister();
                 consoleOutput.info("Unregistered old expansion.");
             }

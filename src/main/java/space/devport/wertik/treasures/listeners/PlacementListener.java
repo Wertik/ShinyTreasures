@@ -3,6 +3,7 @@ package space.devport.wertik.treasures.listeners;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
+import org.bukkit.block.Block;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -59,12 +60,13 @@ public class PlacementListener implements Listener {
     public void onRemoval(PlayerInteractEvent event) {
 
         Player player = event.getPlayer();
+        Block block = event.getClickedBlock();
 
-        if (event.getClickedBlock() == null || event.getAction() != Action.LEFT_CLICK_BLOCK ||
-                !player.isSneaking() || event.getHand() == EquipmentSlot.OFF_HAND || !player.hasPermission("simpletreasures.admin"))
+        if (block == null || event.getAction() != Action.LEFT_CLICK_BLOCK ||
+                !player.isSneaking() || event.getHand() == EquipmentSlot.OFF_HAND || !player.hasPermission("treasures.admin"))
             return;
 
-        Treasure treasure = plugin.getTreasureManager().getTreasure(event.getClickedBlock().getLocation());
+        Treasure treasure = plugin.getTreasureManager().getTreasure(block.getLocation());
 
         if (treasure == null)
             return;
@@ -77,12 +79,12 @@ public class PlacementListener implements Listener {
 
             // Pop the item
             Bukkit.getScheduler().runTaskLater(plugin, () -> {
-                Item item = player.getWorld().dropItemNaturally(event.getClickedBlock().getLocation(), itemStack);
+                Item item = player.getWorld().dropItemNaturally(block.getLocation(), itemStack);
                 item.setVelocity(popVector);
             }, 2L);
         }
 
-        event.getClickedBlock().setType(Material.AIR);
+        block.setType(Material.AIR);
         plugin.getManager(LanguageManager.class).sendPrefixed(player, "Treasure.Admin.Removed");
     }
 }

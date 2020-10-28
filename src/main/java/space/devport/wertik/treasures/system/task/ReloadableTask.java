@@ -11,7 +11,7 @@ public abstract class ReloadableTask implements Runnable {
     private final DevportPlugin plugin;
 
     @Getter
-    private long interval = 300;
+    private long interval = 6000; // = 300 seconds = 5 minutes.
 
     private ConfigurationOptions<Long> configurationOptions;
 
@@ -22,7 +22,7 @@ public abstract class ReloadableTask implements Runnable {
     }
 
     public ReloadableTask from(ConfigurationOptions<Long> configurationOptions) {
-        this.configurationOptions = configurationOptions.extractor(section -> section.getLong("interval", 300));
+        this.configurationOptions = configurationOptions.extractor(section -> section.getLong("interval", 300) * 20);
         return this;
     }
 

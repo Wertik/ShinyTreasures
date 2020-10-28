@@ -6,7 +6,7 @@
 
     <groupId>space.devport.wertik.treasures</groupId>
     <artifactId>ShinyTreasures</artifactId>
-    <version>1.2.0</version>
+    <version>1.2.1</version>
 
     <name>ShinyTreasures</name>
 
@@ -89,7 +89,7 @@
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
-            <version>1.18.10</version>
+            <version>1.18.16</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
