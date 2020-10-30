@@ -9,6 +9,7 @@ import space.devport.utils.ConsoleOutput;
 import space.devport.utils.DevportPlugin;
 import space.devport.utils.UsageFlag;
 import space.devport.utils.utility.VersionUtil;
+import space.devport.utils.utility.json.GsonHelper;
 import space.devport.wertik.treasures.commands.CommandParser;
 import space.devport.wertik.treasures.commands.tool.ToolCommand;
 import space.devport.wertik.treasures.commands.tool.subcommands.CreateSubCommand;
@@ -22,7 +23,6 @@ import space.devport.wertik.treasures.commands.treasure.subcommands.PurgeInvalid
 import space.devport.wertik.treasures.commands.treasure.subcommands.ReloadSubCommand;
 import space.devport.wertik.treasures.listeners.InteractListener;
 import space.devport.wertik.treasures.listeners.PlacementListener;
-import space.devport.wertik.treasures.system.GsonHelper;
 import space.devport.wertik.treasures.system.editor.EditorManager;
 import space.devport.wertik.treasures.system.struct.task.ConfigurationOptions;
 import space.devport.wertik.treasures.system.struct.task.ReloadableTask;
@@ -74,15 +74,15 @@ public class TreasurePlugin extends DevportPlugin {
 
     @Override
     public void onPluginEnable() {
-        gsonHelper = new GsonHelper(this);
+        this.gsonHelper = new GsonHelper();
 
-        templateManager = new TemplateManager(this);
-        toolManager = new ToolManager(this);
+        this.templateManager = new TemplateManager(this);
+        this.toolManager = new ToolManager(this);
 
-        treasureManager = new TreasureManager(this);
-        userManager = new UserManager(this);
+        this.treasureManager = new TreasureManager(this);
+        this.userManager = new UserManager(this);
 
-        editorManager = new EditorManager(this);
+        this.editorManager = new EditorManager(this);
 
         templateManager.load();
         toolManager.load();
@@ -158,15 +158,15 @@ public class TreasurePlugin extends DevportPlugin {
         Plugin placeholderAPI = getPluginManager().getPlugin("PlaceholderAPI");
         if (placeholderAPI != null) {
 
-            if (this.placeholders == null)
+            if (placeholders == null)
                 this.placeholders = new TreasurePlaceholders(this);
 
             if (PlaceholderAPI.isRegistered("treasures") && VersionUtil.compareVersions(placeholderAPI.getDescription().getVersion(), "2.10.9") > -1) {
-                this.placeholders.unregister();
+                placeholders.unregister();
                 consoleOutput.info("Unregistered old expansion.");
             }
 
-            this.placeholders.register();
+            placeholders.register();
             consoleOutput.info("Registered placeholder expansion.");
         }
     }

@@ -1,9 +1,7 @@
 package space.devport.wertik.treasures.system.user;
 
-import com.google.gson.reflect.TypeToken;
 import space.devport.utils.ConsoleOutput;
 import space.devport.wertik.treasures.TreasurePlugin;
-import space.devport.wertik.treasures.system.GsonHelper;
 import space.devport.wertik.treasures.system.user.struct.User;
 
 import java.util.HashMap;
@@ -19,13 +17,10 @@ public class UserManager {
 
     private final TreasurePlugin plugin;
 
-    private final GsonHelper gsonHelper;
-
     private final Map<UUID, User> loadedUsers = new HashMap<>();
 
     public UserManager(TreasurePlugin plugin) {
         this.plugin = plugin;
-        this.gsonHelper = plugin.getGsonHelper();
     }
 
     public User getOrCreateUser(UUID uniqueID) {
@@ -51,16 +46,15 @@ public class UserManager {
     }
 
     public void load() {
-        this.loadedUsers.clear();
+        plugin.getGsonHelper().loadMapAsync(plugin.getDataFolder() + "/user-data.json", UUID.class, User.class).thenAccept(loadedData -> {
+            this.loadedUsers.clear();
 
-        Map<UUID, User> loadedData = gsonHelper.load(plugin.getDataFolder() + "/user-data.json", new TypeToken<Map<UUID, User>>() {
-        }.getType());
+            if (loadedData == null) loadedData = new HashMap<>();
 
-        if (loadedData == null) loadedData = new HashMap<>();
+            this.loadedUsers.putAll(loadedData);
 
-        this.loadedUsers.putAll(loadedData);
-
-        plugin.getConsoleOutput().info("Loaded " + this.loadedUsers.size() + " user(s)...");
+            plugin.getConsoleOutput().info("Loaded " + this.loadedUsers.size() + " user(s)...");
+        });
     }
 
     public CompletableFuture<Void> save() {
@@ -75,7 +69,7 @@ public class UserManager {
                 }
             }
             plugin.getConsoleOutput().info("Purged " + count + " empty user(s)...");
-        }).thenRun(() -> gsonHelper.save(this.loadedUsers, plugin.getDataFolder() + "/user-data.json")
+        }).thenRun(() -> plugin.getGsonHelper().save(this.loadedUsers, plugin.getDataFolder() + "/user-data.json")
                 .thenRun(() -> plugin.getConsoleOutput().info("Saved " + this.loadedUsers.size() + " user(s)...")));
     }
 

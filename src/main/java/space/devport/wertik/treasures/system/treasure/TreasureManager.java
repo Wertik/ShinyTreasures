@@ -1,6 +1,5 @@
 package space.devport.wertik.treasures.system.treasure;
 
-import com.google.gson.reflect.TypeToken;
 import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -10,7 +9,6 @@ import org.bukkit.scheduler.BukkitTask;
 import space.devport.utils.ConsoleOutput;
 import space.devport.utils.item.Amount;
 import space.devport.wertik.treasures.TreasurePlugin;
-import space.devport.wertik.treasures.system.GsonHelper;
 import space.devport.wertik.treasures.system.struct.FoundData;
 import space.devport.wertik.treasures.system.tool.struct.PlacementTool;
 import space.devport.wertik.treasures.system.treasure.struct.Treasure;
@@ -28,8 +26,6 @@ import java.util.stream.Collectors;
 public class TreasureManager {
 
     private final TreasurePlugin plugin;
-
-    private final GsonHelper gsonHelper;
 
     private final Map<UUID, Treasure> loadedTreasures = new HashMap<>();
 
@@ -84,43 +80,40 @@ public class TreasureManager {
 
     public TreasureManager(TreasurePlugin plugin) {
         this.plugin = plugin;
-        this.gsonHelper = plugin.getGsonHelper();
     }
 
     public void loadAdditionalData() {
-        FoundData loadedData = gsonHelper.load(plugin.getDataFolder() + "/additional-data.json", new TypeToken<FoundData>() {
-        }.getType());
+        FoundData loadedData = plugin.getGsonHelper().load(plugin.getDataFolder() + "/additional-data.json", FoundData.class);
         this.foundData = loadedData == null ? new FoundData() : loadedData;
         plugin.getConsoleOutput().info("Loaded additional data...");
     }
 
     public void load() {
-        this.loadedTreasures.clear();
+        plugin.getGsonHelper().loadMapAsync(plugin.getDataFolder() + "/data.json", UUID.class, Treasure.class).thenAcceptAsync(treasures -> {
+            this.loadedTreasures.clear();
 
-        Map<UUID, Treasure> treasures = gsonHelper.load(plugin.getDataFolder() + "/data.json", new TypeToken<Map<UUID, Treasure>>() {
-        }.getType());
+            if (treasures == null) treasures = new HashMap<>();
 
-        if (treasures == null) treasures = new HashMap<>();
+            for (Treasure treasure : treasures.values()) {
+                PlacementTool tool = plugin.getToolManager().getTool(treasure.getToolName());
+                if (tool == null) {
+                    ConsoleOutput.getInstance().warn("Found a treasure which has an invalid tool " + treasure.getToolName() + " assigned, it won't work.");
+                } else treasure.withTool(tool);
+            }
 
-        for (Treasure treasure : treasures.values()) {
-            PlacementTool tool = plugin.getToolManager().getTool(treasure.getToolName());
-            if (tool == null) {
-                ConsoleOutput.getInstance().warn("Found a treasure which has an invalid tool " + treasure.getToolName() + " assigned, it won't work.");
-            } else treasure.withTool(tool);
-        }
+            this.loadedTreasures.putAll(treasures);
 
-        this.loadedTreasures.putAll(treasures);
-
-        plugin.getConsoleOutput().info("Loaded " + this.loadedTreasures.size() + " treasure(s)...");
+            plugin.getConsoleOutput().info("Loaded " + this.loadedTreasures.size() + " treasure(s)...");
+        });
     }
 
     public CompletableFuture<Void> saveAdditionalData() {
-        return gsonHelper.save(this.foundData, plugin.getDataFolder() + "/additional-data.json")
+        return plugin.getGsonHelper().save(this.foundData, plugin.getDataFolder() + "/additional-data.json")
                 .thenRun(() -> ConsoleOutput.getInstance().info("Saved additional data..."));
     }
 
     public CompletableFuture<Void> save() {
-        return gsonHelper.save(this.loadedTreasures, plugin.getDataFolder() + "/data.json")
+        return plugin.getGsonHelper().save(this.loadedTreasures, plugin.getDataFolder() + "/data.json")
                 .thenRun(() -> ConsoleOutput.getInstance().info("Saved " + this.loadedTreasures.size() + " treasure(s)..."));
     }
 
