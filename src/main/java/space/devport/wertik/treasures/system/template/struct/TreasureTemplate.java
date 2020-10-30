@@ -29,7 +29,7 @@ public class TreasureTemplate {
 
     @Getter
     @Setter
-    private boolean enabled = false;
+    private boolean enabled = true;
 
     public TreasureTemplate(String name) {
         this.name = name;
