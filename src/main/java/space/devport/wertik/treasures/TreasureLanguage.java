@@ -12,6 +12,7 @@ public class TreasureLanguage extends LanguageDefaults {
     @Override
     public void setDefaults() {
         addDefault("Treasure.Found-Already", "&cYou found this treasure already!");
+        addDefault("Treasure.Disabled", "&cThis treasure is currently disabled.");
         addDefault("Treasure.No-Permission", "&cYou don't have permissions to open the treasure.");
 
         addDefault("Treasure.Admin.Removed", "&7Treasure removed.");

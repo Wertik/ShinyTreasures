@@ -83,8 +83,13 @@ public class InteractListener implements Listener {
 
         PlacementTool tool = treasure.getTool();
 
-        if (tool == null || !tool.getTemplate().isEnabled() || (tool.getRootTemplate() != null && !tool.getRootTemplate().isEnabled()))
+        if (tool == null)
             return;
+
+        if (!tool.getTemplate().isEnabled() || (tool.getRootTemplate() != null && !tool.getRootTemplate().isEnabled())) {
+            plugin.getManager(LanguageManager.class).sendPrefixed(player, "Treasure.Disabled");
+            return;
+        }
 
         User user = plugin.getUserManager().getOrCreateUser(player.getUniqueId());
 
