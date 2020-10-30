@@ -54,6 +54,9 @@ public class UserManager {
             this.loadedUsers.putAll(loadedData);
 
             plugin.getConsoleOutput().info("Loaded " + this.loadedUsers.size() + " user(s)...");
+        }).exceptionally(e -> {
+            e.printStackTrace();
+            return null;
         });
     }
 
@@ -70,6 +73,10 @@ public class UserManager {
             }
             plugin.getConsoleOutput().info("Purged " + count + " empty user(s)...");
         }).thenRun(() -> plugin.getGsonHelper().save(this.loadedUsers, plugin.getDataFolder() + "/user-data.json")
+                .exceptionally(e -> {
+                    e.printStackTrace();
+                    return null;
+                })
                 .thenRun(() -> plugin.getConsoleOutput().info("Saved " + this.loadedUsers.size() + " user(s)...")));
     }
 

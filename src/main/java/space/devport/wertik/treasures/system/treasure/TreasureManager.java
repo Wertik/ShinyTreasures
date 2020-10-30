@@ -114,6 +114,10 @@ public class TreasureManager {
 
     public CompletableFuture<Void> save() {
         return plugin.getGsonHelper().save(this.loadedTreasures, plugin.getDataFolder() + "/data.json")
+                .exceptionally(e -> {
+                    e.printStackTrace();
+                    return null;
+                })
                 .thenRun(() -> ConsoleOutput.getInstance().info("Saved " + this.loadedTreasures.size() + " treasure(s)..."));
     }
 
