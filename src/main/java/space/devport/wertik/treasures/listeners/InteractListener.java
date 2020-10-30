@@ -81,14 +81,23 @@ public class InteractListener implements Listener {
             return;
         }
 
+        PlacementTool tool = treasure.getTool();
+
+        if (tool == null || !tool.getTemplate().isEnabled() || (tool.getRootTemplate() != null && !tool.getRootTemplate().isEnabled()))
+            return;
+
         User user = plugin.getUserManager().getOrCreateUser(player.getUniqueId());
 
-        if (user.hasFound(treasure.getUniqueID())) {
+        if (user.hasFound(treasure)) {
             plugin.getManager(LanguageManager.class).send(player, "Treasure.Found-Already");
             return;
         }
 
-        user.addFind(treasure.getUniqueID());
+        user.addFind(treasure);
+
+        tool.reward(user, treasure);
+
+        hideBlock(event.getClickedBlock(), player);
 
         // Sound
         if (plugin.getConfig().getBoolean("sound.enabled", false)) {
@@ -102,14 +111,6 @@ public class InteractListener implements Listener {
                         plugin.getConfig().getInt("sound.pitch", 1)));
             } else ConsoleOutput.getInstance().warn("Sound type defined in config is invalid.");
         }
-
-        PlacementTool tool = treasure.getTool();
-
-        if (tool == null) return;
-
-        tool.reward(user, treasure);
-
-        hideBlock(event.getClickedBlock(), player);
 
         // Fireworks
         //TODO Add particles

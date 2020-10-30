@@ -11,6 +11,7 @@ import space.devport.wertik.treasures.system.treasure.struct.Treasure;
 
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 import java.util.function.Predicate;
@@ -32,6 +33,10 @@ public class User {
 
     public int getFindCount() {
         return this.foundTreasures.size();
+    }
+
+    public void addFind(Treasure treasure) {
+        addFind(treasure.getUniqueID());
     }
 
     public void addFind(UUID uniqueID) {
@@ -65,5 +70,18 @@ public class User {
     @Nullable
     public Player getPlayer() {
         return getOfflinePlayer().isOnline() ? getOfflinePlayer().getPlayer() : null;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        User user = (User) o;
+        return uniqueID.equals(user.uniqueID);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(uniqueID);
     }
 }

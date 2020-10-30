@@ -116,7 +116,7 @@ public class TreasureManager {
 
     public CompletableFuture<Void> saveAdditionalData() {
         return gsonHelper.save(this.foundData, plugin.getDataFolder() + "/additional-data.json")
-                .thenRun(() -> ConsoleOutput.getInstance().info("Saved additional data."));
+                .thenRun(() -> ConsoleOutput.getInstance().info("Saved additional data..."));
     }
 
     public CompletableFuture<Void> save() {

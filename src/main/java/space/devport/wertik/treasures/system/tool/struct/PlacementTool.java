@@ -13,6 +13,8 @@ import space.devport.wertik.treasures.system.template.struct.TreasureTemplate;
 import space.devport.wertik.treasures.system.treasure.struct.Treasure;
 import space.devport.wertik.treasures.system.user.struct.User;
 
+import java.util.concurrent.CompletableFuture;
+
 public class PlacementTool {
 
     @Getter
@@ -28,19 +30,18 @@ public class PlacementTool {
         this.template = new TreasureTemplate(name);
     }
 
-    //TODO Sync command dispatch in rewards to allow async reward execution.
     public void reward(User user, Treasure treasure) {
-        //CompletableFuture.runAsync(() -> {
-        getTemplate().getRewards().give(user, treasure, true);
+        CompletableFuture.runAsync(() -> {
+            getTemplate().getRewards().give(user, treasure, true);
 
-        // Fire rewards from root template
-        if (this.getRootTemplate() != null)
-            this.getRootTemplate().getRewards().give(user, treasure, false);
+            // Fire rewards from root template
+            if (this.getRootTemplate() != null)
+                this.getRootTemplate().getRewards().give(user, treasure, false);
 
-        // Set found
-        if (!treasure.isFound())
-            treasure.setFound(true);
-        //});
+            // Set found
+            if (!treasure.isFound())
+                treasure.setFound(true);
+        });
     }
 
     @Nullable

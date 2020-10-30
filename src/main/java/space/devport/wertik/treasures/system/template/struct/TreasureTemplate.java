@@ -27,6 +27,10 @@ public class TreasureTemplate {
     @Setter
     private TreasureRewards rewards = new TreasureRewards();
 
+    @Getter
+    @Setter
+    private boolean enabled = false;
+
     public TreasureTemplate(String name) {
         this.name = name;
     }
@@ -74,6 +78,7 @@ public class TreasureTemplate {
 
         TreasureTemplate treasureTemplate = new TreasureTemplate(name, material, rewards);
         treasureTemplate.setLimit(section.getInt("limit", 0));
+        treasureTemplate.setEnabled(section.getBoolean("enabled", true));
         return treasureTemplate;
     }
 
@@ -82,6 +87,9 @@ public class TreasureTemplate {
 
         if (material != null)
             section.set("material", material.toString());
+
+        section.set("limit", limit);
+        section.set("enabled", enabled);
 
         rewards.to(configuration, path + ".rewards");
     }

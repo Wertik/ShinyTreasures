@@ -65,9 +65,10 @@ public class TreasureRewards extends Rewards {
         }
 
         this.give(player);
+        ConsoleOutput.getInstance().debug("Rewarding " + user.getOfflinePlayer().getName());
 
         if (!treasure.isFound()) {
-            first.give(player, true);
+            first.give(player);
             ConsoleOutput.getInstance().debug("Rewarding " + user.getOfflinePlayer().getName() + " for the first find of " + treasure.getUniqueID().toString() + " with " + first.toString());
         }
 
@@ -91,10 +92,10 @@ public class TreasureRewards extends Rewards {
                     .size();
 
             if (toolsPlaced == toolsFound) {
-                complete.give(player, true);
+                complete.give(player);
 
                 if (!TreasurePlugin.getInstance().getTreasureManager().getFoundData().hasToolBeenFound(tool.getName())) {
-                    firstComplete.give(player, true);
+                    firstComplete.give(player);
                     TreasurePlugin.getInstance().getTreasureManager().getFoundData().setToolFound(tool.getName());
                     ConsoleOutput.getInstance().debug("Rewarding " + user.getOfflinePlayer().getName() + " for the first complete of " + tool.getName());
                 }
@@ -127,18 +128,18 @@ public class TreasureRewards extends Rewards {
 
             // Complete rewards
             if (templatesPlaced == templatesFound) {
-                complete.give(player, true);
+                complete.give(player);
 
                 if (!TreasurePlugin.getInstance().getTreasureManager().getFoundData().hasTemplateBeenFound(rootTemplate.getName())) {
-                    firstComplete.give(player, true);
+                    firstComplete.give(player);
                     TreasurePlugin.getInstance().getTreasureManager().getFoundData().setTemplateFound(rootTemplate.getName());
                     ConsoleOutput.getInstance().debug("Rewarding " + user.getOfflinePlayer().getName() + " for the first complete of " + rootTemplate.getName());
                 }
             }
 
             if (rootTemplate.getLimit() == treasureTotalFinds) {
-                ConsoleOutput.getInstance().debug("Treasure " + treasure.getUniqueID().toString() + " has reached it's template limit, deleting.");
                 TreasurePlugin.getInstance().getTreasureManager().deleteTreasure(treasure);
+                ConsoleOutput.getInstance().debug("Treasure " + treasure.getUniqueID().toString() + " has reached it's template limit and has been deleted.");
             }
         }
     }
@@ -167,7 +168,7 @@ public class TreasureRewards extends Rewards {
                     continue;
                 treasureRewards.getCumulative().add(countingRewards);
             }
-            ConsoleOutput.getInstance().debug("Loaded " + treasureRewards.getCumulative().size() + " repeating rewards...");
+            ConsoleOutput.getInstance().debug("Loaded " + treasureRewards.getCumulative().size() + " cumulative rewards...");
         }
 
         ConfigurationSection repeat = section.getConfigurationSection("repeat");
