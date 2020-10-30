@@ -55,6 +55,7 @@ public class EditSession {
             return;
 
         plugin.getToolManager().addTool(this.tool);
+        plugin.getToolManager().save();
         plugin.getEditorManager().unregisterSession(this);
     }
 
