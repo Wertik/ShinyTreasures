@@ -17,6 +17,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
@@ -36,11 +37,15 @@ public class TreasureManager {
 
     public static class RegenerationTask implements Runnable {
 
+        @Getter
+        private final UUID treasureID;
+
         private BukkitTask task;
         private final Material original;
         private final Block block;
 
-        public RegenerationTask(Block block, Material original) {
+        public RegenerationTask(UUID treasureID, Block block, Material original) {
+            this.treasureID = treasureID;
             this.original = original;
             this.block = block;
         }
@@ -52,6 +57,9 @@ public class TreasureManager {
         }
 
         public void regenerate() {
+
+            TreasurePlugin.getInstance().getTreasureManager().removeTask(this);
+
             block.setType(original);
             block.getState().update(true);
             ConsoleOutput.getInstance().debug("Reverted treasure back to " + original.toString());
@@ -66,16 +74,34 @@ public class TreasureManager {
         public void run() {
             regenerate();
         }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            RegenerationTask that = (RegenerationTask) o;
+            return treasureID.equals(that.treasureID);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(treasureID);
+        }
     }
 
-    public void regenerate(Block block, Material original) {
-        RegenerationTask regenerationTask = new RegenerationTask(block, original);
+    public void removeTask(RegenerationTask task) {
+        this.regenerationTasks.remove(task);
+        ConsoleOutput.getInstance().debug("Removed regeneration task " + task.getTreasureID().toString());
+    }
+
+    public void regenerate(Treasure treasure, Block block, Material original) {
+        RegenerationTask regenerationTask = new RegenerationTask(treasure.getUniqueID(), block, original);
         this.regenerationTasks.add(regenerationTask);
         regenerationTask.start();
     }
 
     public void placeAllBack() {
-        regenerationTasks.forEach(RegenerationTask::regenerate);
+        new HashSet<>(regenerationTasks).forEach(RegenerationTask::regenerate);
     }
 
     public TreasureManager(TreasurePlugin plugin) {
@@ -146,6 +172,10 @@ public class TreasureManager {
             }
         }
         return null;
+    }
+
+    public boolean hasTreasure(UUID uniqueID) {
+        return this.loadedTreasures.containsKey(uniqueID);
     }
 
     public Treasure getTreasure(UUID uniqueID) {

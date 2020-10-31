@@ -102,7 +102,7 @@ public class InteractListener implements Listener {
 
         tool.reward(user, treasure);
 
-        hideBlock(event.getClickedBlock(), player);
+        hideBlock(treasure, event.getClickedBlock(), player);
 
         // Sound
         if (plugin.getConfig().getBoolean("sound.enabled", false)) {
@@ -148,7 +148,7 @@ public class InteractListener implements Listener {
     }
 
     @SuppressWarnings("deprecation")
-    private void hideBlock(Block block, Player player) {
+    private void hideBlock(Treasure treasure, Block block, Player player) {
 
         if (!plugin.getConfig().getBoolean("hide-block.enabled", false))
             return;
@@ -173,7 +173,7 @@ public class InteractListener implements Listener {
             if (!plugin.getConfig().getBoolean("hide-block.place-back", false))
                 return;
 
-            plugin.getTreasureManager().regenerate(block, original);
+            plugin.getTreasureManager().regenerate(treasure, block, original);
         }
     }
 }

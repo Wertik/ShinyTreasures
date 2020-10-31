@@ -38,8 +38,8 @@ public class UserManager {
         CompletableFuture.runAsync(() -> {
             int count = 0;
             for (User user : this.loadedUsers.values()) {
-                user.removeFind(uniqueID);
-                count++;
+                if (user.removeFind(uniqueID))
+                    count++;
             }
             ConsoleOutput.getInstance().debug("Removed " + count + " reference(s) of treasure " + uniqueID);
         });

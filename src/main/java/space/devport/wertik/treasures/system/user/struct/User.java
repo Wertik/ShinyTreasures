@@ -43,8 +43,8 @@ public class User {
         this.foundTreasures.add(uniqueID);
     }
 
-    public void removeFind(UUID uniqueID) {
-        this.foundTreasures.remove(uniqueID);
+    public boolean removeFind(UUID uniqueID) {
+        return this.foundTreasures.remove(uniqueID);
     }
 
     public boolean hasFound(UUID uniqueID) {
