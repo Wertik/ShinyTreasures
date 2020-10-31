@@ -116,8 +116,10 @@ public class TreasureManager {
 
     public void load() {
         plugin.getGsonHelper().loadMapAsync(plugin.getDataFolder() + "/data.json", UUID.class, Treasure.class).exceptionally(e -> {
-            ConsoleOutput.getInstance().err("Could not load treasures: " + e.getMessage());
-            e.printStackTrace();
+            if (e != null) {
+                ConsoleOutput.getInstance().err("Could not load treasures: " + e.getMessage());
+                e.printStackTrace();
+            }
             return null;
         }).thenAcceptAsync(treasures -> {
             this.loadedTreasures.clear();
@@ -145,7 +147,10 @@ public class TreasureManager {
     public CompletableFuture<Void> save() {
         return plugin.getGsonHelper().save(this.loadedTreasures, plugin.getDataFolder() + "/data.json")
                 .exceptionally(e -> {
-                    e.printStackTrace();
+                    if (e != null) {
+                        ConsoleOutput.getInstance().err("Could not save treasures: " + e.getMessage());
+                        e.printStackTrace();
+                    }
                     return null;
                 })
                 .thenRun(() -> ConsoleOutput.getInstance().info("Saved " + this.loadedTreasures.size() + " treasure(s)..."));

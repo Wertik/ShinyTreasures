@@ -47,8 +47,10 @@ public class UserManager {
 
     public void load() {
         plugin.getGsonHelper().loadMapAsync(plugin.getDataFolder() + "/user-data.json", UUID.class, User.class).exceptionally(e -> {
-            ConsoleOutput.getInstance().err("Could not load users: " + e.getMessage());
-            e.printStackTrace();
+            if (e != null) {
+                ConsoleOutput.getInstance().err("Could not load users: " + e.getMessage());
+                e.printStackTrace();
+            }
             return null;
         }).thenAccept(loadedData -> {
             this.loadedUsers.clear();
@@ -75,7 +77,10 @@ public class UserManager {
             plugin.getConsoleOutput().info("Purged " + count + " empty user(s)...");
         }).thenRun(() -> plugin.getGsonHelper().save(this.loadedUsers, plugin.getDataFolder() + "/user-data.json")
                 .exceptionally(e -> {
-                    e.printStackTrace();
+                    if (e != null) {
+                        ConsoleOutput.getInstance().err("Could not save users: " + e.getMessage());
+                        e.printStackTrace();
+                    }
                     return null;
                 })
                 .thenRun(() -> plugin.getConsoleOutput().info("Saved " + this.loadedUsers.size() + " user(s)...")));
