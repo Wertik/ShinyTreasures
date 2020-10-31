@@ -3,6 +3,7 @@ main: ${project.groupId}.TreasurePlugin
 version: ${project.version}
 authors: [ Wertik1206 ]
 api-version: 1.13
+softdepend: [ PlaceholderAPI ]
 commands:
   shinytreasures:
     aliases: [ st, treasure, shinytreasure, treasures ]
