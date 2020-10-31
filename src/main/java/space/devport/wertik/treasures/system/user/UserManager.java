@@ -46,7 +46,11 @@ public class UserManager {
     }
 
     public void load() {
-        plugin.getGsonHelper().loadMapAsync(plugin.getDataFolder() + "/user-data.json", UUID.class, User.class).thenAccept(loadedData -> {
+        plugin.getGsonHelper().loadMapAsync(plugin.getDataFolder() + "/user-data.json", UUID.class, User.class).exceptionally(e -> {
+            ConsoleOutput.getInstance().err("Could not load users: " + e.getMessage());
+            e.printStackTrace();
+            return null;
+        }).thenAccept(loadedData -> {
             this.loadedUsers.clear();
 
             if (loadedData == null) loadedData = new HashMap<>();
@@ -54,9 +58,6 @@ public class UserManager {
             this.loadedUsers.putAll(loadedData);
 
             plugin.getConsoleOutput().info("Loaded " + this.loadedUsers.size() + " user(s)...");
-        }).exceptionally(e -> {
-            e.printStackTrace();
-            return null;
         });
     }
 

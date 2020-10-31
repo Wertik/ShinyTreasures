@@ -89,7 +89,11 @@ public class TreasureManager {
     }
 
     public void load() {
-        plugin.getGsonHelper().loadMapAsync(plugin.getDataFolder() + "/data.json", UUID.class, Treasure.class).thenAcceptAsync(treasures -> {
+        plugin.getGsonHelper().loadMapAsync(plugin.getDataFolder() + "/data.json", UUID.class, Treasure.class).exceptionally(e -> {
+            ConsoleOutput.getInstance().err("Could not load treasures: " + e.getMessage());
+            e.printStackTrace();
+            return null;
+        }).thenAcceptAsync(treasures -> {
             this.loadedTreasures.clear();
 
             if (treasures == null) treasures = new HashMap<>();

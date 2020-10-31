@@ -43,11 +43,14 @@ public class ListSubCommand extends TreasureSubCommand {
         String lineFormat = language.get("Commands.Treasures.List.Line").toString();
 
         plugin.getTreasureManager().getTreasures().stream().skip(Math.max(0, page - 1) * 10).limit(10)
-                .forEach((treasure) -> list.append(new Message(lineFormat)
-                        .replace("%location%", LocationUtil.locationToString(treasure.getLocation()))
-                        .replace("%tool%", treasure.getTool(true) == null ? "None" : treasure.getTool().getName()))
-                        .replace("%uuid%", treasure.getUniqueID().toString().substring(0, 8))
-                        .replace("%rootTemplate%", treasure.getTool(true) == null || treasure.getTool(true).getRootTemplate() == null ? "None" : treasure.getTool().getRootTemplate().getName()));
+                .forEach((treasure) -> {
+                    String location = LocationUtil.locationToString(treasure.getLocation());
+                    list.append(new Message(lineFormat)
+                            .replace("%location%", location == null ? "&c-&r" : location)
+                            .replace("%tool%", treasure.getTool(true) == null ? "None" : treasure.getTool().getName()))
+                            .replace("%uuid%", treasure.getUniqueID().toString().substring(0, 8))
+                            .replace("%rootTemplate%", treasure.getTool(true) == null || treasure.getTool(true).getRootTemplate() == null ? "None" : treasure.getTool().getRootTemplate().getName());
+                });
         list.send(sender);
         return CommandResult.SUCCESS;
     }
@@ -56,7 +59,7 @@ public class ListSubCommand extends TreasureSubCommand {
     public List<String> requestTabComplete(CommandSender sender, String[] args) {
         if (args.length == 1) {
             int max = plugin.getTreasureManager().getLoadedTreasures().size() / 10;
-            max = max % 10 == 0 ? max : max + 1;
+            max = plugin.getTreasureManager().getLoadedTreasures().size() % 10 == 0 ? max : max + 1;
             return IntStream.range(1, max)
                     .mapToObj(String::valueOf)
                     .collect(Collectors.toList());
