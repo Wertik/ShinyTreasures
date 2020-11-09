@@ -9,7 +9,6 @@ import space.devport.wertik.treasures.commands.TreasureSubCommand;
 import space.devport.wertik.treasures.system.treasure.struct.Treasure;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
@@ -26,24 +25,21 @@ public class DeleteSubCommand extends TreasureSubCommand {
     @Override
     protected CommandResult perform(CommandSender sender, String label, String[] args) {
 
-        boolean multiple = containsSwitch(args, "multiple");
-        final String[] finalArgs = filterSwitch(args, "multiple");
-
         CompletableFuture.supplyAsync(() -> {
-            Set<UUID> toRemove = plugin.getTreasureManager().getTreasures((treasure) -> treasure.getUniqueID().toString().startsWith(finalArgs[0])).stream()
+            Set<UUID> toRemove = plugin.getTreasureManager().getTreasures((treasure) -> treasure.getUniqueID().toString().startsWith(args[0])).stream()
                     .map(Treasure::getUniqueID)
                     .collect(Collectors.toSet());
 
             if (toRemove.isEmpty()) {
                 language.getPrefixed("Commands.Treasures.Delete.Invalid-Treasure")
-                        .replace("%param%", finalArgs[0])
+                        .replace("%param%", args[0])
                         .send(sender);
                 return null;
             }
 
-            if (toRemove.size() > 1 && !multiple) {
+            if (toRemove.size() > 1) {
                 language.getPrefixed("Commands.Treasures.Delete.Multiple-Results")
-                        .replace("%param%", finalArgs[0])
+                        .replace("%param%", args[0])
                         .send(sender);
                 return null;
             }
@@ -58,9 +54,8 @@ public class DeleteSubCommand extends TreasureSubCommand {
                 plugin.getTreasureManager().deleteTreasure(uniqueID);
             }
 
-            language.getPrefixed(toRemove.size() > 1 ? "Commands.Treasures.Delete.Done-Multiple" : "Commands.Treasures.Delete.Done")
+            language.getPrefixed("Commands.Treasures.Delete.Done")
                     .replace("%uuid%", toRemove.stream().findFirst().isPresent() ? toRemove.stream().findFirst().get().toString() : "null")
-                    .replace("%count%", toRemove.size())
                     .send(sender);
         });
         return CommandResult.SUCCESS;
@@ -80,16 +75,16 @@ public class DeleteSubCommand extends TreasureSubCommand {
 
     @Override
     public @Nullable String getDefaultUsage() {
-        return "/%label% delete <startOfTheUUID> -multiple";
+        return "/%label% delete <startOfTheUUID>";
     }
 
     @Override
     public @Nullable String getDefaultDescription() {
-        return "Delete a treasure by the start of it's uuid. -multiple (-m) to remove multiple.";
+        return "Delete a treasure by the start of it's uuid.";
     }
 
     @Override
     public @Nullable ArgumentRange getRange() {
-        return new ArgumentRange(1, 2);
+        return new ArgumentRange(1);
     }
 }

@@ -45,10 +45,9 @@ public class TreasureLanguage extends LanguageDefaults {
         addDefault("Commands.Tools.Reset.Done-All", "&7Successfully reset first finds of all tools and templates.");
 
         addDefault("Commands.Treasures.Delete.Invalid-Treasure", "&cThere is no treasure uuid that starts with &f%param%");
-        addDefault("Commands.Treasures.Delete.Multiple-Results", "&cThere are multiple results starting with &f%param%",
-                "&cUse -m to remove all of them, or provide more characters.");
+        addDefault("Commands.Treasures.Delete.Multiple-Results", "&cThere are multiple results starting with &f%param%");
         addDefault("Commands.Treasures.Delete.Done", "&7Deleted treasure &f%uuid% &7and removed all user references to it.");
-        addDefault("Commands.Treasures.Delete.Done-Multiple", "&7Deleted &f%count% &7treasures and all user references to them.");
+        //addDefault("Commands.Treasures.Delete.Done-Multiple", "&7Deleted &f%count% &7treasures and all user references to them.");
 
         addDefault("Commands.Treasures.List.Page-Not-Number", "&cPage has to be a positive number.");
         addDefault("Commands.Treasures.List.Not-Enough-For-Page", "&cNot enough treasures to display this page.");
