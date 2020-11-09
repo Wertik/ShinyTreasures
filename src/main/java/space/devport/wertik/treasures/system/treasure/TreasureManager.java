@@ -104,6 +104,22 @@ public class TreasureManager {
         new HashSet<>(regenerationTasks).forEach(RegenerationTask::regenerate);
     }
 
+    /**
+     * Place all treasures.
+     */
+    public void ensurePlaced() {
+        for (Treasure treasure : this.loadedTreasures.values()) {
+            Block block = treasure.getLocation().getBlock();
+            Material material = treasure.getTool().getMaterial();
+
+            if (block.getType() == material)
+                continue;
+
+            Bukkit.getScheduler().runTask(plugin, () -> block.setType(material));
+        }
+        ConsoleOutput.getInstance().info("Ensured all treasures are placed.");
+    }
+
     public TreasureManager(TreasurePlugin plugin) {
         this.plugin = plugin;
     }
@@ -136,6 +152,7 @@ public class TreasureManager {
             this.loadedTreasures.putAll(treasures);
 
             plugin.getConsoleOutput().info("Loaded " + this.loadedTreasures.size() + " treasure(s)...");
+            ensurePlaced();
         });
     }
 

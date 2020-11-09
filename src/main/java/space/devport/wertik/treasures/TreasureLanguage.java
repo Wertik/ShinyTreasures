@@ -59,6 +59,10 @@ public class TreasureLanguage extends LanguageDefaults {
         addDefault("Commands.Treasures.Purge-Invalid.Removing", "&7&oRemoving &f&o%count% &7&otreasures...");
         addDefault("Commands.Treasures.Purge-Invalid.Done", "&7Done.");
 
+        addDefault("Commands.Treasures.Teleport.Invalid-Treasure", "&cThere's not treasure with the UUID of &f%param%");
+        addDefault("Commands.Treasures.Teleport.Multiple", "&cThere are more treasures start with &f%param%");
+        addDefault("Commands.Treasures.Teleport.Teleporting", "&7&oTeleporting...");
+
         addDefault("Editor.Info.Header", "&6Chat editor options:");
         addDefault("Editor.Info.Material", "&ematerial &7(material) &8- &7Set the material for this tool.");
         addDefault("Editor.Info.List-Commands", "&elistcommands &8- &7List commands.");
