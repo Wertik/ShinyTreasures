@@ -102,7 +102,7 @@ public enum TreasurePolicy {
             failCount.getAndIncrement();
         });
 
-        ConsoleOutput.getInstance().info("Executed policy " + toString() + " on " + treasures.size() + " (failed: " + failCount + ", retried: " + retryCount + ", retry fail: " + retryFailCount);
+        ConsoleOutput.getInstance().info("Executed policy " + toString() + " on " + treasures.size() + " (failed: " + failCount + ", retried: " + retryCount + ", retry fail: " + retryFailCount + ")");
     }
 
     public boolean execute(Treasure treasure) {
