@@ -12,11 +12,6 @@ import space.devport.utils.utility.VersionUtil;
 import space.devport.utils.utility.json.GsonHelper;
 import space.devport.wertik.treasures.commands.CommandParser;
 import space.devport.wertik.treasures.commands.tool.ToolCommand;
-import space.devport.wertik.treasures.commands.tool.subcommands.CreateSubCommand;
-import space.devport.wertik.treasures.commands.tool.subcommands.GetSubCommand;
-import space.devport.wertik.treasures.commands.tool.subcommands.ListSubCommand;
-import space.devport.wertik.treasures.commands.tool.subcommands.LoadSubCommand;
-import space.devport.wertik.treasures.commands.tool.subcommands.ResetSubCommand;
 import space.devport.wertik.treasures.commands.treasure.TreasureCommand;
 import space.devport.wertik.treasures.listeners.InteractListener;
 import space.devport.wertik.treasures.listeners.PlacementListener;
@@ -84,6 +79,8 @@ public class TreasurePlugin extends DevportPlugin {
         templateManager.load();
         toolManager.load();
 
+        treasureManager.loadOptions();
+
         treasureManager.load();
         treasureManager.loadAdditionalData();
         userManager.load();
@@ -98,6 +95,8 @@ public class TreasurePlugin extends DevportPlugin {
         addMainCommand(new TreasureCommand(this));
 
         addMainCommand(new ToolCommand(this));
+
+        treasureManager.runEnable();
 
         this.autoSave = new ReloadableTask(this) {
             @Override
@@ -118,9 +117,11 @@ public class TreasurePlugin extends DevportPlugin {
     public void onPluginDisable() {
         autoSave.stop();
 
-        treasureManager.placeAllBack();
+        treasureManager.regenerateAll();
         treasureManager.save();
         treasureManager.saveAdditionalData();
+
+        treasureManager.runDisable();
 
         userManager.save();
         toolManager.save();
@@ -130,6 +131,7 @@ public class TreasurePlugin extends DevportPlugin {
     public void onReload() {
         templateManager.load();
         toolManager.load();
+        treasureManager.loadOptions();
 
         autoSave.reload();
 

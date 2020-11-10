@@ -5,6 +5,16 @@
 plugin-prefix: '&6Shiny Treasures &8| '
 debug-enabled: false
 
+# Policy to use on Treasures when the plugin disables/enables.
+# You can actually use all of them in either disable/enable, but I don't know why you'd do that.
+policy:
+  # REVERT == Place the original material back
+  # REMOVE == Remove all placed treasures
+  disable: REMOVE
+  # PLACE == Place the block configured no matter what's on the location
+  # ENSURE == Place the block configured, if it's not there
+  enable: PLACE
+
 # Auto save configuration
 auto-save:
   # Save interval in seconds

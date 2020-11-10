@@ -5,19 +5,18 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
-import org.bukkit.scheduler.BukkitTask;
 import space.devport.utils.ConsoleOutput;
-import space.devport.utils.item.Amount;
 import space.devport.wertik.treasures.TreasurePlugin;
 import space.devport.wertik.treasures.system.struct.FoundData;
 import space.devport.wertik.treasures.system.tool.struct.PlacementTool;
+import space.devport.wertik.treasures.system.treasure.policy.TreasurePolicy;
+import space.devport.wertik.treasures.system.treasure.struct.RegenerationTask;
 import space.devport.wertik.treasures.system.treasure.struct.Treasure;
 
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
@@ -35,58 +34,19 @@ public class TreasureManager {
 
     private final Set<RegenerationTask> regenerationTasks = new HashSet<>();
 
-    public static class RegenerationTask implements Runnable {
+    @Getter
+    private TreasurePolicy enablePolicy;
+    @Getter
+    private TreasurePolicy disablePolicy;
 
-        @Getter
-        private final UUID treasureID;
+    public TreasureManager(TreasurePlugin plugin) {
+        this.plugin = plugin;
+    }
 
-        private BukkitTask task;
-        private final Material original;
-        private final Block block;
-
-        public RegenerationTask(UUID treasureID, Block block, Material original) {
-            this.treasureID = treasureID;
-            this.original = original;
-            this.block = block;
-        }
-
-        public void start() {
-            int comeBackTime = TreasurePlugin.getInstance().getConfiguration().getAmount("hide-block.time", new Amount(5)).getInt();
-
-            task = Bukkit.getScheduler().runTaskLater(TreasurePlugin.getInstance(), this, comeBackTime * 20L);
-        }
-
-        public void regenerate() {
-
-            TreasurePlugin.getInstance().getTreasureManager().removeTask(this);
-
-            block.setType(original);
-            block.getState().update(true);
-            ConsoleOutput.getInstance().debug("Reverted treasure back to " + original.toString());
-
-            if (task != null) {
-                this.task.cancel();
-                this.task = null;
-            }
-        }
-
-        @Override
-        public void run() {
-            regenerate();
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
-            RegenerationTask that = (RegenerationTask) o;
-            return treasureID.equals(that.treasureID);
-        }
-
-        @Override
-        public int hashCode() {
-            return Objects.hash(treasureID);
-        }
+    public void loadOptions() {
+        this.enablePolicy = TreasurePolicy.fromString(plugin.getConfig().getString("policy.enable"), TreasurePolicy.PLACE);
+        this.disablePolicy = TreasurePolicy.fromString(plugin.getConfig().getString("policy.disable"), TreasurePolicy.REMOVE);
+        ConsoleOutput.getInstance().info("Using " + enablePolicy.toString() + " as enable policy and " + disablePolicy.toString() + " as disable policy.");
     }
 
     public void removeTask(RegenerationTask task) {
@@ -100,28 +60,16 @@ public class TreasureManager {
         regenerationTask.start();
     }
 
-    public void placeAllBack() {
+    public void regenerateAll() {
         new HashSet<>(regenerationTasks).forEach(RegenerationTask::regenerate);
     }
 
-    /**
-     * Place all treasures.
-     */
-    public void ensurePlaced() {
-        for (Treasure treasure : this.loadedTreasures.values()) {
-            Block block = treasure.getLocation().getBlock();
-            Material material = treasure.getTool().getMaterial();
-
-            if (block.getType() == material)
-                continue;
-
-            Bukkit.getScheduler().runTask(plugin, () -> block.setType(material));
-        }
-        ConsoleOutput.getInstance().info("Ensured all treasures are placed.");
+    public void runDisable() {
+        enablePolicy.execute(new HashSet<>(this.loadedTreasures.values()));
     }
 
-    public TreasureManager(TreasurePlugin plugin) {
-        this.plugin = plugin;
+    public void runEnable() {
+        disablePolicy.execute(new HashSet<>(this.loadedTreasures.values()));
     }
 
     public void loadAdditionalData() {
@@ -152,7 +100,6 @@ public class TreasureManager {
             this.loadedTreasures.putAll(treasures);
 
             plugin.getConsoleOutput().info("Loaded " + this.loadedTreasures.size() + " treasure(s)...");
-            ensurePlaced();
         });
     }
 
