@@ -65,11 +65,11 @@ public class TreasureManager {
     }
 
     public void runDisable() {
-        enablePolicy.execute(new HashSet<>(this.loadedTreasures.values()));
+        disablePolicy.execute(new HashSet<>(this.loadedTreasures.values()));
     }
 
     public void runEnable() {
-        disablePolicy.execute(new HashSet<>(this.loadedTreasures.values()));
+        enablePolicy.execute(new HashSet<>(this.loadedTreasures.values()));
     }
 
     public void loadAdditionalData() {
