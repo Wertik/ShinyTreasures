@@ -1,6 +1,7 @@
 package space.devport.wertik.treasures.system.treasure.policy;
 
 import lombok.Getter;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.jetbrains.annotations.Nullable;
 import space.devport.utils.ConsoleOutput;
@@ -38,7 +39,12 @@ public enum TreasurePolicy {
         if (treasure.getTool() != null) {
             Material material = treasure.getTool().getMaterial();
             if (material != null) {
-                treasure.getLocation().getBlock().setType(material);
+                Location location = treasure.getLocation();
+
+                if (location == null)
+                    return false;
+
+                location.getBlock().setType(material);
                 return true;
             }
         }
@@ -110,6 +116,13 @@ public enum TreasurePolicy {
         if (treasure.getLocation() == null)
             return false;
 
-        return this.executor.execute(treasure);
+        try {
+            this.executor.execute(treasure);
+        } catch (Exception e) {
+            ConsoleOutput.getInstance().err("Could not execute policy " + toString() + ": " + e.getMessage());
+            e.printStackTrace();
+            return false;
+        }
+        return true;
     }
 }

@@ -22,6 +22,8 @@ public class Treasure {
 
     private transient PlacementTool tool;
 
+    private transient Location location;
+
     @Getter
     @Setter
     private boolean found = false;
@@ -43,6 +45,8 @@ public class Treasure {
     }
 
     public Location getLocation() {
-        return this.jsonLocation.toBukkitLocation();
+        if (location == null)
+            this.location = jsonLocation.toBukkitLocation();
+        return location;
     }
 }
