@@ -68,7 +68,7 @@ public class TeleportSubCommand extends TreasureSubCommand {
 
     @Override
     public @Nullable String getDefaultDescription() {
-        return "Teleport to egg location.";
+        return "Teleport to treasure location.";
     }
 
     @Override
