@@ -2,7 +2,11 @@ package space.devport.wertik.treasures.system.tool.struct;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.block.Block;
+import org.bukkit.block.data.BlockData;
 import org.bukkit.configuration.ConfigurationSection;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -58,11 +62,38 @@ public class PlacementTool {
         this.rootTemplate = template == null ? null : template.getName();
     }
 
-    public Material getMaterial(boolean... dontNagMe) {
-        Material material = template.getMaterial() == null ? (getRootTemplate() == null ? null : getRootTemplate().getMaterial()) : template.getMaterial();
-        if (material == null && (dontNagMe.length < 1 || !dontNagMe[0]))
-            ConsoleOutput.getInstance().err("Could not find a material to use in tool " + name + ", falling back to a chest.");
-        return material == null ? Material.CHEST : material;
+    // Place the treasure at location
+    public void place(Block block) {
+        block.setBlockData(getBlockData(Material.CHEST));
+    }
+
+    public void place(Location location) {
+        location.getBlock().setBlockData(getBlockData(Material.CHEST));
+    }
+
+    @Nullable
+    public BlockData getBlockData() {
+        BlockData blockData = template.getBlockData();
+        if (blockData == null && getRootTemplate() != null)
+            blockData = template.getBlockData();
+        return blockData;
+    }
+
+    @NotNull
+    public BlockData getBlockData(@NotNull Material def) {
+        BlockData data = getBlockData();
+        return data == null ? Bukkit.createBlockData(def) : data;
+    }
+
+    @NotNull
+    public Material getMaterial(Material def) {
+        return getBlockData(def).getMaterial();
+    }
+
+    @Nullable
+    public Material getMaterial() {
+        BlockData data = getBlockData();
+        return data == null ? null : data.getMaterial();
     }
 
     @Nullable

@@ -6,6 +6,7 @@ import org.bukkit.FireworkEffect;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.block.data.BlockData;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Firework;
 import org.bukkit.entity.Player;
@@ -161,7 +162,7 @@ public class InteractListener implements Listener {
                 }
             }.runTaskLater(plugin, 1L);
         } else {
-            Material original = block.getType();
+            BlockData original = block.getBlockData();
 
             new BukkitRunnable() {
                 @Override

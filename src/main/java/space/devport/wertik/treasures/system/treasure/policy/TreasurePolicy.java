@@ -3,9 +3,11 @@ package space.devport.wertik.treasures.system.treasure.policy;
 import lombok.Getter;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.block.Block;
 import org.jetbrains.annotations.Nullable;
 import space.devport.utils.ConsoleOutput;
 import space.devport.utils.ParseUtil;
+import space.devport.wertik.treasures.system.tool.struct.PlacementTool;
 import space.devport.wertik.treasures.system.treasure.struct.Treasure;
 
 import java.util.Set;
@@ -22,44 +24,32 @@ public enum TreasurePolicy {
         return true;
     }),
 
-    REVERT(treasure -> {
-        Material material = treasure.getTool().getMaterial();
-        if (material != null) {
-            treasure.getLocation().getBlock().setType(material);
-            return true;
-        }
-        return false;
-    }, REMOVE),
-
     /**
      * Enable policies
      */
 
     PLACE(treasure -> {
-        if (treasure.getTool() != null) {
-            Material material = treasure.getTool().getMaterial();
-            if (material != null) {
-                Location location = treasure.getLocation();
+        PlacementTool tool = treasure.getTool();
+        Location location = treasure.getLocation();
 
-                if (location == null)
-                    return false;
+        if (tool == null || location == null)
+            return false;
 
-                location.getBlock().setType(material);
-                return true;
-            }
-        }
-        return false;
+        tool.place(location);
+        return true;
     }),
 
-    ENSURE(treasure -> {
-        if (treasure.getTool() != null) {
-            Material material = treasure.getTool().getMaterial();
-            if (material != null && material != treasure.getLocation().getBlock().getType()) {
-                treasure.getLocation().getBlock().setType(material);
-                return true;
-            }
-        }
-        return false;
+    PLACE_IF_EMPTY(treasure -> {
+        PlacementTool tool = treasure.getTool();
+        Location location = treasure.getLocation();
+        if (tool == null || location == null)
+            return false;
+
+        Block block = location.getBlock();
+
+        if (!block.getBlockData().matches(tool.getBlockData()))
+            tool.place(location);
+        return true;
     });
 
     @Getter

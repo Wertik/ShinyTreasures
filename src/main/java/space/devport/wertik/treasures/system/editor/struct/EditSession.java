@@ -23,6 +23,10 @@ public class EditSession {
     @Getter
     private final PlacementTool tool;
 
+    @Getter
+    @Setter
+    private boolean blockDataClick = false;
+
     public EditSession(TreasurePlugin plugin, UUID uniqueID, String name) {
         this.plugin = plugin;
         this.uniqueID = uniqueID;

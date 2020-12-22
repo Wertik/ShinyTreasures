@@ -1,8 +1,11 @@
 package space.devport.wertik.treasures.system.template.struct;
 
+import joptsimple.internal.Strings;
 import lombok.Getter;
 import lombok.Setter;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.block.data.BlockData;
 import org.bukkit.configuration.ConfigurationSection;
 import org.jetbrains.annotations.Nullable;
 import space.devport.utils.ConsoleOutput;
@@ -18,6 +21,9 @@ public class TreasureTemplate {
     @Getter
     @Setter
     private Material material;
+
+    @Setter
+    private BlockData blockData;
 
     @Getter
     @Setter
@@ -35,17 +41,17 @@ public class TreasureTemplate {
         this.name = name;
     }
 
-    public TreasureTemplate(TreasureTemplate template) {
-        this.name = template.getName();
-        this.material = template.getMaterial();
-        this.limit = template.getLimit();
-        this.rewards = new TreasureRewards(template.getRewards());
-    }
-
     public TreasureTemplate(String name, @Nullable Material material, TreasureRewards rewards) {
         this.name = name;
         this.material = material;
         this.rewards = rewards;
+    }
+
+    public BlockData getBlockData() {
+        if (blockData != null)
+            return blockData;
+
+        return material != null ? Bukkit.createBlockData(material) : null;
     }
 
     @Nullable
@@ -71,12 +77,24 @@ public class TreasureTemplate {
             } else material = xMaterial.parseMaterial();
         }
 
+        String dataString = section.getString("blockData");
+        BlockData blockData = null;
+
+        if (!Strings.isNullOrEmpty(dataString)) {
+            try {
+                blockData = Bukkit.createBlockData(dataString);
+            } catch (IllegalArgumentException e) {
+                ConsoleOutput.getInstance().warn("BlockData at " + configuration.getFile().getName() + "@" + ".blockData is invalid.");
+            }
+        }
+
         TreasureRewards rewards = TreasureRewards.from(configuration, path + ".rewards", !ConsoleOutput.getInstance().isDebug() && silent);
 
         if (rewards == null)
             rewards = new TreasureRewards();
 
         TreasureTemplate treasureTemplate = new TreasureTemplate(name, material, rewards);
+        treasureTemplate.setBlockData(blockData);
         treasureTemplate.setLimit(section.getInt("limit", 0));
         treasureTemplate.setEnabled(section.getBoolean("enabled", true));
         return treasureTemplate;
@@ -87,6 +105,8 @@ public class TreasureTemplate {
 
         if (material != null)
             section.set("material", material.toString());
+        if (blockData != null)
+            section.set("blockData", blockData.getAsString(true));
 
         section.set("limit", limit);
         section.set("enabled", enabled);

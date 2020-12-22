@@ -5,6 +5,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.block.data.BlockData;
 import space.devport.utils.ConsoleOutput;
 import space.devport.wertik.treasures.TreasurePlugin;
 import space.devport.wertik.treasures.system.struct.FoundData;
@@ -54,7 +55,7 @@ public class TreasureManager {
         ConsoleOutput.getInstance().debug("Removed regeneration task " + task.getTreasureID().toString());
     }
 
-    public void regenerate(Treasure treasure, Block block, Material original) {
+    public void regenerate(Treasure treasure, Block block, BlockData original) {
         RegenerationTask regenerationTask = new RegenerationTask(treasure.getUniqueID(), block, original);
         this.regenerationTasks.add(regenerationTask);
         regenerationTask.start();

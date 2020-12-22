@@ -4,6 +4,7 @@ import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.block.data.BlockData;
 import org.bukkit.scheduler.BukkitTask;
 import space.devport.utils.ConsoleOutput;
 import space.devport.utils.item.Amount;
@@ -18,10 +19,10 @@ public class RegenerationTask implements Runnable {
     private final UUID treasureID;
 
     private BukkitTask task;
-    private final Material original;
+    private final BlockData original;
     private final Block block;
 
-    public RegenerationTask(UUID treasureID, Block block, Material original) {
+    public RegenerationTask(UUID treasureID, Block block, BlockData original) {
         this.treasureID = treasureID;
         this.original = original;
         this.block = block;
@@ -37,9 +38,9 @@ public class RegenerationTask implements Runnable {
 
         TreasurePlugin.getInstance().getTreasureManager().removeTask(this);
 
-        block.setType(original);
+        block.setBlockData(original);
         block.getState().update(true);
-        ConsoleOutput.getInstance().debug("Reverted treasure back to " + original.toString());
+        ConsoleOutput.getInstance().debug("Reverted treasure back to " + original.getAsString(true));
 
         if (task != null) {
             this.task.cancel();

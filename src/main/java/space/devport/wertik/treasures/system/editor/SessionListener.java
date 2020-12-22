@@ -1,15 +1,23 @@
 package space.devport.wertik.treasures.system.editor;
 
+import org.bukkit.block.Block;
+import org.bukkit.block.data.BlockData;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.inventory.EquipmentSlot;
+import org.bukkit.inventory.PlayerInventory;
 import space.devport.utils.DevportListener;
+import space.devport.utils.ParseUtil;
+import space.devport.utils.text.StringUtil;
 import space.devport.utils.text.language.LanguageManager;
 import space.devport.utils.text.message.Message;
 import space.devport.utils.xseries.XMaterial;
 import space.devport.wertik.treasures.system.editor.struct.EditSession;
 import space.devport.wertik.treasures.system.template.struct.TreasureTemplate;
+import space.devport.wertik.treasures.system.tool.struct.PlacementTool;
 
 import java.util.Arrays;
 import java.util.List;
@@ -18,7 +26,8 @@ public class SessionListener extends DevportListener {
 
     private final EditorManager editorManager;
 
-    private final List<String> arguments = Arrays.asList("save", "finish", "exit", "cancel", "material", "addcommand", "listcommands", "removecommand", "roottemplate", "template");
+    // Arguments for the matcher
+    private final List<String> arguments = Arrays.asList("save", "finish", "exit", "cancel", "material", "addcommand", "listcommands", "removecommand", "roottemplate", "template", "blockdata");
 
     public SessionListener(EditorManager editorManager) {
         super(editorManager.getPlugin());
@@ -105,11 +114,18 @@ public class SessionListener extends DevportListener {
                         .replace("%command%", command)
                         .send(player);
                 break;
+            case "blockdata":
+                //TODO lang
+                session.setBlockDataClick(true);
+                player.sendMessage(StringUtil.color("&7Click on a block to load it's block data."));
+                break;
             case "material":
 
                 if (args.length < 2) {
+                    BlockData blockData = session.getTool().getBlockData();
                     language.get("Editor.Material.Info")
-                            .replace("%material%", session.getTool().getMaterial(true) == null ? "None" : session.getTool().getMaterial(true).toString())
+                            .replace("%material%", blockData == null ? "None" : blockData.getMaterial().toString())
+                            .replace("%blockData%", blockData == null ? "None" : blockData.getAsString())
                             .send(player);
                     return;
                 }
@@ -157,6 +173,43 @@ public class SessionListener extends DevportListener {
                         .send(player);
                 break;
         }
+    }
+
+    @EventHandler
+    public void onInteract(PlayerInteractEvent event) {
+
+        // Filter one of the hands out.
+        if (event.getHand() == EquipmentSlot.OFF_HAND)
+            return;
+
+        Player player = event.getPlayer();
+
+        EditSession session = editorManager.getSession(player);
+
+        if (session == null)
+            return;
+
+        event.setCancelled(true);
+
+        Block block = event.getClickedBlock();
+
+        if (block == null) {
+            //TODO lang
+            player.sendMessage(StringUtil.color("&cPlease click a block."));
+            return;
+        }
+
+        BlockData blockData = block.getBlockData();
+        PlacementTool tool = session.getTool();
+
+        tool.getTemplate().setBlockData(blockData);
+
+        if (tool.getBlockData() != null) {
+            //TODO lang
+            player.sendMessage(StringUtil.color("&4! &cOverriding already set blockdata."));
+        }
+        //TODO lang
+        player.sendMessage(StringUtil.color(String.format("&7Set block data for tool &f%s &7 to &f%s", tool.getName(), blockData.getAsString(true))));
     }
 
     private String combine(String[] args) {
