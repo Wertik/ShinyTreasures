@@ -2,11 +2,11 @@ package space.devport.wertik.treasures.commands.treasure.subcommands;
 
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
-import space.devport.utils.ParseUtil;
 import space.devport.utils.commands.struct.ArgumentRange;
 import space.devport.utils.commands.struct.CommandResult;
 import space.devport.utils.text.message.Message;
 import space.devport.utils.utility.LocationUtil;
+import space.devport.utils.utility.ParseUtil;
 import space.devport.wertik.treasures.TreasurePlugin;
 import space.devport.wertik.treasures.commands.TreasureSubCommand;
 
@@ -42,7 +42,7 @@ public class ListSubCommand extends TreasureSubCommand {
         Message list = language.get("Commands.Treasures.List.Header");
         String lineFormat = language.get("Commands.Treasures.List.Line").toString();
 
-        plugin.getTreasureManager().getTreasures().stream().skip(Math.max(0, page - 1) * 10).limit(10)
+        plugin.getTreasureManager().getTreasures().stream().skip(Math.max(0, page - 1) * 10L).limit(10)
                 .forEach((treasure) -> {
                     String location = LocationUtil.locationToString(treasure.getLocation());
                     list.append(new Message(lineFormat)
@@ -56,7 +56,7 @@ public class ListSubCommand extends TreasureSubCommand {
     }
 
     @Override
-    public List<String> requestTabComplete(CommandSender sender, String[] args) {
+    public @NotNull List<String> requestTabComplete(CommandSender sender, String[] args) {
         if (args.length == 1) {
             int max = plugin.getTreasureManager().getLoadedTreasures().size() / 10;
             max = plugin.getTreasureManager().getLoadedTreasures().size() % 10 == 0 ? max : max + 1;

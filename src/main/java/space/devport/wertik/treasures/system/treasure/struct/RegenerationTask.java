@@ -2,13 +2,12 @@ package space.devport.wertik.treasures.system.treasure.struct;
 
 import lombok.Getter;
 import org.bukkit.Bukkit;
-import org.bukkit.Material;
 import org.bukkit.block.Block;
-import org.bukkit.block.data.BlockData;
 import org.bukkit.scheduler.BukkitTask;
 import space.devport.utils.ConsoleOutput;
 import space.devport.utils.item.Amount;
 import space.devport.wertik.treasures.TreasurePlugin;
+import space.devport.wertik.treasures.system.struct.TreasureData;
 
 import java.util.Objects;
 import java.util.UUID;
@@ -19,10 +18,10 @@ public class RegenerationTask implements Runnable {
     private final UUID treasureID;
 
     private BukkitTask task;
-    private final BlockData original;
+    private final TreasureData original;
     private final Block block;
 
-    public RegenerationTask(UUID treasureID, Block block, BlockData original) {
+    public RegenerationTask(UUID treasureID, Block block, TreasureData original) {
         this.treasureID = treasureID;
         this.original = original;
         this.block = block;
@@ -38,8 +37,7 @@ public class RegenerationTask implements Runnable {
 
         TreasurePlugin.getInstance().getTreasureManager().removeTask(this);
 
-        block.setBlockData(original);
-        block.getState().update(true);
+        original.place(block);
         ConsoleOutput.getInstance().debug("Reverted treasure back to " + original.getAsString(true));
 
         if (task != null) {

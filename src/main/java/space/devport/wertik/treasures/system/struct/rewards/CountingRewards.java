@@ -4,9 +4,9 @@ import lombok.Getter;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import space.devport.utils.ConsoleOutput;
-import space.devport.utils.ParseUtil;
 import space.devport.utils.configuration.Configuration;
 import space.devport.utils.struct.Rewards;
+import space.devport.utils.utility.ParseUtil;
 
 import java.util.function.BiPredicate;
 

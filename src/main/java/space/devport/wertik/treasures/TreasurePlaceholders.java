@@ -3,7 +3,7 @@ package space.devport.wertik.treasures;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
-import space.devport.utils.ParseUtil;
+import space.devport.utils.utility.ParseUtil;
 import space.devport.wertik.treasures.system.template.struct.TreasureTemplate;
 import space.devport.wertik.treasures.system.tool.struct.PlacementTool;
 import space.devport.wertik.treasures.system.treasure.struct.Treasure;

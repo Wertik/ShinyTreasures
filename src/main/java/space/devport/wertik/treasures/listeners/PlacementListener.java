@@ -14,9 +14,9 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
-import space.devport.utils.ParseUtil;
 import space.devport.utils.text.StringUtil;
 import space.devport.utils.text.language.LanguageManager;
+import space.devport.utils.utility.ParseUtil;
 import space.devport.wertik.treasures.TreasurePlugin;
 import space.devport.wertik.treasures.system.tool.struct.PlacementTool;
 import space.devport.wertik.treasures.system.treasure.struct.Treasure;
@@ -44,7 +44,9 @@ public class PlacementListener implements Listener {
             compensate(event.getPlayer(), event.getHand());
         }
 
-        Treasure treasure = plugin.getTreasureManager().createTreasure(event.getBlockPlaced().getLocation(), tool);
+        Block block = event.getBlockPlaced();
+
+        Treasure treasure = plugin.getTreasureManager().createTreasure(block.getLocation(), tool);
         event.getPlayer().sendMessage(StringUtil.color("&7Treasure placed with tool " + treasure.getTool().getName()));
     }
 

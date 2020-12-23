@@ -1,0 +1,37 @@
+# Block placement effect configuration for ${project.version}
+#
+# Version: ${project.version}
+
+# Particle options directly correspond to particle algorithms shown here: https://github.com/CryptoMorin/XSeries/blob/master/src/main/java/com/cryptomorin/xseries/particles/XParticle.java
+# I created some kinda-working defaults. Play around with the values and you should be able to get solid particles done.
+# Note: Some options take effect only on some types.
+
+# Types: structured_cube, filled_cube, circle, lightning
+
+default:
+  type: structured_cube
+  particle: CLOUD
+  rate: 0.2
+  size: 0.1
+
+lime:
+  type: structured_cube
+  rate: 0.2
+  # RGB color, will use REDSTONE particle instead of type if specified.
+  color: 144;255;18
+
+# There are a lot of settings which do or do not take effect.
+# I wasn't able to figure out how to get lightning to work. Good luck.
+lightning:
+  type: lightning
+  color: 245;224;66
+  rate: 0.2
+  radius: 1
+  entries: 2
+  branches: 3
+  offset: 0
+  length: 5
+  length-rate: 0.2
+  branch: 1
+  branch-rate: 0.2
+  direction: 0;-1;0

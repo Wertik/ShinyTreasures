@@ -118,8 +118,10 @@ public class InteractListener implements Listener {
             } else ConsoleOutput.getInstance().warn("Sound type defined in config is invalid.");
         }
 
+        // Particles and sounds
+        plugin.getEffectRegistry().showEffect(treasure, true, true);
+
         // Fireworks
-        //TODO Add particles
         if (plugin.getConfig().getBoolean("fireworks", false)) {
 
             FireworkEffect.Builder b = FireworkEffect.builder();
@@ -162,8 +164,6 @@ public class InteractListener implements Listener {
                 }
             }.runTaskLater(plugin, 1L);
         } else {
-            BlockData original = block.getBlockData();
-
             new BukkitRunnable() {
                 @Override
                 public void run() {
@@ -174,7 +174,7 @@ public class InteractListener implements Listener {
             if (!plugin.getConfig().getBoolean("hide-block.place-back", false))
                 return;
 
-            plugin.getTreasureManager().regenerate(treasure, block, original);
+            plugin.getTreasureManager().regenerate(treasure, block);
         }
     }
 }

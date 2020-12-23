@@ -43,6 +43,9 @@ hide-block:
 # Colors are picked randomly.
 fireworks: true
 
+# Default sound and particles to use for treasure openings.
+default-effect: 'default'
+
 # Sound to play when the player opens a treasure.
 sound:
   enabled: true

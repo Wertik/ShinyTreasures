@@ -1,10 +1,12 @@
 package space.devport.wertik.treasures.system.tool;
 
 import com.google.common.base.Strings;
+import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import space.devport.utils.CustomisationManager;
 import space.devport.utils.configuration.Configuration;
 import space.devport.utils.item.ItemBuilder;
+import space.devport.utils.item.SkullData;
 import space.devport.utils.text.Placeholders;
 import space.devport.wertik.treasures.TreasurePlugin;
 import space.devport.wertik.treasures.system.tool.struct.PlacementTool;
@@ -91,7 +93,8 @@ public class ToolManager {
         if (tool == null) return null;
 
         return new ItemBuilder(plugin.getManager(CustomisationManager.class).getItemBuilder("placement-tool"))
-                .type(tool.getMaterial())
+                .type(tool.getMaterial(Material.CHEST))
+                .skullData(new SkullData(tool.getTreasureData(Material.CHEST).getBase64()))
                 .parseWith(new Placeholders()
                         .add("%toolName%", tool.getName())
                         .add("%commands%", tool.getTemplate().getRewards().getCommands().size())

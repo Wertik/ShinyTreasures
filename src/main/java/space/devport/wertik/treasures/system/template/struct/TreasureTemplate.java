@@ -3,14 +3,15 @@ package space.devport.wertik.treasures.system.template.struct;
 import joptsimple.internal.Strings;
 import lombok.Getter;
 import lombok.Setter;
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
-import org.bukkit.block.data.BlockData;
 import org.bukkit.configuration.ConfigurationSection;
 import org.jetbrains.annotations.Nullable;
 import space.devport.utils.ConsoleOutput;
 import space.devport.utils.configuration.Configuration;
+import space.devport.utils.item.SkullData;
+import space.devport.utils.xseries.SkullUtils;
 import space.devport.utils.xseries.XMaterial;
+import space.devport.wertik.treasures.system.struct.TreasureData;
 import space.devport.wertik.treasures.system.struct.rewards.TreasureRewards;
 
 public class TreasureTemplate {
@@ -23,7 +24,7 @@ public class TreasureTemplate {
     private Material material;
 
     @Setter
-    private BlockData blockData;
+    private TreasureData treasureData;
 
     @Getter
     @Setter
@@ -37,6 +38,10 @@ public class TreasureTemplate {
     @Setter
     private boolean enabled = true;
 
+    @Getter
+    @Setter
+    private String effectName;
+
     public TreasureTemplate(String name) {
         this.name = name;
     }
@@ -47,11 +52,11 @@ public class TreasureTemplate {
         this.rewards = rewards;
     }
 
-    public BlockData getBlockData() {
-        if (blockData != null)
-            return blockData;
+    public TreasureData getTreasureData() {
+        if (treasureData != null)
+            return treasureData;
 
-        return material != null ? Bukkit.createBlockData(material) : null;
+        return material != null ? TreasureData.fromMaterial(material) : null;
     }
 
     @Nullable
@@ -77,14 +82,15 @@ public class TreasureTemplate {
             } else material = xMaterial.parseMaterial();
         }
 
-        String dataString = section.getString("blockData");
-        BlockData blockData = null;
+        String dataString = section.getString("treasure-data");
+        TreasureData treasureData = null;
 
         if (!Strings.isNullOrEmpty(dataString)) {
             try {
-                blockData = Bukkit.createBlockData(dataString);
+                treasureData = TreasureData.fromString(dataString);
+                ConsoleOutput.getInstance().debug("TreasureData: " + treasureData.getAsString(true));
             } catch (IllegalArgumentException e) {
-                ConsoleOutput.getInstance().warn("BlockData at " + configuration.getFile().getName() + "@" + ".blockData is invalid.");
+                ConsoleOutput.getInstance().warn("TreasureData at " + configuration.getFile().getName() + "@" + ".treasure-data is invalid.");
             }
         }
 
@@ -94,7 +100,8 @@ public class TreasureTemplate {
             rewards = new TreasureRewards();
 
         TreasureTemplate treasureTemplate = new TreasureTemplate(name, material, rewards);
-        treasureTemplate.setBlockData(blockData);
+        treasureTemplate.setTreasureData(treasureData);
+        treasureTemplate.setEffectName(section.getString("effect"));
         treasureTemplate.setLimit(section.getInt("limit", 0));
         treasureTemplate.setEnabled(section.getBoolean("enabled", true));
         return treasureTemplate;
@@ -105,11 +112,12 @@ public class TreasureTemplate {
 
         if (material != null)
             section.set("material", material.toString());
-        if (blockData != null)
-            section.set("blockData", blockData.getAsString(true));
+        if (treasureData != null)
+            section.set("treasure-data", treasureData.getAsString(true));
 
         section.set("limit", limit);
         section.set("enabled", enabled);
+        section.set("effect-name", effectName);
 
         rewards.to(configuration, path + ".rewards");
     }

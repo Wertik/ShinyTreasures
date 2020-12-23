@@ -1,13 +1,16 @@
 package space.devport.wertik.treasures.system.treasure.struct;
 
+import com.google.gson.annotations.JsonAdapter;
 import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.Location;
 import space.devport.utils.ConsoleOutput;
+import space.devport.wertik.treasures.system.struct.TreasureData;
 import space.devport.wertik.treasures.system.tool.struct.PlacementTool;
 
 import java.util.UUID;
 
+@JsonAdapter(TreasureJsonAdapter.class)
 public class Treasure {
 
     @Getter
@@ -18,6 +21,7 @@ public class Treasure {
     private JsonLocation jsonLocation;
 
     @Getter
+    @Setter
     private String toolName;
 
     private transient PlacementTool tool;
@@ -26,11 +30,19 @@ public class Treasure {
 
     @Getter
     @Setter
+    private TreasureData treasureData;
+
+    @Getter
+    @Setter
     private boolean found = false;
 
     public Treasure(Location location) {
         this.uniqueID = UUID.randomUUID();
         this.jsonLocation = new JsonLocation(location);
+    }
+
+    public Treasure(UUID uniqueID) {
+        this.uniqueID = uniqueID;
     }
 
     public PlacementTool getTool(boolean... dontNagMe) {

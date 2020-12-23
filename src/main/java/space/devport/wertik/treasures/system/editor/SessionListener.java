@@ -1,21 +1,19 @@
 package space.devport.wertik.treasures.system.editor;
 
 import org.bukkit.block.Block;
-import org.bukkit.block.data.BlockData;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
-import org.bukkit.inventory.PlayerInventory;
 import space.devport.utils.DevportListener;
-import space.devport.utils.ParseUtil;
 import space.devport.utils.text.StringUtil;
 import space.devport.utils.text.language.LanguageManager;
 import space.devport.utils.text.message.Message;
 import space.devport.utils.xseries.XMaterial;
 import space.devport.wertik.treasures.system.editor.struct.EditSession;
+import space.devport.wertik.treasures.system.struct.TreasureData;
 import space.devport.wertik.treasures.system.template.struct.TreasureTemplate;
 import space.devport.wertik.treasures.system.tool.struct.PlacementTool;
 
@@ -122,7 +120,7 @@ public class SessionListener extends DevportListener {
             case "material":
 
                 if (args.length < 2) {
-                    BlockData blockData = session.getTool().getBlockData();
+                    TreasureData blockData = session.getTool().getTreasureData();
                     language.get("Editor.Material.Info")
                             .replace("%material%", blockData == null ? "None" : blockData.getMaterial().toString())
                             .replace("%blockData%", blockData == null ? "None" : blockData.getAsString())
@@ -199,17 +197,17 @@ public class SessionListener extends DevportListener {
             return;
         }
 
-        BlockData blockData = block.getBlockData();
+        TreasureData data = TreasureData.fromBlock(block);
         PlacementTool tool = session.getTool();
 
-        tool.getTemplate().setBlockData(blockData);
+        tool.getTemplate().setTreasureData(data);
 
-        if (tool.getBlockData() != null) {
+        if (tool.getTreasureData() != null) {
             //TODO lang
             player.sendMessage(StringUtil.color("&4! &cOverriding already set blockdata."));
         }
         //TODO lang
-        player.sendMessage(StringUtil.color(String.format("&7Set block data for tool &f%s &7 to &f%s", tool.getName(), blockData.getAsString(true))));
+        player.sendMessage(StringUtil.color(String.format("&7Set block data for tool &f%s &7 to &f%s", tool.getName(), data.getAsString(false))));
     }
 
     private String combine(String[] args) {

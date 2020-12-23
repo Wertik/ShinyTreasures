@@ -6,7 +6,8 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.jetbrains.annotations.Nullable;
 import space.devport.utils.ConsoleOutput;
-import space.devport.utils.ParseUtil;
+import space.devport.utils.utility.ParseUtil;
+import space.devport.wertik.treasures.system.struct.TreasureData;
 import space.devport.wertik.treasures.system.tool.struct.PlacementTool;
 import space.devport.wertik.treasures.system.treasure.struct.Treasure;
 
@@ -35,7 +36,11 @@ public enum TreasurePolicy {
         if (tool == null || location == null)
             return false;
 
-        tool.place(location);
+        TreasureData treasureData = treasure.getTreasureData();
+        if (treasureData == null)
+            treasureData = tool.getTreasureData(Material.CHEST);
+
+        treasureData.place(location);
         return true;
     }),
 
@@ -47,7 +52,7 @@ public enum TreasurePolicy {
 
         Block block = location.getBlock();
 
-        if (!block.getBlockData().matches(tool.getBlockData()))
+        if (!tool.getTreasureData(Material.CHEST).matches(block))
             tool.place(location);
         return true;
     });
@@ -55,16 +60,8 @@ public enum TreasurePolicy {
     @Getter
     private final PolicyExecutor executor;
 
-    @Getter
-    private TreasurePolicy fallback;
-
     TreasurePolicy(PolicyExecutor executor) {
         this.executor = executor;
-    }
-
-    TreasurePolicy(PolicyExecutor executor, TreasurePolicy fallback) {
-        this.executor = executor;
-        this.fallback = fallback;
     }
 
     @Nullable
@@ -76,29 +73,15 @@ public enum TreasurePolicy {
     public void execute(Set<Treasure> treasures) {
         AtomicInteger failCount = new AtomicInteger();
 
-        AtomicInteger retryCount = new AtomicInteger();
-        AtomicInteger retryFailCount = new AtomicInteger();
-
         treasures.forEach(treasure -> {
 
             if (execute(treasure))
                 return;
 
-            // Try fallback
-            if (fallback != null) {
-                retryCount.getAndIncrement();
-
-                if (!fallback.execute(treasure)) {
-                    retryFailCount.getAndIncrement();
-                    ConsoleOutput.getInstance().warn("Could not execute policy " + toString() + " on treasure " + treasure.getUniqueID().toString());
-                    return;
-                }
-            }
-
             failCount.getAndIncrement();
         });
 
-        ConsoleOutput.getInstance().info("Executed policy " + toString() + " on " + treasures.size() + " (failed: " + failCount + ", retried: " + retryCount + ", retry fail: " + retryFailCount + ")");
+        ConsoleOutput.getInstance().info("Executed policy " + toString() + " on " + treasures.size() + " (failed: " + failCount + ")");
     }
 
     public boolean execute(Treasure treasure) {

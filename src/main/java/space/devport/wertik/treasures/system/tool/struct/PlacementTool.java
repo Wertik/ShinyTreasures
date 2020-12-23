@@ -2,17 +2,16 @@ package space.devport.wertik.treasures.system.tool.struct;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
-import org.bukkit.block.data.BlockData;
 import org.bukkit.configuration.ConfigurationSection;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import space.devport.utils.ConsoleOutput;
 import space.devport.utils.configuration.Configuration;
 import space.devport.wertik.treasures.TreasurePlugin;
+import space.devport.wertik.treasures.system.struct.TreasureData;
 import space.devport.wertik.treasures.system.template.struct.TreasureTemplate;
 import space.devport.wertik.treasures.system.treasure.struct.Treasure;
 import space.devport.wertik.treasures.system.user.struct.User;
@@ -62,37 +61,46 @@ public class PlacementTool {
         this.rootTemplate = template == null ? null : template.getName();
     }
 
-    // Place the treasure at location
-    public void place(Block block) {
-        block.setBlockData(getBlockData(Material.CHEST));
+    @Nullable
+    public String getEffectName() {
+        if (template.getEffectName() != null)
+            return template.getEffectName();
+
+        TreasureTemplate rootTemplate = getRootTemplate();
+        return rootTemplate == null ? null : rootTemplate.getEffectName();
     }
 
-    public void place(Location location) {
-        location.getBlock().setBlockData(getBlockData(Material.CHEST));
+    // Place the treasure at location
+    public TreasureData place(Block block) {
+        return getTreasureData(Material.CHEST).place(block);
+    }
+
+    public TreasureData place(Location location) {
+        return getTreasureData(Material.CHEST).place(location);
     }
 
     @Nullable
-    public BlockData getBlockData() {
-        BlockData blockData = template.getBlockData();
+    public TreasureData getTreasureData() {
+        TreasureData blockData = template.getTreasureData();
         if (blockData == null && getRootTemplate() != null)
-            blockData = template.getBlockData();
+            blockData = template.getTreasureData();
         return blockData;
     }
 
     @NotNull
-    public BlockData getBlockData(@NotNull Material def) {
-        BlockData data = getBlockData();
-        return data == null ? Bukkit.createBlockData(def) : data;
+    public TreasureData getTreasureData(@NotNull Material def) {
+        TreasureData data = getTreasureData();
+        return data == null ? TreasureData.fromMaterial(def) : data;
     }
 
     @NotNull
     public Material getMaterial(Material def) {
-        return getBlockData(def).getMaterial();
+        return getTreasureData(def).getMaterial();
     }
 
     @Nullable
     public Material getMaterial() {
-        BlockData data = getBlockData();
+        TreasureData data = getTreasureData();
         return data == null ? null : data.getMaterial();
     }
 

@@ -16,6 +16,7 @@ import space.devport.wertik.treasures.commands.treasure.TreasureCommand;
 import space.devport.wertik.treasures.listeners.InteractListener;
 import space.devport.wertik.treasures.listeners.PlacementListener;
 import space.devport.wertik.treasures.system.editor.EditorManager;
+import space.devport.wertik.treasures.system.struct.effect.EffectRegistry;
 import space.devport.wertik.treasures.system.struct.task.ConfigurationOptions;
 import space.devport.wertik.treasures.system.struct.task.ReloadableTask;
 import space.devport.wertik.treasures.system.template.TemplateManager;
@@ -55,6 +56,9 @@ public class TreasurePlugin extends DevportPlugin {
 
     private TreasurePlaceholders placeholders;
 
+    @Getter
+    private EffectRegistry effectRegistry;
+
     public static TreasurePlugin getInstance() {
         return getPlugin(TreasurePlugin.class);
     }
@@ -84,6 +88,9 @@ public class TreasurePlugin extends DevportPlugin {
         treasureManager.load();
         treasureManager.loadAdditionalData();
         userManager.load();
+
+        this.effectRegistry = new EffectRegistry(this);
+        effectRegistry.load();
 
         new TreasureLanguage(this);
 
@@ -132,6 +139,8 @@ public class TreasurePlugin extends DevportPlugin {
         templateManager.load();
         toolManager.load();
         treasureManager.loadOptions();
+
+        effectRegistry.load();
 
         autoSave.reload();
 

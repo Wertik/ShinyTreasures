@@ -9,6 +9,7 @@ import org.bukkit.block.data.BlockData;
 import space.devport.utils.ConsoleOutput;
 import space.devport.wertik.treasures.TreasurePlugin;
 import space.devport.wertik.treasures.system.struct.FoundData;
+import space.devport.wertik.treasures.system.struct.TreasureData;
 import space.devport.wertik.treasures.system.tool.struct.PlacementTool;
 import space.devport.wertik.treasures.system.treasure.policy.TreasurePolicy;
 import space.devport.wertik.treasures.system.treasure.struct.RegenerationTask;
@@ -55,8 +56,12 @@ public class TreasureManager {
         ConsoleOutput.getInstance().debug("Removed regeneration task " + task.getTreasureID().toString());
     }
 
-    public void regenerate(Treasure treasure, Block block, BlockData original) {
-        RegenerationTask regenerationTask = new RegenerationTask(treasure.getUniqueID(), block, original);
+    public void regenerate(Treasure treasure, Block block) {
+        TreasureData treasureData = treasure.getTreasureData();
+        if (treasureData == null)
+            treasureData = treasure.getTool().getTreasureData(Material.CHEST);
+
+        RegenerationTask regenerationTask = new RegenerationTask(treasure.getUniqueID(), block, treasureData);
         this.regenerationTasks.add(regenerationTask);
         regenerationTask.start();
     }
@@ -121,17 +126,16 @@ public class TreasureManager {
                 .thenRun(() -> ConsoleOutput.getInstance().info("Saved " + this.loadedTreasures.size() + " treasure(s)..."));
     }
 
-    public Treasure createTreasure(Location location) {
-        Treasure treasure = new Treasure(location);
-        this.loadedTreasures.put(treasure.getUniqueID(), treasure);
-        plugin.getConsoleOutput().debug("Created treasure " + treasure.getUniqueID());
-        return treasure;
-    }
-
+    // Create and place the treasure
     public Treasure createTreasure(Location location, PlacementTool tool) {
-        Treasure treasure = createTreasure(location);
+        Treasure treasure = new Treasure(location);
         treasure.withTool(tool);
-        plugin.getConsoleOutput().debug("...with template " + treasure.getTool().getName());
+
+        this.loadedTreasures.put(treasure.getUniqueID(), treasure);
+
+        treasure.setTreasureData(tool.place(location));
+
+        plugin.getConsoleOutput().debug("Created and placed treasure " + treasure.getUniqueID().toString() + " with template " + treasure.getTool().getName());
         return treasure;
     }
 
