@@ -10,8 +10,6 @@ public class TreasureCommand extends MainCommand {
 
     public TreasureCommand(TreasurePlugin plugin) {
         super("shinytreasures");
-        setAliases("st", "treasure", "treasures");
-
         addSubCommand(new ReloadSubCommand(plugin));
         addSubCommand(new ListSubCommand(plugin));
         addSubCommand(new PurgeInvalidSubCommand(plugin));
