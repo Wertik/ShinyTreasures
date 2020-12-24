@@ -184,8 +184,10 @@ public class SessionListener extends DevportListener {
 
         EditSession session = editorManager.getSession(player);
 
-        if (session == null)
+        if (session == null || session.isBlockDataClick())
             return;
+
+        session.setBlockDataClick(false);
 
         event.setCancelled(true);
 

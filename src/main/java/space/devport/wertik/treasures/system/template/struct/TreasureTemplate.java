@@ -8,8 +8,6 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.jetbrains.annotations.Nullable;
 import space.devport.utils.ConsoleOutput;
 import space.devport.utils.configuration.Configuration;
-import space.devport.utils.item.SkullData;
-import space.devport.utils.xseries.SkullUtils;
 import space.devport.utils.xseries.XMaterial;
 import space.devport.wertik.treasures.system.struct.TreasureData;
 import space.devport.wertik.treasures.system.struct.rewards.TreasureRewards;
@@ -117,7 +115,7 @@ public class TreasureTemplate {
 
         section.set("limit", limit);
         section.set("enabled", enabled);
-        section.set("effect-name", effectName);
+        section.set("effect", effectName);
 
         rewards.to(configuration, path + ".rewards");
     }
