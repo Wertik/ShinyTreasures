@@ -56,6 +56,8 @@ public class ToolManager {
     }
 
     public void save() {
+        configuration.clear();
+
         for (PlacementTool tool : this.loadedTools.values()) {
             tool.to(configuration, tool.getName());
             plugin.getConsoleOutput().debug("Saved " + tool.getName());
