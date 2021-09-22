@@ -2,12 +2,13 @@ package space.devport.wertik.treasures.system.struct.rewards;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.extern.java.Log;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.Nullable;
-import space.devport.utils.ConsoleOutput;
-import space.devport.utils.configuration.Configuration;
-import space.devport.utils.struct.Rewards;
+import space.devport.dock.DockedPlugin;
+import space.devport.dock.configuration.Configuration;
+import space.devport.dock.struct.Rewards;
 import space.devport.wertik.treasures.TreasurePlugin;
 import space.devport.wertik.treasures.system.template.struct.TreasureTemplate;
 import space.devport.wertik.treasures.system.tool.struct.PlacementTool;
@@ -17,6 +18,7 @@ import space.devport.wertik.treasures.system.user.struct.User;
 import java.util.HashSet;
 import java.util.Set;
 
+@Log
 public class TreasureRewards extends Rewards {
 
     //TODO Replace all rewards with a "RewardAsset" system.
@@ -30,46 +32,51 @@ public class TreasureRewards extends Rewards {
 
     @Getter
     @Setter
-    private Rewards complete = new Rewards();
+    private Rewards complete;
 
     @Getter
     @Setter
-    private Rewards firstComplete = new Rewards();
+    private Rewards firstComplete;
 
     @Getter
     @Setter
-    private Rewards first = new Rewards();
+    private Rewards first;
 
-    public TreasureRewards() {
+    public TreasureRewards(DockedPlugin plugin) {
+        super(plugin);
     }
 
     public TreasureRewards(Rewards rewards) {
-        super(rewards);
+        super(rewards.getPlugin());
+        this.first = new Rewards(rewards.getPlugin());
+        this.firstComplete = new Rewards(rewards.getPlugin());
+        this.complete = new Rewards(rewards.getPlugin());
     }
 
     public TreasureRewards(TreasureRewards rewards) {
         super(rewards);
         this.cumulative = new HashSet<>(rewards.getCumulative());
         this.repeat = new HashSet<>(rewards.getRepeat());
-        this.complete = new Rewards(rewards.getComplete());
-        this.first = new Rewards(rewards.getFirst());
-        this.firstComplete = new Rewards(rewards.getFirstComplete());
+
+        this.complete = rewards.getComplete() != null ? Rewards.of(rewards.getComplete()) : new Rewards(rewards.getPlugin());
+        this.first = rewards.getFirst() != null ? Rewards.of(rewards.getFirst()) : new Rewards(rewards.getPlugin());
+        this.firstComplete = rewards.getFirstComplete() != null ? Rewards.of(rewards.getFirstComplete()) : new Rewards(rewards.getPlugin());
     }
 
     public void give(User user, Treasure treasure, boolean checkTool) {
         Player player = user.getPlayer();
 
         if (player == null) {
-            ConsoleOutput.getInstance().warn("Player " + user.getOfflinePlayer().getName() + " is not online, cannot reward him.");
+            log.warning("Player " + user.getOfflinePlayer().getName() + " is not online, cannot reward him.");
             return;
         }
 
         this.give(player);
-        ConsoleOutput.getInstance().debug("Rewarding " + user.getOfflinePlayer().getName());
+        log.fine("Rewarding " + user.getOfflinePlayer().getName());
 
         if (!treasure.isFound()) {
             first.give(player);
-            ConsoleOutput.getInstance().debug("Rewarding " + user.getOfflinePlayer().getName() + " for the first find of " + treasure.getUniqueID().toString() + " with " + first.toString());
+            log.fine("Rewarding " + user.getOfflinePlayer().getName() + " for the first find of " + treasure.getUniqueID().toString() + " with " + first.toString());
         }
 
         PlacementTool tool = treasure.getTool();
@@ -88,7 +95,7 @@ public class TreasureRewards extends Rewards {
             repeat.forEach(r -> r.give(player, toolsFound));
 
             int toolsPlaced = TreasurePlugin.getInstance().getTreasureManager().getTreasures((t -> t.getTool() != null &&
-                    t.getTool().equals(tool)))
+                            t.getTool().equals(tool)))
                     .size();
 
             if (toolsPlaced == toolsFound) {
@@ -97,13 +104,13 @@ public class TreasureRewards extends Rewards {
                 if (!TreasurePlugin.getInstance().getTreasureManager().getFoundData().hasToolBeenFound(tool.getName())) {
                     firstComplete.give(player);
                     TreasurePlugin.getInstance().getTreasureManager().getFoundData().setToolFound(tool.getName());
-                    ConsoleOutput.getInstance().debug("Rewarding " + user.getOfflinePlayer().getName() + " for the first complete of " + tool.getName());
+                    log.fine("Rewarding " + user.getOfflinePlayer().getName() + " for the first complete of " + tool.getName());
                 }
             }
 
             // Remove when the limit is reached
             if (treasure.getTool().getTemplate().getLimit() == treasureTotalFinds) {
-                ConsoleOutput.getInstance().debug("Treasure " + treasure.getUniqueID().toString() + " has reached it's tool limit, deleting.");
+                log.fine("Treasure " + treasure.getUniqueID().toString() + " has reached it's tool limit, deleting.");
                 TreasurePlugin.getInstance().getTreasureManager().deleteTreasure(treasure);
             }
         } else {
@@ -122,8 +129,8 @@ public class TreasureRewards extends Rewards {
 
             // How many treasures there are with this template.
             int templatesPlaced = TreasurePlugin.getInstance().getTreasureManager().getTreasures(t -> t.getTool() != null &&
-                    t.getTool().getRootTemplate() != null &&
-                    t.getTool().getRootTemplate().equals(rootTemplate))
+                            t.getTool().getRootTemplate() != null &&
+                            t.getTool().getRootTemplate().equals(rootTemplate))
                     .size();
 
             // Complete rewards
@@ -133,13 +140,13 @@ public class TreasureRewards extends Rewards {
                 if (!TreasurePlugin.getInstance().getTreasureManager().getFoundData().hasTemplateBeenFound(rootTemplate.getName())) {
                     firstComplete.give(player);
                     TreasurePlugin.getInstance().getTreasureManager().getFoundData().setTemplateFound(rootTemplate.getName());
-                    ConsoleOutput.getInstance().debug("Rewarding " + user.getOfflinePlayer().getName() + " for the first complete of " + rootTemplate.getName());
+                    log.fine("Rewarding " + user.getOfflinePlayer().getName() + " for the first complete of " + rootTemplate.getName());
                 }
             }
 
             if (rootTemplate.getLimit() == treasureTotalFinds) {
                 TreasurePlugin.getInstance().getTreasureManager().deleteTreasure(treasure);
-                ConsoleOutput.getInstance().debug("Treasure " + treasure.getUniqueID().toString() + " has reached it's template limit and has been deleted.");
+                log.fine("Treasure " + treasure.getUniqueID().toString() + " has reached it's template limit and has been deleted.");
             }
         }
     }
@@ -151,7 +158,7 @@ public class TreasureRewards extends Rewards {
 
         if (section == null) {
             if (!silent)
-                ConsoleOutput.getInstance().warn("Could not load treasure rewards, section " + configuration.getFile().getName() + "@" + path + " is invalid.");
+                log.warning("Could not load treasure rewards, section " + configuration.getFile().getName() + "@" + path + " is invalid.");
             return null;
         }
 
@@ -168,7 +175,7 @@ public class TreasureRewards extends Rewards {
                     continue;
                 treasureRewards.getCumulative().add(countingRewards);
             }
-            ConsoleOutput.getInstance().debug("Loaded " + treasureRewards.getCumulative().size() + " cumulative rewards...");
+            log.fine("Loaded " + treasureRewards.getCumulative().size() + " cumulative rewards...");
         }
 
         ConfigurationSection repeat = section.getConfigurationSection("repeat");
@@ -180,17 +187,17 @@ public class TreasureRewards extends Rewards {
                     continue;
                 treasureRewards.getRepeat().add(countingRewards);
             }
-            ConsoleOutput.getInstance().debug("Loaded " + treasureRewards.getRepeat().size() + " repeating rewards...");
+            log.fine("Loaded " + treasureRewards.getRepeat().size() + " repeating rewards...");
         }
 
         treasureRewards.setComplete(configuration.getRewards(path + ".complete"));
-        ConsoleOutput.getInstance().debug("With complete rewards " + treasureRewards.getComplete().toString());
+        log.fine("With complete rewards " + treasureRewards.getComplete().toString());
         treasureRewards.setFirst(configuration.getRewards(path + ".first"));
-        ConsoleOutput.getInstance().debug("With first find rewards " + treasureRewards.getFirst().toString());
+        log.fine("With first find rewards " + treasureRewards.getFirst().toString());
         treasureRewards.setFirstComplete(configuration.getRewards(path + ".first-complete"));
-        ConsoleOutput.getInstance().debug("With first complete rewards " + treasureRewards.getFirstComplete().toString());
+        log.fine("With first complete rewards " + treasureRewards.getFirstComplete().toString());
 
-        ConsoleOutput.getInstance().debug("Loaded treasure rewards at " + configuration.getFile().getName() + "@" + path);
+        log.fine("Loaded treasure rewards at " + configuration.getFile().getName() + "@" + path);
         return treasureRewards;
     }
 

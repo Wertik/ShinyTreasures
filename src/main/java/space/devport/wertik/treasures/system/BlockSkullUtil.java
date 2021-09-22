@@ -3,6 +3,7 @@ package space.devport.wertik.treasures.system;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
 import lombok.experimental.UtilityClass;
+import lombok.extern.java.Log;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
@@ -14,7 +15,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import space.devport.utils.ConsoleOutput;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -32,6 +32,7 @@ import java.util.UUID;
  *
  * @author Dean B on 12/28/2016.
  */
+@Log
 @UtilityClass
 public class BlockSkullUtil {
 
@@ -235,7 +236,7 @@ public class BlockSkullUtil {
         notNull(base64, "base64");
 
         if (!(block.getState() instanceof Skull)) {
-            ConsoleOutput.getInstance().debug("Attempted to apply skull data to non-skull block.");
+            log.fine("Attempted to apply skull data to non-skull block.");
             return;
         }
 
@@ -317,7 +318,7 @@ public class BlockSkullUtil {
             return null;
 
         Skull skull = (Skull) state;
-        ConsoleOutput.getInstance().debug(skull.toString());
+        log.fine(skull.toString());
         return queryFromBlockState(skull);
     }
 
@@ -336,7 +337,7 @@ public class BlockSkullUtil {
 
             GameProfile profile = (GameProfile) obj;
 
-            ConsoleOutput.getInstance().debug(profile.getName());
+            log.fine(profile.getName());
 
             return base64FromProfile(profile);
         } catch (NoSuchFieldException | IllegalAccessException e) {

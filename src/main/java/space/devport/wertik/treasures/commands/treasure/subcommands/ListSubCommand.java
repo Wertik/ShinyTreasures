@@ -2,11 +2,11 @@ package space.devport.wertik.treasures.commands.treasure.subcommands;
 
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
-import space.devport.utils.commands.struct.ArgumentRange;
-import space.devport.utils.commands.struct.CommandResult;
-import space.devport.utils.text.message.Message;
-import space.devport.utils.utility.LocationUtil;
-import space.devport.utils.utility.ParseUtil;
+import space.devport.dock.commands.struct.ArgumentRange;
+import space.devport.dock.commands.struct.CommandResult;
+import space.devport.dock.text.message.Message;
+import space.devport.dock.util.LocationUtil;
+import space.devport.dock.util.ParseUtil;
 import space.devport.wertik.treasures.TreasurePlugin;
 import space.devport.wertik.treasures.commands.TreasureSubCommand;
 
@@ -22,14 +22,14 @@ public class ListSubCommand extends TreasureSubCommand {
     }
 
     @Override
-    protected CommandResult perform(CommandSender sender, String label, String[] args) {
+    protected @NotNull CommandResult perform(@NotNull CommandSender sender, @NotNull String label, String[] args) {
 
         if (plugin.getTreasureManager().getTreasures().isEmpty()) {
             language.sendPrefixed(sender, "Commands.No-Treasures");
             return CommandResult.FAILURE;
         }
 
-        int page = args.length > 0 ? parse(sender, args[0], value -> ParseUtil.parseInteger(value, -1, true), "Commands.Treasures.List.Page-Not-Number") : 1;
+        int page = args.length > 0 ? parse(sender, args[0], value -> ParseUtil.parseInteger(value).orElse(-1), "Commands.Treasures.List.Page-Not-Number") : 1;
 
         if (page < 0)
             return CommandResult.FAILURE;
@@ -44,10 +44,11 @@ public class ListSubCommand extends TreasureSubCommand {
 
         plugin.getTreasureManager().getTreasures().stream().skip(Math.max(0, page - 1) * 10L).limit(10)
                 .forEach((treasure) -> {
-                    String location = LocationUtil.locationToString(treasure.getLocation());
+                    String location = LocationUtil.composeString(treasure.getLocation()).orElse("&c-&r");
+
                     list.append(new Message(lineFormat)
-                            .replace("%location%", location == null ? "&c-&r" : location)
-                            .replace("%tool%", treasure.getTool(true) == null ? "None" : treasure.getTool().getName()))
+                                    .replace("%location%", location)
+                                    .replace("%tool%", treasure.getTool(true) == null ? "None" : treasure.getTool().getName()))
                             .replace("%uuid%", treasure.getUniqueID().toString().substring(0, 8))
                             .replace("%rootTemplate%", treasure.getTool(true) == null || treasure.getTool(true).getRootTemplate() == null ? "None" : treasure.getTool().getRootTemplate().getName());
                 });

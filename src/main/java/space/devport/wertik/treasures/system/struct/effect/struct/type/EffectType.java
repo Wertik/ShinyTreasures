@@ -1,20 +1,21 @@
 package space.devport.wertik.treasures.system.struct.effect.struct.type;
 
-import com.google.common.base.Strings;
 import lombok.Getter;
+import lombok.extern.java.Log;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.Nullable;
-import space.devport.utils.ConsoleOutput;
-import space.devport.utils.xseries.particles.ParticleDisplay;
-import space.devport.utils.xseries.particles.XParticle;
+import space.devport.dock.common.Strings;
+import space.devport.dock.lib.xseries.particles.ParticleDisplay;
+import space.devport.dock.lib.xseries.particles.XParticle;
 import space.devport.wertik.treasures.TreasurePlugin;
 import space.devport.wertik.treasures.system.struct.effect.MoreParticles;
 import space.devport.wertik.treasures.system.struct.effect.struct.BlockEffect;
 import space.devport.wertik.treasures.system.struct.effect.struct.RelativeLocation;
 
+@Log
 public enum EffectType {
 
     SHOW((plugin, start, end, effect, section, display) -> {
@@ -128,14 +129,14 @@ public enum EffectType {
             Location end = effect.getEndOffset().getLocation(location);
 
             if (end == null || start == null) {
-                ConsoleOutput.getInstance().warn("Could not display particle of " + effect.toString() + ", start or end location are null.");
+                log.warning("Could not display particle of " + effect + ", start or end location are null.");
                 return;
             }
 
             ParticleDisplay display = effect.createDisplay(start);
 
             if (display == null) {
-                ConsoleOutput.getInstance().warn("Could not display particle of " + effect.toString() + ", couldn't create a display.");
+                log.warning("Could not display particle of " + effect + ", couldn't create a display.");
                 return;
             }
 

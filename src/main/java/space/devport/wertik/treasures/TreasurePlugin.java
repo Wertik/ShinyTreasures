@@ -1,15 +1,15 @@
 package space.devport.wertik.treasures;
 
 import lombok.Getter;
+import lombok.extern.java.Log;
 import me.clip.placeholderapi.PlaceholderAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.plugin.Plugin;
-import space.devport.utils.ConsoleOutput;
-import space.devport.utils.DevportPlugin;
-import space.devport.utils.UsageFlag;
-import space.devport.utils.utility.VersionUtil;
-import space.devport.utils.utility.json.GsonHelper;
+import space.devport.dock.DockedPlugin;
+import space.devport.dock.UsageFlag;
+import space.devport.dock.util.VersionUtil;
+import space.devport.dock.util.json.GsonHelper;
 import space.devport.wertik.treasures.commands.CommandParser;
 import space.devport.wertik.treasures.commands.tool.ToolCommand;
 import space.devport.wertik.treasures.commands.treasure.TreasureCommand;
@@ -26,7 +26,8 @@ import space.devport.wertik.treasures.system.user.UserManager;
 
 import java.util.concurrent.CompletableFuture;
 
-public class TreasurePlugin extends DevportPlugin {
+@Log
+public class TreasurePlugin extends DockedPlugin {
 
     //TODO Tab Completion
 
@@ -80,49 +81,52 @@ public class TreasurePlugin extends DevportPlugin {
 
         this.editorManager = new EditorManager(this);
 
+        this.effectRegistry = new EffectRegistry(this);
+        effectRegistry.load();
+
+        new TreasureLanguage(this).register();
+
         templateManager.load();
         toolManager.load();
 
         treasureManager.loadOptions();
 
-        treasureManager.load();
+        CompletableFuture.allOf(treasureManager.load().thenRun(() -> treasureManager.runEnable()), userManager.load())
+                .thenRun(() -> {
+                    setupAutoSave();
+
+                    Bukkit.getScheduler().runTaskLater(this, () -> {
+                        setupPlaceholders();
+                        this.autoSave.start();
+                    }, 1L);
+                });
+
         treasureManager.loadAdditionalData();
-        userManager.load();
-
-        this.effectRegistry = new EffectRegistry(this);
-        effectRegistry.load();
-
-        new TreasureLanguage(this);
 
         registerListener(new InteractListener(this));
         registerListener(new PlacementListener(this));
 
         this.commandParser = new CommandParser(this);
 
-        addMainCommand(new TreasureCommand(this));
+        registerMainCommand(new TreasureCommand(this));
 
-        addMainCommand(new ToolCommand(this));
+        registerMainCommand(new ToolCommand(this));
+    }
 
-        treasureManager.runEnable();
-
+    private void setupAutoSave() {
         this.autoSave = new ReloadableTask(this) {
             @Override
             public void run() {
-                ConsoleOutput.getInstance().info("Running auto save...");
+                log.info("Running auto save...");
                 CompletableFuture.allOf(userManager.save(), treasureManager.save(), treasureManager.saveAdditionalData())
                         .thenRun(this::schedule);
             }
         }.from(new ConfigurationOptions<Long>(getConfiguration(), "auto-save").withDefaults(() -> 6000L));
-
-        Bukkit.getScheduler().runTaskLater(this, () -> {
-            setupPlaceholders();
-            this.autoSave.start();
-        }, 1L);
     }
 
     @Override
     public void onPluginDisable() {
-        autoSave.stop();
+        if (this.autoSave != null) autoSave.stop();
 
         treasureManager.regenerateAll();
         treasureManager.save();
@@ -142,14 +146,18 @@ public class TreasurePlugin extends DevportPlugin {
 
         effectRegistry.load();
 
-        autoSave.reload();
+        if (this.autoSave != null) {
+            autoSave.reload();
+        } else {
+            setupAutoSave();
+        }
 
         setupPlaceholders();
     }
 
     @Override
     public UsageFlag[] usageFlags() {
-        return new UsageFlag[]{UsageFlag.COMMANDS, UsageFlag.CONFIGURATION, UsageFlag.LANGUAGE, UsageFlag.CUSTOMISATION};
+        return new UsageFlag[]{UsageFlag.COMMANDS, UsageFlag.CONFIGURATION, UsageFlag.LANGUAGE, UsageFlag.CUSTOMISATION, UsageFlag.NMS};
     }
 
     private void setupPlaceholders() {
@@ -161,11 +169,11 @@ public class TreasurePlugin extends DevportPlugin {
 
             if (PlaceholderAPI.isRegistered("treasures") && VersionUtil.compareVersions(placeholderAPI.getDescription().getVersion(), "2.10.9") > -1) {
                 placeholders.unregister();
-                consoleOutput.info("Unregistered old expansion.");
+                log.info("Unregistered old expansion.");
             }
 
             placeholders.register();
-            consoleOutput.info("Registered placeholder expansion.");
+            log.info("Registered placeholder expansion.");
         }
     }
 }

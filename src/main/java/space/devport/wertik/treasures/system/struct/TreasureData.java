@@ -2,6 +2,7 @@ package space.devport.wertik.treasures.system.struct;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.extern.java.Log;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -9,10 +10,11 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.Skull;
 import org.bukkit.block.data.BlockData;
+import org.bukkit.block.data.Directional;
 import org.bukkit.block.data.Rotatable;
-import space.devport.utils.ConsoleOutput;
 import space.devport.wertik.treasures.system.BlockSkullUtil;
 
+@Log
 public class TreasureData {
 
     @Getter
@@ -31,7 +33,7 @@ public class TreasureData {
         String data = str.replace("{", "").replace("}", "");
         String[] arr = data.split("\\|\\|");
 
-        ConsoleOutput.getInstance().debug(arr[0] + " - " + arr[1]);
+        log.fine(arr[0] + " - " + arr[1]);
 
         String base64 = arr[1].equals("null") ? null : arr[1];
         BlockData blockData = Bukkit.createBlockData(arr[0]);
@@ -47,7 +49,7 @@ public class TreasureData {
     public static TreasureData fromBlock(Block block) {
         BlockState state = block.getState();
         String b64 = BlockSkullUtil.base64fromBlock(block);
-        ConsoleOutput.getInstance().debug(b64);
+        log.fine(b64);
         return new TreasureData(state.getBlockData(), b64);
     }
 
@@ -79,6 +81,23 @@ public class TreasureData {
             Rotatable rotatable = (Rotatable) data;
             Rotatable newRotatable = (Rotatable) newData;
             newRotatable.setRotation(rotatable.getRotation());
+        }
+
+        if (blockData instanceof Directional && data instanceof Directional) {
+            Directional directional = (Directional) data;
+            log.info(directional.getFacing().toString());
+
+            Directional newDirectional = (Directional) newData;
+            newDirectional.setFacing(directional.getFacing());
+
+            log.info(newDirectional.getFacing().toString());
+        }
+
+        log.fine(blockData.getAsString(true));
+        log.fine(newData.getAsString(true));
+
+        if (state instanceof Directional) {
+            log.fine(((Directional) state).getFacing().toString());
         }
 
         state.setBlockData(newData);

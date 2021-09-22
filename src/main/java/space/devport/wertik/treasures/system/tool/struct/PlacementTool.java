@@ -2,14 +2,15 @@ package space.devport.wertik.treasures.system.tool.struct;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.extern.java.Log;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.configuration.ConfigurationSection;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import space.devport.utils.ConsoleOutput;
-import space.devport.utils.configuration.Configuration;
+import space.devport.dock.DockedPlugin;
+import space.devport.dock.configuration.Configuration;
 import space.devport.wertik.treasures.TreasurePlugin;
 import space.devport.wertik.treasures.system.struct.TreasureData;
 import space.devport.wertik.treasures.system.template.struct.TreasureTemplate;
@@ -18,6 +19,7 @@ import space.devport.wertik.treasures.system.user.struct.User;
 
 import java.util.concurrent.CompletableFuture;
 
+@Log
 public class PlacementTool {
 
     @Getter
@@ -28,9 +30,12 @@ public class PlacementTool {
     @Setter
     private TreasureTemplate template;
 
-    public PlacementTool(String name) {
+    private final DockedPlugin plugin;
+
+    public PlacementTool(DockedPlugin plugin, String name) {
         this.name = name;
-        this.template = new TreasureTemplate(name);
+        this.plugin = plugin;
+        this.template = new TreasureTemplate(plugin, name);
     }
 
     public void reward(User user, Treasure treasure) {
@@ -54,7 +59,7 @@ public class PlacementTool {
 
     @NotNull
     public TreasureTemplate getTemplate() {
-        return template == null ? new TreasureTemplate(name) : template;
+        return template == null ? new TreasureTemplate(plugin, name) : template;
     }
 
     public void rootTemplate(TreasureTemplate template) {
@@ -105,24 +110,24 @@ public class PlacementTool {
     }
 
     @Nullable
-    public static PlacementTool from(Configuration configuration, String path) {
+    public static PlacementTool from(DockedPlugin plugin, Configuration configuration, String path) {
 
         ConfigurationSection section = configuration.getFileConfiguration().getConfigurationSection(path);
 
         if (section == null) {
-            ConsoleOutput.getInstance().warn("Could not load Placement tool at " + configuration.getFile().getName() + "@" + path + ", section is invalid.");
+            log.warning("Could not load Placement tool at " + configuration.getFile().getName() + "@" + path + ", section is invalid.");
             return null;
         }
 
         String name = section.getName();
 
-        TreasureTemplate template = TreasureTemplate.from(configuration, path, true);
+        TreasureTemplate template = TreasureTemplate.from(plugin, configuration, path, true);
 
         if (template == null) {
-            template = new TreasureTemplate(name);
+            template = new TreasureTemplate(plugin, name);
         }
 
-        PlacementTool tool = new PlacementTool(name);
+        PlacementTool tool = new PlacementTool(plugin, name);
 
         String templateName = section.getString("root-template");
 
@@ -130,16 +135,16 @@ public class PlacementTool {
             TreasureTemplate rootTemplate = TreasurePlugin.getInstance().getTemplateManager().getTemplate(templateName);
 
             if (rootTemplate == null) {
-                ConsoleOutput.getInstance().warn("Could not root tool " + name + " to template " + templateName + ", it's invalid.");
+                log.warning("Could not root tool " + name + " to template " + templateName + ", it's invalid.");
             } else {
                 tool.rootTemplate(rootTemplate);
-                ConsoleOutput.getInstance().debug("Rooted tool " + name + " to template " + templateName);
+                log.fine("Rooted tool " + name + " to template " + templateName);
             }
         }
 
         tool.setTemplate(template);
 
-        ConsoleOutput.getInstance().debug("Loaded tool at " + configuration.getFile().getName() + "@" + path);
+        log.fine("Loaded tool at " + configuration.getFile().getName() + "@" + path);
         return tool;
     }
 

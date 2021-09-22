@@ -3,9 +3,9 @@ package space.devport.wertik.treasures.commands.tool.subcommands;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
-import space.devport.utils.commands.struct.ArgumentRange;
-import space.devport.utils.commands.struct.CommandResult;
-import space.devport.utils.commands.struct.Preconditions;
+import space.devport.dock.commands.struct.ArgumentRange;
+import space.devport.dock.commands.struct.CommandResult;
+import space.devport.dock.commands.struct.Preconditions;
 import space.devport.wertik.treasures.TreasurePlugin;
 import space.devport.wertik.treasures.commands.TreasureSubCommand;
 import space.devport.wertik.treasures.system.tool.struct.PlacementTool;
@@ -18,12 +18,11 @@ public class GetSubCommand extends TreasureSubCommand {
 
     public GetSubCommand(TreasurePlugin plugin) {
         super(plugin, "get");
-        this.preconditions = new Preconditions()
-                .playerOnly();
+        modifyPreconditions(Preconditions::playerOnly);
     }
 
     @Override
-    protected CommandResult perform(CommandSender sender, String label, String[] args) {
+    protected @NotNull CommandResult perform(@NotNull CommandSender sender, @NotNull String label, String[] args) {
 
         PlacementTool tool = parse(sender, args[0], value -> plugin.getToolManager().getTool(value), "Commands.Invalid-Tool");
 
@@ -40,7 +39,7 @@ public class GetSubCommand extends TreasureSubCommand {
     }
 
     @Override
-    public List<String> requestTabComplete(CommandSender sender, String[] args) {
+    public List<String> requestTabComplete(@NotNull CommandSender sender, String[] args) {
         if (args.length == 1) {
             return plugin.getToolManager().getLoadedTools().values().stream()
                     .map(PlacementTool::getName)

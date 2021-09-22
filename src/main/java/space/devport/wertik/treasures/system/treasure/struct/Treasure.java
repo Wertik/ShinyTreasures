@@ -1,15 +1,16 @@
 package space.devport.wertik.treasures.system.treasure.struct;
 
-import com.google.gson.annotations.JsonAdapter;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.extern.java.Log;
 import org.bukkit.Location;
-import space.devport.utils.ConsoleOutput;
+import space.devport.dock.lib.google.gson.annotations.JsonAdapter;
 import space.devport.wertik.treasures.system.struct.TreasureData;
 import space.devport.wertik.treasures.system.tool.struct.PlacementTool;
 
 import java.util.UUID;
 
+@Log
 @JsonAdapter(TreasureJsonAdapter.class)
 public class Treasure {
 
@@ -30,7 +31,7 @@ public class Treasure {
 
     @Getter
     @Setter
-    private TreasureData treasureData;
+    private transient TreasureData treasureData;
 
     @Getter
     @Setter
@@ -47,7 +48,7 @@ public class Treasure {
 
     public PlacementTool getTool(boolean... dontNagMe) {
         if (tool == null && (dontNagMe.length == 0 || !dontNagMe[0]))
-            ConsoleOutput.getInstance().err("Treasure " + uniqueID + " doesn't have a valid tool assigned. Fix the tool and reload, or purge it with /treasures purgeinvalid");
+            log.severe("Treasure " + uniqueID + " doesn't have a valid tool assigned. Fix the tool and reload, or purge it with /treasures purgeinvalid");
         return tool;
     }
 

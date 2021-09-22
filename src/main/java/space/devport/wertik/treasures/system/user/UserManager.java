@@ -1,18 +1,15 @@
 package space.devport.wertik.treasures.system.user;
 
-import space.devport.utils.ConsoleOutput;
+import lombok.extern.java.Log;
 import space.devport.wertik.treasures.TreasurePlugin;
 import space.devport.wertik.treasures.system.user.struct.User;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
+@Log
 public class UserManager {
 
     private final TreasurePlugin plugin;
@@ -30,7 +27,7 @@ public class UserManager {
     public User createUser(UUID uniqueID) {
         User user = new User(uniqueID);
         this.loadedUsers.put(uniqueID, user);
-        ConsoleOutput.getInstance().debug("Created user " + uniqueID.toString());
+        log.fine("Created user " + uniqueID.toString());
         return user;
     }
 
@@ -41,14 +38,14 @@ public class UserManager {
                 if (user.removeFind(uniqueID))
                     count++;
             }
-            ConsoleOutput.getInstance().debug("Removed " + count + " reference(s) of treasure " + uniqueID);
+            log.fine("Removed " + count + " reference(s) of treasure " + uniqueID);
         });
     }
 
-    public void load() {
-        plugin.getGsonHelper().loadMapAsync(plugin.getDataFolder() + "/user-data.json", UUID.class, User.class).exceptionally(e -> {
+    public CompletableFuture<Void> load() {
+        return plugin.getGsonHelper().loadMapAsync(plugin.getDataFolder() + "/user-data.json", UUID.class, User.class).exceptionally(e -> {
             if (e != null) {
-                ConsoleOutput.getInstance().err("Could not load users: " + e.getMessage());
+                log.severe("Could not load users: " + e.getMessage());
                 e.printStackTrace();
             }
             return null;
@@ -59,7 +56,7 @@ public class UserManager {
 
             this.loadedUsers.putAll(loadedData);
 
-            plugin.getConsoleOutput().info("Loaded " + this.loadedUsers.size() + " user(s)...");
+            log.info("Loaded " + this.loadedUsers.size() + " user(s)...");
         });
     }
 
@@ -74,16 +71,16 @@ public class UserManager {
                     count++;
                 }
             }
-            plugin.getConsoleOutput().info("Purged " + count + " empty user(s)...");
-        }).thenRun(() -> plugin.getGsonHelper().save(this.loadedUsers, plugin.getDataFolder() + "/user-data.json")
+            log.info("Purged " + count + " empty user(s)...");
+        }).thenRun(() -> plugin.getGsonHelper().saveAsync(plugin.getDataFolder() + "/user-data.json", this.loadedUsers)
                 .exceptionally(e -> {
                     if (e != null) {
-                        ConsoleOutput.getInstance().err("Could not save users: " + e.getMessage());
+                        log.severe("Could not save users: " + e.getMessage());
                         e.printStackTrace();
                     }
                     return null;
                 })
-                .thenRun(() -> plugin.getConsoleOutput().info("Saved " + this.loadedUsers.size() + " user(s)...")));
+                .thenRun(() -> log.info("Saved " + this.loadedUsers.size() + " user(s)...")));
     }
 
     public Set<User> getUsers(Predicate<User> condition) {

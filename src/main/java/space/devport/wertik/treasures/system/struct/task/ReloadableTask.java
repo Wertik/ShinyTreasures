@@ -3,12 +3,12 @@ package space.devport.wertik.treasures.system.struct.task;
 import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.scheduler.BukkitTask;
-import space.devport.utils.DevportPlugin;
+import space.devport.dock.DockedPlugin;
 
 public abstract class ReloadableTask implements Runnable {
 
     @Getter
-    private final DevportPlugin plugin;
+    private final DockedPlugin plugin;
 
     @Getter
     private long interval = 6000; // = 300 seconds = 5 minutes.
@@ -17,7 +17,7 @@ public abstract class ReloadableTask implements Runnable {
 
     private BukkitTask task;
 
-    public ReloadableTask(DevportPlugin plugin) {
+    public ReloadableTask(DockedPlugin plugin) {
         this.plugin = plugin;
     }
 
@@ -53,6 +53,7 @@ public abstract class ReloadableTask implements Runnable {
     public ReloadableTask start() {
         if (this.task != null)
             stop();
+        load();
         schedule();
         return this;
     }

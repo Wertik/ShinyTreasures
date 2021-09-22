@@ -1,11 +1,11 @@
 package space.devport.wertik.treasures;
 
-import space.devport.utils.DevportPlugin;
-import space.devport.utils.text.language.LanguageDefaults;
+import space.devport.dock.DockedPlugin;
+import space.devport.dock.text.language.LanguageDefaults;
 
 public class TreasureLanguage extends LanguageDefaults {
 
-    public TreasureLanguage(DevportPlugin plugin) {
+    public TreasureLanguage(DockedPlugin plugin) {
         super(plugin);
     }
 

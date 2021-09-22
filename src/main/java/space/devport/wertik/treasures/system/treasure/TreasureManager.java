@@ -1,12 +1,12 @@
 package space.devport.wertik.treasures.system.treasure;
 
 import lombok.Getter;
+import lombok.extern.java.Log;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
-import org.bukkit.block.data.BlockData;
-import space.devport.utils.ConsoleOutput;
+import space.devport.dock.common.Result;
 import space.devport.wertik.treasures.TreasurePlugin;
 import space.devport.wertik.treasures.system.struct.FoundData;
 import space.devport.wertik.treasures.system.struct.TreasureData;
@@ -15,16 +15,12 @@ import space.devport.wertik.treasures.system.treasure.policy.TreasurePolicy;
 import space.devport.wertik.treasures.system.treasure.struct.RegenerationTask;
 import space.devport.wertik.treasures.system.treasure.struct.Treasure;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
+@Log
 public class TreasureManager {
 
     private final TreasurePlugin plugin;
@@ -48,12 +44,12 @@ public class TreasureManager {
     public void loadOptions() {
         this.enablePolicy = TreasurePolicy.fromString(plugin.getConfig().getString("policy.enable"), TreasurePolicy.PLACE);
         this.disablePolicy = TreasurePolicy.fromString(plugin.getConfig().getString("policy.disable"), TreasurePolicy.REMOVE);
-        ConsoleOutput.getInstance().info("Using " + enablePolicy.toString() + " as enable policy and " + disablePolicy.toString() + " as disable policy.");
+        log.info("Using " + enablePolicy.toString() + " as enable policy and " + disablePolicy.toString() + " as disable policy.");
     }
 
     public void removeTask(RegenerationTask task) {
         this.regenerationTasks.remove(task);
-        ConsoleOutput.getInstance().debug("Removed regeneration task " + task.getTreasureID().toString());
+        log.fine("Removed regeneration task " + task.getTreasureID().toString());
     }
 
     public void regenerate(Treasure treasure, Block block) {
@@ -75,19 +71,19 @@ public class TreasureManager {
     }
 
     public void runEnable() {
-        enablePolicy.execute(new HashSet<>(this.loadedTreasures.values()));
+        Bukkit.getScheduler().runTask(plugin, () -> enablePolicy.execute(new HashSet<>(this.loadedTreasures.values())));
     }
 
     public void loadAdditionalData() {
-        FoundData loadedData = plugin.getGsonHelper().load(plugin.getDataFolder() + "/additional-data.json", FoundData.class);
-        this.foundData = loadedData == null ? new FoundData() : loadedData;
-        plugin.getConsoleOutput().info("Loaded additional data...");
+        Result<FoundData> data = plugin.getGsonHelper().load(plugin.getDataFolder() + "/additional-data.json", FoundData.class);
+        this.foundData = data.orElse(new FoundData());
+        log.info("Loaded additional data...");
     }
 
-    public void load() {
-        plugin.getGsonHelper().loadMapAsync(plugin.getDataFolder() + "/data.json", UUID.class, Treasure.class).exceptionally(e -> {
+    public CompletableFuture<Void> load() {
+        return plugin.getGsonHelper().loadMapAsync(plugin.getDataFolder() + "/data.json", UUID.class, Treasure.class).exceptionally(e -> {
             if (e != null) {
-                ConsoleOutput.getInstance().err("Could not load treasures: " + e.getMessage());
+                log.severe("Could not load treasures: " + e.getMessage());
                 e.printStackTrace();
             }
             return null;
@@ -99,31 +95,33 @@ public class TreasureManager {
             for (Treasure treasure : treasures.values()) {
                 PlacementTool tool = plugin.getToolManager().getTool(treasure.getToolName());
                 if (tool == null) {
-                    ConsoleOutput.getInstance().warn("Found a treasure which has an invalid tool " + treasure.getToolName() + " assigned, it won't work.");
+                    log.warning("Found a treasure which has an invalid tool " + treasure.getToolName() + " assigned, it won't work.");
                 } else treasure.withTool(tool);
             }
 
             this.loadedTreasures.putAll(treasures);
 
-            plugin.getConsoleOutput().info("Loaded " + this.loadedTreasures.size() + " treasure(s)...");
+            log.info("Loaded " + this.loadedTreasures.size() + " treasure(s)...");
         });
     }
 
     public CompletableFuture<Void> saveAdditionalData() {
-        return plugin.getGsonHelper().save(this.foundData, plugin.getDataFolder() + "/additional-data.json")
-                .thenRun(() -> ConsoleOutput.getInstance().info("Saved additional data..."));
+        return plugin.getGsonHelper().saveAsync(plugin.getDataFolder() + "/additional-data.json", this.foundData)
+                .thenRun(() -> log.info("Saved additional data..."));
     }
 
     public CompletableFuture<Void> save() {
-        return plugin.getGsonHelper().save(this.loadedTreasures, plugin.getDataFolder() + "/data.json")
+        return plugin.getGsonHelper().saveAsync(plugin.getDataFolder() + "/data.json", this.loadedTreasures)
                 .exceptionally(e -> {
                     if (e != null) {
-                        ConsoleOutput.getInstance().err("Could not save treasures: " + e.getMessage());
+                        log.severe("Could not save treasures: " + e.getMessage());
                         e.printStackTrace();
+                    } else {
+                        log.severe("Could not save treasures.");
                     }
                     return null;
                 })
-                .thenRun(() -> ConsoleOutput.getInstance().info("Saved " + this.loadedTreasures.size() + " treasure(s)..."));
+                .thenRun(() -> log.info("Saved " + this.loadedTreasures.size() + " treasure(s)..."));
     }
 
     // Create and place the treasure
@@ -135,7 +133,7 @@ public class TreasureManager {
 
         treasure.setTreasureData(tool.place(location));
 
-        plugin.getConsoleOutput().debug("Created and placed treasure " + treasure.getUniqueID().toString() + " with template " + treasure.getTool().getName());
+        log.fine("Created and placed treasure " + treasure.getUniqueID().toString() + " with template " + treasure.getTool().getName());
         return treasure;
     }
 
@@ -164,7 +162,7 @@ public class TreasureManager {
         if (treasure == null) return false;
 
         this.loadedTreasures.remove(treasure.getUniqueID());
-        plugin.getConsoleOutput().debug("Removed treasure " + treasure.getUniqueID());
+        log.fine("Removed treasure " + treasure.getUniqueID());
         plugin.getUserManager().deleteAllReferences(treasure.getUniqueID());
         return true;
     }

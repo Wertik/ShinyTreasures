@@ -1,10 +1,11 @@
 package space.devport.wertik.treasures.commands.tool.subcommands;
 
 import org.bukkit.command.CommandSender;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import space.devport.utils.commands.struct.ArgumentRange;
-import space.devport.utils.commands.struct.CommandResult;
-import space.devport.utils.text.message.Message;
+import space.devport.dock.commands.struct.ArgumentRange;
+import space.devport.dock.commands.struct.CommandResult;
+import space.devport.dock.text.message.Message;
 import space.devport.wertik.treasures.TreasurePlugin;
 import space.devport.wertik.treasures.commands.TreasureSubCommand;
 import space.devport.wertik.treasures.system.tool.struct.PlacementTool;
@@ -16,7 +17,7 @@ public class ListSubCommand extends TreasureSubCommand {
     }
 
     @Override
-    protected CommandResult perform(CommandSender sender, String label, String[] args) {
+    protected @NotNull CommandResult perform(@NotNull CommandSender sender, @NotNull String label, String[] args) {
 
         if (plugin.getToolManager().getLoadedTools().isEmpty()) {
             language.sendPrefixed(sender, "Commands.Tools.List.No-Tools");

@@ -1,7 +1,7 @@
 package space.devport.wertik.treasures.system.treasure.struct;
 
-import com.google.gson.*;
-import com.google.gson.reflect.TypeToken;
+import space.devport.dock.lib.google.gson.*;
+import space.devport.dock.lib.google.gson.reflect.TypeToken;
 import space.devport.wertik.treasures.system.struct.TreasureData;
 
 import java.lang.reflect.Type;
@@ -18,6 +18,7 @@ public class TreasureJsonAdapter implements JsonSerializer<Treasure>, JsonDeseri
         json.add("toolName", context.serialize(treasure.getToolName()));
         json.addProperty("treasureData", treasure.getTreasureData().getAsString());
         json.addProperty("found", treasure.isFound());
+        json.addProperty("hello", "world");
 
         return json;
     }

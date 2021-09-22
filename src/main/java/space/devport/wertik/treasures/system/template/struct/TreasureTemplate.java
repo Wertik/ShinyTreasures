@@ -3,15 +3,19 @@ package space.devport.wertik.treasures.system.template.struct;
 import joptsimple.internal.Strings;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.extern.java.Log;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.jetbrains.annotations.Nullable;
-import space.devport.utils.ConsoleOutput;
-import space.devport.utils.configuration.Configuration;
-import space.devport.utils.xseries.XMaterial;
+import space.devport.dock.DockedPlugin;
+import space.devport.dock.configuration.Configuration;
+import space.devport.dock.lib.xseries.XMaterial;
 import space.devport.wertik.treasures.system.struct.TreasureData;
 import space.devport.wertik.treasures.system.struct.rewards.TreasureRewards;
 
+import java.util.logging.Level;
+
+@Log
 public class TreasureTemplate {
 
     @Getter
@@ -30,7 +34,7 @@ public class TreasureTemplate {
 
     @Getter
     @Setter
-    private TreasureRewards rewards = new TreasureRewards();
+    private TreasureRewards rewards;
 
     @Getter
     @Setter
@@ -40,8 +44,9 @@ public class TreasureTemplate {
     @Setter
     private String effectName;
 
-    public TreasureTemplate(String name) {
+    public TreasureTemplate(DockedPlugin plugin, String name) {
         this.name = name;
+        this.rewards = new TreasureRewards(plugin);
     }
 
     public TreasureTemplate(String name, @Nullable Material material, TreasureRewards rewards) {
@@ -58,13 +63,13 @@ public class TreasureTemplate {
     }
 
     @Nullable
-    public static TreasureTemplate from(Configuration configuration, String path, boolean silent) {
+    public static TreasureTemplate from(DockedPlugin plugin, Configuration configuration, String path, boolean silent) {
 
         ConfigurationSection section = configuration.getFileConfiguration().getConfigurationSection(path);
 
         if (section == null) {
             if (!silent)
-                ConsoleOutput.getInstance().warn("Could not load treasure template at " + configuration.getFile().getName() + "@" + path + ", section is invalid.");
+                log.warning("Could not load treasure template at " + configuration.getFile().getName() + "@" + path + ", section is invalid.");
             return null;
         }
 
@@ -76,7 +81,7 @@ public class TreasureTemplate {
             XMaterial xMaterial = XMaterial.matchXMaterial(materialName).orElse(null);
 
             if (xMaterial == null) {
-                ConsoleOutput.getInstance().warn("Material at " + configuration.getFile().getName() + "@" + path + ".material is invalid.");
+                log.warning("Material at " + configuration.getFile().getName() + "@" + path + ".material is invalid.");
             } else material = xMaterial.parseMaterial();
         }
 
@@ -86,16 +91,16 @@ public class TreasureTemplate {
         if (!Strings.isNullOrEmpty(dataString)) {
             try {
                 treasureData = TreasureData.fromString(dataString);
-                ConsoleOutput.getInstance().debug("TreasureData: " + treasureData.getAsString(true));
+                log.fine("TreasureData: " + treasureData.getAsString(true));
             } catch (IllegalArgumentException e) {
-                ConsoleOutput.getInstance().warn("TreasureData at " + configuration.getFile().getName() + "@" + ".treasure-data is invalid.");
+                log.warning("TreasureData at " + configuration.getFile().getName() + "@" + ".treasure-data is invalid.");
             }
         }
 
-        TreasureRewards rewards = TreasureRewards.from(configuration, path + ".rewards", !ConsoleOutput.getInstance().isDebug() && silent);
+        TreasureRewards rewards = TreasureRewards.from(configuration, path + ".rewards", silent);
 
         if (rewards == null)
-            rewards = new TreasureRewards();
+            rewards = new TreasureRewards(plugin);
 
         TreasureTemplate treasureTemplate = new TreasureTemplate(name, material, rewards);
         treasureTemplate.setTreasureData(treasureData);

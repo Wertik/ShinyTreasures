@@ -1,7 +1,7 @@
 package space.devport.wertik.treasures.system.struct.task;
 
 import org.bukkit.configuration.ConfigurationSection;
-import space.devport.utils.configuration.Configuration;
+import space.devport.dock.configuration.Configuration;
 
 import java.util.function.Function;
 

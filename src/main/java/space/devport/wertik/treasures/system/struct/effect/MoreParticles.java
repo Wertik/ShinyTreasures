@@ -5,8 +5,8 @@ import org.bukkit.Location;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
-import space.devport.utils.xseries.particles.ParticleDisplay;
-import space.devport.utils.xseries.particles.XParticle;
+import space.devport.dock.lib.xseries.particles.ParticleDisplay;
+import space.devport.dock.lib.xseries.particles.XParticle;
 
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.atomic.AtomicLong;

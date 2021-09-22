@@ -1,6 +1,7 @@
 package space.devport.wertik.treasures.system.editor;
 
 import lombok.Getter;
+import lombok.extern.java.Log;
 import org.bukkit.OfflinePlayer;
 import space.devport.wertik.treasures.TreasurePlugin;
 import space.devport.wertik.treasures.system.editor.struct.EditSession;
@@ -10,6 +11,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.UUID;
 
+@Log
 public class EditorManager {
 
     @Getter
@@ -28,14 +30,14 @@ public class EditorManager {
 
     public EditSession createSession(OfflinePlayer offlinePlayer, String name) {
         EditSession session = new EditSession(plugin, offlinePlayer.getUniqueId(), name);
-        plugin.getConsoleOutput().debug("Created an edit session for " + offlinePlayer.getName() + " - " + name);
+        log.fine("Created an edit session for " + offlinePlayer.getName() + " - " + name);
         return session;
     }
 
     public void registerSession(EditSession session) {
         if (session != null) {
             this.sessions.put(session.getUniqueID(), session);
-            plugin.getConsoleOutput().debug("Registered session for " + session.getUniqueID() + " - " + session.getName());
+            log.fine("Registered session for " + session.getUniqueID() + " - " + session.getName());
         }
     }
 
@@ -45,7 +47,7 @@ public class EditorManager {
         }
 
         this.sessions.remove(session.getUniqueID());
-        plugin.getConsoleOutput().debug("Unregistered session for " + session.getUniqueID() + " - " + session.getName());
+        log.fine("Unregistered session for " + session.getUniqueID() + " - " + session.getName());
     }
 
     public boolean hasSession(OfflinePlayer offlinePlayer) {

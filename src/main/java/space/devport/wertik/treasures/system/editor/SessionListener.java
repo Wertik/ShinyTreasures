@@ -7,11 +7,11 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
-import space.devport.utils.DevportListener;
-import space.devport.utils.text.StringUtil;
-import space.devport.utils.text.language.LanguageManager;
-import space.devport.utils.text.message.Message;
-import space.devport.utils.xseries.XMaterial;
+import space.devport.dock.DockedListener;
+import space.devport.dock.lib.xseries.XMaterial;
+import space.devport.dock.text.language.LanguageManager;
+import space.devport.dock.text.message.Message;
+import space.devport.dock.util.StringUtil;
 import space.devport.wertik.treasures.system.editor.struct.EditSession;
 import space.devport.wertik.treasures.system.struct.TreasureData;
 import space.devport.wertik.treasures.system.template.struct.TreasureTemplate;
@@ -20,7 +20,7 @@ import space.devport.wertik.treasures.system.tool.struct.PlacementTool;
 import java.util.Arrays;
 import java.util.List;
 
-public class SessionListener extends DevportListener {
+public class SessionListener extends DockedListener {
 
     private final EditorManager editorManager;
 
@@ -129,6 +129,7 @@ public class SessionListener extends DevportListener {
                 }
 
                 XMaterial xMaterial = XMaterial.matchXMaterial(args[1]).orElse(null);
+
                 if (xMaterial == null) {
                     language.get("Editor.Material.Invalid")
                             .replace("%param%", args[1])

@@ -2,7 +2,7 @@ package space.devport.wertik.treasures.system.struct.effect.struct.type;
 
 import org.bukkit.Location;
 import org.bukkit.configuration.ConfigurationSection;
-import space.devport.utils.xseries.particles.ParticleDisplay;
+import space.devport.dock.lib.xseries.particles.ParticleDisplay;
 import space.devport.wertik.treasures.TreasurePlugin;
 import space.devport.wertik.treasures.system.struct.effect.struct.BlockEffect;
 

@@ -1,8 +1,8 @@
 package space.devport.wertik.treasures.system.template;
 
 import lombok.Getter;
-import space.devport.utils.ConsoleOutput;
-import space.devport.utils.configuration.Configuration;
+import lombok.extern.java.Log;
+import space.devport.dock.configuration.Configuration;
 import space.devport.wertik.treasures.TreasurePlugin;
 import space.devport.wertik.treasures.system.template.struct.TreasureTemplate;
 
@@ -10,6 +10,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+@Log
 public class TemplateManager {
 
     private final TreasurePlugin plugin;
@@ -33,14 +34,14 @@ public class TemplateManager {
         this.loadedTemplates.clear();
 
         for (String name : configuration.getFileConfiguration().getKeys(false)) {
-            TreasureTemplate template = TreasureTemplate.from(configuration, name, false);
+            TreasureTemplate template = TreasureTemplate.from(plugin, configuration, name, false);
 
             if (template == null) continue;
 
             this.loadedTemplates.put(name, template);
-            ConsoleOutput.getInstance().debug("Loaded treasure template " + name);
+            log.fine("Loaded treasure template " + name);
         }
-        plugin.getConsoleOutput().info("Loaded " + this.loadedTemplates.size() + " template(s)...");
+        log.info("Loaded " + this.loadedTemplates.size() + " template(s)...");
     }
 
     public Map<String, TreasureTemplate> getLoadedTemplates() {

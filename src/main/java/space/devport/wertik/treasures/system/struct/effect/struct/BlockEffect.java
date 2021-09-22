@@ -2,21 +2,22 @@ package space.devport.wertik.treasures.system.struct.effect.struct;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.extern.java.Log;
 import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import space.devport.utils.ConsoleOutput;
-import space.devport.utils.configuration.Configuration;
-import space.devport.utils.utility.ParseUtil;
-import space.devport.utils.xseries.particles.ParticleDisplay;
-import space.devport.utils.xseries.particles.XParticle;
+import space.devport.dock.configuration.Configuration;
+import space.devport.dock.lib.xseries.particles.ParticleDisplay;
+import space.devport.dock.lib.xseries.particles.XParticle;
+import space.devport.dock.util.ParseUtil;
 import space.devport.wertik.treasures.TreasurePlugin;
 import space.devport.wertik.treasures.system.struct.effect.struct.sound.BlockSound;
 import space.devport.wertik.treasures.system.struct.effect.struct.type.EffectType;
 
+@Log
 public class BlockEffect {
 
     @Getter
@@ -87,7 +88,7 @@ public class BlockEffect {
             return ParticleDisplay.colored(location, color.getRed(), color.getGreen(), color.getBlue(), size);
 
         if (particle == null) {
-            ConsoleOutput.getInstance().warn("Could not create particle display, no color or particle defined.");
+            log.warning("Could not create particle display, no color or particle defined.");
             return null;
         }
 
@@ -99,7 +100,7 @@ public class BlockEffect {
         ConfigurationSection section = configuration.getFileConfiguration().getConfigurationSection(path);
 
         if (section == null) {
-            ConsoleOutput.getInstance().warn("Could not load effect at " + configuration.getFile().getName() + "@" + path + ", section is invalid.");
+            log.warning("Could not load effect at " + configuration.getFile().getName() + "@" + path + ", section is invalid.");
             return null;
         }
 
@@ -115,11 +116,11 @@ public class BlockEffect {
             color = RGBColor.fromString(section.getString("color"));
 
             if (color == null) {
-                ConsoleOutput.getInstance().warn("Could not load RGB color at " + configuration.getFile().getName() + "@" + path + ", color string is invalid.");
+                log.warning("Could not load RGB color at " + configuration.getFile().getName() + "@" + path + ", color string is invalid.");
             } else effect.setColor(color);
 
             if (particleName != null && !particleName.equalsIgnoreCase("redstone"))
-                ConsoleOutput.getInstance().info("Both color and a different particle type are specified at " + configuration.getFile().getName() + "@" + path + ", using the color.");
+                log.info("Both color and a different particle type are specified at " + configuration.getFile().getName() + "@" + path + ", using the color.");
         }
 
         if (color == null && particleName != null)
@@ -129,14 +130,14 @@ public class BlockEffect {
         effect.setRate(section.getDouble("rate", .2));
         effect.setRadius(section.getDouble("radius", 1));
         effect.setSize(section.getLong("size", 1));
-        effect.setDirection(ParseUtil.parseVector(section.getString("direction")));
+        //TODO: Add to dock effect.setDirection(ParseUtil.parseVector(section.getString("direction")));
 
         effect.setEndOffset(RelativeLocation.fromString(section.getString("end-offset"), new RelativeLocation(1, 1, 1)));
         effect.setStartOffset(RelativeLocation.fromString(section.getString("start-offset"), new RelativeLocation(0, 0, 0)));
 
         effect.setSound(BlockSound.load(configuration, section.getConfigurationSection("sound")));
 
-        ConsoleOutput.getInstance().debug("Loaded block effect at " + configuration.getFile().getName() + "@" + section.getCurrentPath());
+        log.fine("Loaded block effect at " + configuration.getFile().getName() + "@" + section.getCurrentPath());
         return effect;
     }
 

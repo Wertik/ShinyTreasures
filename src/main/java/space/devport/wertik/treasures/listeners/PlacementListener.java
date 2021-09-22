@@ -14,9 +14,9 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
-import space.devport.utils.text.StringUtil;
-import space.devport.utils.text.language.LanguageManager;
-import space.devport.utils.utility.ParseUtil;
+import space.devport.dock.text.language.LanguageManager;
+import space.devport.dock.util.ParseUtil;
+import space.devport.dock.util.StringUtil;
 import space.devport.wertik.treasures.TreasurePlugin;
 import space.devport.wertik.treasures.system.tool.struct.PlacementTool;
 import space.devport.wertik.treasures.system.treasure.struct.Treasure;
@@ -77,13 +77,16 @@ public class PlacementListener implements Listener {
 
         if (plugin.getConfig().getBoolean("tools.drop-on-remove", false) && treasure.getTool() != null) {
             ItemStack itemStack = plugin.getToolManager().craftTool(treasure.getTool());
-            Vector popVector = ParseUtil.parseVector(plugin.getConfig().getString("tools.pop-vector"));
 
-            // Pop the item
-            Bukkit.getScheduler().runTaskLater(plugin, () -> {
-                Item item = player.getWorld().dropItemNaturally(block.getLocation(), itemStack);
-                item.setVelocity(popVector);
-            }, 2L);
+            if (itemStack != null) {
+                Vector popVector = ParseUtil.parseVector(plugin.getConfig().getString("tools.pop-vector")).orElse(new Vector());
+
+                // Pop the item
+                Bukkit.getScheduler().runTaskLater(plugin, () -> {
+                    Item item = player.getWorld().dropItemNaturally(block.getLocation(), itemStack);
+                    item.setVelocity(popVector);
+                }, 2L);
+            }
         }
 
         block.setType(Material.AIR);

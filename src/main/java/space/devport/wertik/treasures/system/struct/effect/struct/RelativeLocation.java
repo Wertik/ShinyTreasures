@@ -3,9 +3,10 @@ package space.devport.wertik.treasures.system.struct.effect.struct;
 import joptsimple.internal.Strings;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.extern.java.Log;
 import org.bukkit.Location;
-import space.devport.utils.ConsoleOutput;
 
+@Log
 public class RelativeLocation {
 
     @Getter
@@ -43,7 +44,7 @@ public class RelativeLocation {
 
             return new RelativeLocation(x, y, z);
         } catch (NumberFormatException e) {
-            ConsoleOutput.getInstance().warn("Could not parse RelativeLocation from " + str + ": " + e.getMessage());
+            log.warning("Could not parse RelativeLocation from " + str + ": " + e.getMessage());
             return def;
         }
     }

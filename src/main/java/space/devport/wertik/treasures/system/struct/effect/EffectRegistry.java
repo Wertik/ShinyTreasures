@@ -2,9 +2,9 @@ package space.devport.wertik.treasures.system.struct.effect;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.extern.java.Log;
 import org.jetbrains.annotations.Nullable;
-import space.devport.utils.ConsoleOutput;
-import space.devport.utils.configuration.Configuration;
+import space.devport.dock.configuration.Configuration;
 import space.devport.wertik.treasures.TreasurePlugin;
 import space.devport.wertik.treasures.system.struct.effect.struct.BlockEffect;
 import space.devport.wertik.treasures.system.treasure.struct.Treasure;
@@ -13,6 +13,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+@Log
 public class EffectRegistry {
 
     private final TreasurePlugin plugin;
@@ -38,7 +39,7 @@ public class EffectRegistry {
         for (String name : configuration.getFileConfiguration().getKeys(false)) {
             addEffect(BlockEffect.load(configuration, name));
         }
-        ConsoleOutput.getInstance().info("Loaded " + this.loadedEffects.size() + " effect configuration(s)...");
+        log.info("Loaded " + this.loadedEffects.size() + " effect configuration(s)...");
 
         this.defaultEffect = plugin.getConfiguration().getFileConfiguration().getString("default-effect");
     }
@@ -68,7 +69,7 @@ public class EffectRegistry {
             return;
 
         this.loadedEffects.put(blockEffect.getName(), blockEffect);
-        ConsoleOutput.getInstance().debug("Added effect " + blockEffect.toString());
+        log.fine("Added effect " + blockEffect.toString());
     }
 
     public boolean hasEffect(@Nullable String name) {

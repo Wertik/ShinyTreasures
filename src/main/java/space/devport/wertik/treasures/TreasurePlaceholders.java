@@ -3,7 +3,7 @@ package space.devport.wertik.treasures;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
-import space.devport.utils.utility.ParseUtil;
+import space.devport.dock.util.ParseUtil;
 import space.devport.wertik.treasures.system.template.struct.TreasureTemplate;
 import space.devport.wertik.treasures.system.tool.struct.PlacementTool;
 import space.devport.wertik.treasures.system.treasure.struct.Treasure;
@@ -58,7 +58,7 @@ public class TreasurePlaceholders extends PlaceholderExpansion {
             if (args.length < 3)
                 return "not_enough_args";
 
-            int position = ParseUtil.parseInteger(args[1], -1, true);
+            int position = ParseUtil.parseInteger(args[1]).orElse(-1);
             if (position <= 0)
                 return "invalid_position";
 

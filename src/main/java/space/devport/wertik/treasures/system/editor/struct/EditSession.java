@@ -3,7 +3,7 @@ package space.devport.wertik.treasures.system.editor.struct;
 import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.entity.Player;
-import space.devport.utils.text.language.LanguageManager;
+import space.devport.dock.text.language.LanguageManager;
 import space.devport.wertik.treasures.TreasurePlugin;
 import space.devport.wertik.treasures.system.tool.struct.PlacementTool;
 
@@ -30,7 +30,7 @@ public class EditSession {
     public EditSession(TreasurePlugin plugin, UUID uniqueID, String name) {
         this.plugin = plugin;
         this.uniqueID = uniqueID;
-        this.tool = new PlacementTool(name);
+        this.tool = new PlacementTool(plugin, name);
     }
 
     public void startChatSession(Player player) {

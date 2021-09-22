@@ -1,12 +1,12 @@
 package space.devport.wertik.treasures.system.treasure.policy;
 
 import lombok.Getter;
+import lombok.extern.java.Log;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.jetbrains.annotations.Nullable;
-import space.devport.utils.ConsoleOutput;
-import space.devport.utils.utility.ParseUtil;
+import space.devport.dock.util.ParseUtil;
 import space.devport.wertik.treasures.system.struct.TreasureData;
 import space.devport.wertik.treasures.system.tool.struct.PlacementTool;
 import space.devport.wertik.treasures.system.treasure.struct.Treasure;
@@ -14,6 +14,7 @@ import space.devport.wertik.treasures.system.treasure.struct.Treasure;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 
+@Log
 public enum TreasurePolicy {
 
     /**
@@ -66,8 +67,7 @@ public enum TreasurePolicy {
 
     @Nullable
     public static TreasurePolicy fromString(String str, TreasurePolicy defaultPolicy) {
-        TreasurePolicy policy = ParseUtil.parseEnum(str, TreasurePolicy.class);
-        return policy == null ? defaultPolicy : policy;
+        return ParseUtil.parseEnum(str, TreasurePolicy.class).orElse(defaultPolicy);
     }
 
     public void execute(Set<Treasure> treasures) {
@@ -81,7 +81,7 @@ public enum TreasurePolicy {
             failCount.getAndIncrement();
         });
 
-        ConsoleOutput.getInstance().info("Executed policy " + toString() + " on " + treasures.size() + " (failed: " + failCount + ")");
+        log.info("Executed policy " + this + " on " + treasures.size() + " (failed: " + failCount + ")");
     }
 
     public boolean execute(Treasure treasure) {
@@ -92,7 +92,7 @@ public enum TreasurePolicy {
         try {
             this.executor.execute(treasure);
         } catch (Exception e) {
-            ConsoleOutput.getInstance().err("Could not execute policy " + toString() + ": " + e.getMessage());
+            log.severe("Could not execute policy " + this + ": " + e.getMessage());
             e.printStackTrace();
             return false;
         }

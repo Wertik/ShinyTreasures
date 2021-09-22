@@ -2,7 +2,7 @@ name: ${project.name}
 main: ${project.groupId}.TreasurePlugin
 version: ${project.version}
 authors: [ Wertik1206 ]
-api-version: 1.13
+api-version: 1.17
 softdepend: [ PlaceholderAPI, Multiverse-Core, MultiWorld ]
 commands:
   shinytreasures:

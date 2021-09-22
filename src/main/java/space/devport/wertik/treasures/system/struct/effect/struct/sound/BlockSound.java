@@ -2,15 +2,16 @@ package space.devport.wertik.treasures.system.struct.effect.struct.sound;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.extern.java.Log;
 import org.bukkit.Location;
 import org.bukkit.configuration.ConfigurationSection;
 import org.jetbrains.annotations.NotNull;
-import space.devport.utils.ConsoleOutput;
-import space.devport.utils.configuration.Configuration;
-import space.devport.utils.item.Amount;
-import space.devport.utils.utility.ParseUtil;
-import space.devport.utils.xseries.XSound;
+import space.devport.dock.configuration.Configuration;
+import space.devport.dock.lib.xseries.XSound;
+import space.devport.dock.struct.Amount;
+import space.devport.dock.util.ParseUtil;
 
+@Log
 public class BlockSound {
 
     @Getter
@@ -37,12 +38,12 @@ public class BlockSound {
         Amount pitch = configuration.getAmount(section.getCurrentPath() + ".pitch", new Amount(1));
         Amount volume = configuration.getAmount(section.getCurrentPath() + ".volume", new Amount(1));
 
-        XSound sound = ParseUtil.parseEnum(section.getString("sound"), XSound.class);
+        XSound sound = ParseUtil.parseEnum(section.getString("sound"), XSound.class).orElse(null);
 
         if (sound == null)
             return null;
 
-        ConsoleOutput.getInstance().debug("Loaded sound at " + configuration.getFile().getName() + "@" + section.getCurrentPath());
+        log.fine("Loaded sound at " + configuration.getFile().getName() + "@" + section.getCurrentPath());
         return new BlockSound(sound, pitch, volume);
     }
 

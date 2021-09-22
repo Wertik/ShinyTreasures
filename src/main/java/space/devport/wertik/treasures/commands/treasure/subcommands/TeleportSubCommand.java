@@ -4,11 +4,12 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import space.devport.utils.commands.struct.ArgumentRange;
-import space.devport.utils.commands.struct.CommandResult;
-import space.devport.utils.commands.struct.Preconditions;
-import space.devport.utils.utility.LocationUtil;
+import space.devport.dock.commands.struct.ArgumentRange;
+import space.devport.dock.commands.struct.CommandResult;
+import space.devport.dock.commands.struct.Preconditions;
+import space.devport.dock.util.LocationUtil;
 import space.devport.wertik.treasures.TreasurePlugin;
 import space.devport.wertik.treasures.commands.TreasureSubCommand;
 import space.devport.wertik.treasures.system.treasure.struct.Treasure;
@@ -23,12 +24,11 @@ public class TeleportSubCommand extends TreasureSubCommand {
     public TeleportSubCommand(TreasurePlugin plugin) {
         super(plugin, "teleport");
         setAliases("tp");
-        this.preconditions = new Preconditions()
-                .playerOnly();
+        modifyPreconditions(Preconditions::playerOnly); // dock api wtf
     }
 
     @Override
-    protected CommandResult perform(CommandSender sender, String label, String[] args) {
+    protected @NotNull CommandResult perform(@NotNull CommandSender sender, @NotNull String label, String[] args) {
         CompletableFuture.runAsync(() -> {
             List<UUID> treasures = plugin.getTreasureManager().getTreasures(treasure -> treasure.getUniqueID().toString().startsWith(args[0]))
                     .stream().map(Treasure::getUniqueID)
@@ -53,7 +53,7 @@ public class TeleportSubCommand extends TreasureSubCommand {
 
             language.getPrefixed("Commands.Treasures.Teleporting")
                     .replace("%treasure%", treasure.getUniqueID())
-                    .replace("%location%", LocationUtil.locationToString(treasure.getLocation()))
+                    .replace("%location%", LocationUtil.composeString(treasure.getLocation()).orElse("&c-&7"))
                     .send(player);
 
             Bukkit.getScheduler().runTask(plugin, () -> player.teleport(location));
