@@ -21,7 +21,7 @@ public class EditorManager {
 
     public EditorManager(TreasurePlugin plugin) {
         this.plugin = plugin;
-        new SessionListener(this);
+        new SessionListener(this).register();
     }
 
     public EditSession getSession(OfflinePlayer offlinePlayer) {

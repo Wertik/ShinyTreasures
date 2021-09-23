@@ -11,7 +11,6 @@ import space.devport.dock.DockedListener;
 import space.devport.dock.lib.xseries.XMaterial;
 import space.devport.dock.text.language.LanguageManager;
 import space.devport.dock.text.message.Message;
-import space.devport.dock.util.StringUtil;
 import space.devport.wertik.treasures.system.editor.struct.EditSession;
 import space.devport.wertik.treasures.system.struct.TreasureData;
 import space.devport.wertik.treasures.system.template.struct.TreasureTemplate;
@@ -24,12 +23,15 @@ public class SessionListener extends DockedListener {
 
     private final EditorManager editorManager;
 
+    private final LanguageManager language;
+
     // Arguments for the matcher
     private final List<String> arguments = Arrays.asList("save", "finish", "exit", "cancel", "material", "addcommand", "listcommands", "removecommand", "roottemplate", "template", "blockdata");
 
     public SessionListener(EditorManager editorManager) {
         super(editorManager.getPlugin());
         this.editorManager = editorManager;
+        this.language = editorManager.getPlugin().getManager(LanguageManager.class);
     }
 
     @EventHandler(priority = EventPriority.LOWEST)
@@ -43,8 +45,6 @@ public class SessionListener extends DockedListener {
             return;
 
         event.setCancelled(true);
-
-        LanguageManager language = editorManager.getPlugin().getManager(LanguageManager.class);
 
         String message = event.getMessage();
 
@@ -113,9 +113,8 @@ public class SessionListener extends DockedListener {
                         .send(player);
                 break;
             case "blockdata":
-                //TODO lang
                 session.setBlockDataClick(true);
-                player.sendMessage(StringUtil.color("&7Click on a block to load it's block data."));
+                language.get("Editor.Block-Data.Info").send(player);
                 break;
             case "material":
 
@@ -185,7 +184,7 @@ public class SessionListener extends DockedListener {
 
         EditSession session = editorManager.getSession(player);
 
-        if (session == null || session.isBlockDataClick())
+        if (session == null || !session.isBlockDataClick())
             return;
 
         session.setBlockDataClick(false);
@@ -195,22 +194,23 @@ public class SessionListener extends DockedListener {
         Block block = event.getClickedBlock();
 
         if (block == null) {
-            //TODO lang
-            player.sendMessage(StringUtil.color("&cPlease click a block."));
+            language.get("Editor.Block-Data.Not-A-Block").send(player);
             return;
         }
 
         TreasureData data = TreasureData.fromBlock(block);
         PlacementTool tool = session.getTool();
 
+        if (tool.getTreasureData() != null) {
+            language.get("Editor.Block-Data.Override").send(player);
+        }
+
         tool.getTemplate().setTreasureData(data);
 
-        if (tool.getTreasureData() != null) {
-            //TODO lang
-            player.sendMessage(StringUtil.color("&4! &cOverriding already set blockdata."));
-        }
-        //TODO lang
-        player.sendMessage(StringUtil.color(String.format("&7Set block data for tool &f%s &7 to &f%s", tool.getName(), data.getAsString(false))));
+        language.get("Editor.Block-Data.Done")
+                .replace("%tool%", tool.getName())
+                .replace("%blockData%", data.getAsString(false))
+                .send(player);
     }
 
     private String combine(String[] args) {

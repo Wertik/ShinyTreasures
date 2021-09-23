@@ -68,6 +68,7 @@ public class TreasureLanguage extends LanguageDefaults {
         addDefault("Editor.Info.Add-Command", "&eaddcommand &7<command> &8- &7Add a command to the tool.");
         addDefault("Editor.Info.Remove-Command", "&eremovecommand &7<startOfTheCommand> &8- &7Remove a command.");
         addDefault("Editor.Info.Root-Template", "&eroottemplate &7<templateName> &8- &7Root tool to a template.");
+        addDefault("Editor.Info.Block-Data", "&eblockdata &8- &7Click on a block to load it's block data (rotation, heads,...).");
         addDefault("Editor.Info.Footer", "&7Use &eexit &7or &ecancel &7to... exit the session without saving.",
                 "&7Use &asave &7or &afinish &7to save & exit safely.");
 
@@ -84,6 +85,11 @@ public class TreasureLanguage extends LanguageDefaults {
         addDefault("Editor.Remove-Command.No-Command", "&cSpecify a command to remove.");
         addDefault("Editor.Remove-Command.No-Commands", "&cThere are no commands attached.");
         addDefault("Editor.Remove-Command.Done", "&7Removed command &f%command%");
+
+        addDefault("Editor.Block-Data.Info", "&7Click on a block to load it's block data.");
+        addDefault("Editor.Block-Data.Not-A-Block", "&cPlease click on a block.");
+        addDefault("Editor.Block-Data.Override", "&4e! &7Overriding already set block data.");
+        addDefault("Editor.Block-Data.Done", "&7Set block data for tool &f%tool% &7to &f%blockData%&7.");
 
         addDefault("Editor.Add-Command.Done", "&7Added command &f%command%");
 

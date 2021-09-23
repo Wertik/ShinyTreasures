@@ -44,6 +44,7 @@ public class EditSession {
                 .append(language.get("Editor.Info.Add-Command"))
                 .append(language.get("Editor.Info.Remove-Command"))
                 .append(language.get("Editor.Info.Root-Template"))
+                .append(language.get("Editor.Info.Block-Data"))
                 .append(language.get("Editor.Info.Footer"))
                 .send(player);
         setChatSession(true);
